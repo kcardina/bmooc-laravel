@@ -1,0 +1,388 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bMOOC</title>
+    <!-- webfonts -->
+    <link href='https://fonts.googleapis.com/css?family=Questrial' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/foundation.css" />
+    <!-- custom stylesheet -->
+    <link rel="stylesheet" href="css/app.css">
+    <script src="js/vendor/modernizr.js"></script>
+  </head>
+  <body>
+    
+    <header class="green">
+        <div class="row">
+            <div class="small-6 medium-3 large-2 columns">
+                <h1>bMOOC</h1>
+            </div>
+            <div class="small-6 medium-2 medium-push-7 large-push-9 large-1 columns text-right">
+                        <a href="#" class="logout">Afmelden</a>
+            </div>
+            <div class="medium-7 medium-pull-2 large-pull-1 large-3 columns">
+                <button class="newtopic">Start een nieuwe topic</button>
+            </div>
+            <div class="large-6 large-pull-1 columns">
+               <nav>
+                <div class="row sort">
+                   <div class="medium-4 columns">
+                        <label class="form-left-label" for="auteurs">Auteurs</label>
+                       <span class="form-left-input">
+                         <select name="auteurs" id="auteurs">
+                          <option>Alle</option>
+                            <option disabled>──────────</option>
+                            <option>auteur 1</option>
+                            <option>auteur 2</option>
+                           </select>
+                       </span>
+                   </div>
+                   <div class="medium-4 columns">
+                       <label class="form-left-label" for="tags">Tags</label>
+                       <span class="form-left-input">
+                       <select name="tags" id="tags">
+                          <option>Alle</option>
+                            <option disabled>──────────</option>
+                           <option>tag 1</option>
+                           <option>tag 2</option>
+                       </select>
+                       </span>
+                   </div>
+                   <div class="medium-4 columns">
+                       <label class="form-left-label" for="zoek">Zoek</label>
+                       <span class="form-left-input">
+                       <input type="text" id="zoek" />
+                       </span>
+                   </div>
+                </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+    
+    <div class="items">
+        <!-- START item -->
+        <div class="row item" data-authors='["auteur 1"]' data-tags='["tag 1"]'>
+            <div class="large-2 columns">
+                <h2>Topic titel een</h2>
+                <div class="extra details laatste_wijziging">
+                    laatste wijziging
+                    <ul>
+                        <li>12/09/2015</li>
+                        <li>21u14</li>
+                        <li>Nancy V</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="info">
+                <div class="large-3 columns details laatste_wijziging">
+                    laatste wijziging
+                    <ul>
+                        <li>12/09/2015</li>
+                        <li>21u14</li>
+                        <li>Nancy V</li>
+                    </ul>
+                </div>
+                <div class="large-2 columns details antwoorden">
+                    <strong>15</strong> antwoorden
+                </div>
+                <div class="large-5 columns details tags">
+                    tags:
+                    <ul>
+                        <li>abstract</li>
+                        <li>licht</li>
+                        <li>schaduw</li>
+                        <li>pannekoek</li>
+                        <li>koffie</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="extra">
+                <div class="large-10 columns antwoorden">
+                <ul></ul>
+            </div>
+            </div>
+        </div>
+        <!-- END item -->
+        
+        <!-- START item -->
+        <div class="row item" data-authors='["auteur 2"]' data-tags='["tag 2"]'>
+            <div class="large-2 columns">
+                <h2>Topic titel twee</h2>
+                <div class="extra details laatste_wijziging">
+                    laatste wijziging
+                    <ul>
+                        <li>12/09/2015</li>
+                        <li>21u14</li>
+                        <li>Nancy V</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="info">
+                <div class="large-3 columns details laatste_wijziging">
+                    laatste wijziging
+                    <ul>
+                        <li>12/09/2015</li>
+                        <li>21u14</li>
+                        <li>Nancy V</li>
+                    </ul>
+                </div>
+                <div class="large-2 columns details antwoorden">
+                    <strong>15</strong> antwoorden
+                </div>
+                <div class="large-5 columns details tags">
+                    tags:
+                    <ul>
+                        <li>abstract</li>
+                        <li>licht</li>
+                        <li>schaduw</li>
+                        <li>pannekoek</li>
+                        <li>koffie</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="extra">
+                <div class="large-10 columns antwoorden">
+                <ul></ul>
+            </div>
+            </div>
+        </div>
+        <!-- END item -->
+        
+        <!-- START item -->
+        <div class="row item" data-authors='["auteur 1", "auteur 2"]' data-tags='["tag 1", "tag 2"]' >
+            <div class="large-2 columns">
+                <h2>Topic titel drie</h2>
+                <div class="extra details laatste_wijziging">
+                    laatste wijziging
+                    <ul>
+                        <li>12/09/2015</li>
+                        <li>21u14</li>
+                        <li>Nancy V</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="info">
+                <div class="large-3 columns details laatste_wijziging">
+                    laatste wijziging
+                    <ul>
+                        <li>12/09/2015</li>
+                        <li>21u14</li>
+                        <li>Nancy V</li>
+                    </ul>
+                </div>
+                <div class="large-2 columns details antwoorden">
+                    <strong>15</strong> antwoorden
+                </div>
+                <div class="large-5 columns details tags">
+                    tags:
+                    <ul>
+                        <li>abstract</li>
+                        <li>licht</li>
+                        <li>schaduw</li>
+                        <li>pannekoek</li>
+                        <li>koffie</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="extra">
+                <div class="large-10 columns antwoorden">
+                <ul></ul>
+            </div>
+            </div>
+        </div>
+        <!-- END item -->
+    </div>
+    
+    
+    <!-- ADD REPLY / NEW ITEM -->
+    <div class="new">
+        <div class="row text-right">
+            <div class="columns">
+                <a href="#" class="closenew">x</a></div>
+        </div>
+            
+        <div class="row">  
+           <div class="large-2 show-for-large-up columns"><img src="img/plus_plain.png" alt="plus"/></div>
+            <div class="large-7 medium-12 columns end">
+                <h2>mijn antwoord</h2>
+                <p>Geef uw antwoord d.m.v. een foto, tekst, video,...</p>
+                <h3>Algemene informatie</h3>
+                <!-- een gewone input -->
+                <label>Titel van mijn antwoord:
+                    <input type="text"/>
+                </label>
+                <!-- een checkbox input -->
+                <label>Tags (selecteer 3 van onderderstaande):</label>
+                   <div class="tag-select">
+                    <div class="tag-button purple">
+                       <label>
+                          <input type="checkbox"><span>tag 1</span>
+                       </label>
+                        </div><!--
+                            comment out the whitespace between div's to fix a 4px gap. see https://css-tricks.com/fighting-the-space-between-inline-block-elements/
+                        --><div class="tag-button purple">
+                           <label>
+                              <input type="checkbox"><span>tag 2</span>
+                           </label>
+                        </div><!--
+                        --><div class="tag-button purple">
+                           <label>
+                              <input type="checkbox"><span>een langere tag</span>
+                           </label>
+                        </div><!--
+                        --><div class="tag-button purple">
+                           <label>
+                              <input type="checkbox"><span>tag 3</span>
+                           </label>
+                        </div>
+                    </div>
+                <!-- een input met een inline label -->
+                <label class="form-left-label" for="new-tag">+ een nieuwe tag:</label>
+                <span class="form-left-input"><input id="new-tag" type="text" /></span>
+                
+                <h3>Kies één van de volgende:</h3>
+                <div class="row" data-equalizer>
+                   <div class="small-4 columns text-center panel" data-equalizer-watch>
+                       <button class="file-button purple">
+                           <img src="img/file_text.png" alt="tekst" />
+                           tekst
+                       </button>
+                   </div>
+                    <div class="small-4 columns text-center panel" data-equalizer-watch>
+                       <button class="file-button purple">
+                        <img src="img/file_movie.png" alt="tekst" />
+                          movie
+                      </button>
+                   </div>
+                    <div class="small-4 columns text-center panel end" data-equalizer-watch>
+                       <button class="file-button purple">
+                       <img src="img/file_file.png" alt="tekst" />
+                       bestand<br /><small>(jpg, png, gif, pdf)</small>
+                       </button>
+                   </div>
+                </div>
+                <h3>Extra uitleg</h3>
+                Document:
+           </div>
+        </div>
+    </div>
+    
+    
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/foundation.min.js"></script>
+    <script src="js/foundation/foundation.equalizer.js"></script>
+    <script>
+      $(document).foundation();
+    
+        $(document).ready(function(){
+            /* TOPIC TOEVOEGEN */
+            var newTopic = {
+                open: function(){
+                    $(".new").show();
+                    $(".new").animate({right:'0'},500);
+                },
+                close: function(){
+                    $(".new").animate({right:'-50%'},500, function(){
+                        $(".new").hide();
+                    });
+                }
+            }
+            
+            $(".newtopic").click(function(){
+                newTopic.open();
+            });
+            
+            $(".closenew").click(function(){
+                newTopic.close();
+            });
+            
+            
+            /* ANTWOORDEN LADEN */
+            
+            // boolean - bepaalt of er één (true) of meerdere (false) items tegelijk gemaximaliseerd mogen zijn
+            var SINGLE = false;
+            
+            $(".item").click(function(){
+                if(SINGLE){
+                    $(".item").removeClass("active");
+                    $(".item .extra").slideUp();
+                    $(".item .info").show();
+                }
+                $(this).toggleClass("active");
+                $(".info", this).toggle();
+                $(".extra", this).slideToggle();
+            });
+            
+            // bind an event listener to every item.
+            // on first click: make an ajax call to load all the images & unbind the event listener
+            $(".item").bind('click', loadImages);
+            function loadImages(e){
+                $(this).unbind(e);
+                // LAAD HIER DE AFBEELDINGEN
+                // testversie: laad een paar afbeeldingen uit img/tests
+                for(var i = 1; i < 10; i++){
+                    // voor UX: voeg een loading-spinner toe
+                    $(".antwoorden ul", this).append('<li><img class="loader" src="img/loader.gif" alt="antwoorden worden geladen..."/></li>');
+                    var url = "img/tests/" + i + ".jpg";
+                    var alt = "afbeelding " + i;
+                    // verwijder de spinner
+                    $(".antwoorden ul li:last-child", this).remove();
+                    // plaats de afbeelding
+                    $(".antwoorden ul", this).append('<li><img src="' + url + '" alt="' + alt + '"/></li>');
+                }
+            }
+            
+            /* FILTERS */
+            $("nav select#auteurs").change(function(){
+                // toon alles
+                $(".item").removeClass("hide_author");
+                var s = $("option:selected", this).text();
+                // if selectie != all
+                if(s != $("option:first", this).text()){
+                    // voor ieder item
+                    $.each($(".item"), function(){
+                        var item = $(this);
+                        var show = 0;
+                        // kijk of de auteur voorkomt in de lijst
+                        $.each(item.data('authors'), function(index, value){
+                            if(value == s){
+                                show++;
+                            }
+                        });
+                        if(show == 0){
+                            item.addClass("hide_author");
+                        }
+                    });                    
+                }
+            });
+            
+            $("nav select#tags").change(function(){
+                // toon alles
+                $(".item").removeClass("hide_tag");
+                var s = $("option:selected", this).text();
+                // if selectie != all
+                if(s != $("option:first", this).text()){
+                    // voor ieder item
+                    $.each($(".item"), function(){
+                        var item = $(this);
+                        var show = 0;
+                        // kijk of de auteur voorkomt in de lijst
+                        $.each(item.data('tags'), function(index, value){
+                            if(value == s){
+                                show++;
+                            }
+                        });
+                        if(show == 0){
+                            item.addClass("hide_tag");
+                        }
+                    });                    
+                }
+            });
+        });
+        
+    </script>
+  </body>
+</html>
