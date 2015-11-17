@@ -4,69 +4,82 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>bMOOC LUCA School of Arts</title>
-		<link rel="icon" type="img/ico" href="img/favicon.ico">
-    {!! HTML::style('https://fonts.googleapis.com/css?family=Questrial') !!}
-    {!! HTML::style('https://fonts.googleapis.com/css?family=Open+Sans:400,700') !!}
+    <link rel="icon" type="img/ico" href="img/favicon.ico">
+    <!-- webfonts -->
+    {!! HTML::style('https://fonts.googleapis.com/css?family=Muli:400,300') !!}
+    <!-- stylesheets -->
     {!! HTML::style('css/foundation.css') !!}
     {!! HTML::style('css/app.css') !!}
-
+    <!-- scripts -->
     {!! HTML::script('js/vendor/modernizr.js') !!}
   </head>
 	<body>
 		<header class="green">
-			<div class="row">
-				<div class="small-6 medium-3 large-2 columns">
-					<h1>{!! HTML::link('/','bMOOC') !!}</h1>
-				</div>
-				<div class="small-6 medium-2 medium-push-7 large-push-9 large-1 columns text-right">
-					{!! HTML::link('/help', '?') !!} -
-					@if (isset($user))
+			<div class="row large">
+			    <div class="small-12 columns text-right">
+                    <nav class="main">
+                        <ul class="inline slash">
+                            <li>
+                                {!! HTML::link('#', 'help', array('data-reveal-id' => 'help')) !!}
+                            </li>
+                            <li>
+                                @if (isset($user))
 						{!! HTML::link('logout','Sign out', array('class'=>'logout')) !!}
 					@else
 						{!! HTML::link('login/twitter','Sign in with Twitter', ['class'=>'logout']) !!}
 					@endif
-				</div>
-				<div class="medium-7 medium-pull-2 large-pull-1 large-3 columns">
-					@if (isset($user) && $user->role=="editor") <button class="newtopic">Start a new topic</button> @endif
-				</div>
-				<div class="large-6 large-pull-1 columns">
-					<nav>
-						<div class="row sort">
-                   <div class="medium-4 columns">
-                        <label class="form-left-label" for="auteurs">Authors</label>
-                       <span class="form-left-input">
-                         <select name="auteurs" id="auteurs">
-                          <option>All</option>
-                            <option disabled>──────────</option>
-                            @foreach ($auteurs as $auteur)
-                            	<option>{{ $auteur->name }}</option>
-                            @endforeach
-                           </select>
-                       </span>
-                   </div>
-                   <div class="medium-4 columns">
-                       <label class="form-left-label" for="tags">Tags</label>
-                       <span class="form-left-input">
-                       <select name="tags" id="tags">
-                          <option>All</option>
-                            <option disabled>──────────</option>
-                            @foreach ($tags as $tag)
-                            	<option>{{ $tag->tag }}</option>
-                            @endforeach
-                                                   </select>
-                       </span>
-                   </div>
-                   <div class="medium-4 columns">
-                       <label class="form-left-label" for="zoek">Search</label>
-                       <span class="form-left-input">
-                       <input type="text" id="zoek" />
-                       </span>
-                   </div>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
-                </nav>
             </div>
-        </div>
-    </header>
+            <div class="row large">
+				<div class="small-3 large-2 columns">
+					<h1>{!! HTML::link('/','bMOOC') !!}</h1>
+				</div>
+				<div class="small-12 medium-9 large-3 columns">
+					@if (isset($user) && $user->role=="editor")
+                        <button class="big plus newtopic">Start a new topic</button>
+                    @endif
+				</div>
+				<div class="large-7 columns">
+                   <nav class="sort">
+                      <div class="row sort">
+                           <div class="medium-4 columns">
+                                <label class="form-left-label" for="auteurs">Authors</label>
+                               <span class="form-left-input">
+                                 <select name="auteurs" id="auteurs">
+                                  <option>All</option>
+                                    <option disabled>──────────</option>
+                                    @foreach ($auteurs as $auteur)
+                                        <option>{{ $auteur->name }}</option>
+                                    @endforeach
+                                   </select>
+                               </span>
+                           </div>
+                           <div class="medium-4 columns">
+                               <label class="form-left-label" for="tags">Tags</label>
+                               <span class="form-left-input">
+                               <select name="tags" id="tags">
+                                  <option>All</option>
+                                    <option disabled>──────────</option>
+                                    @foreach ($tags as $tag)
+                                        <option>{{ $tag->tag }}</option>
+                                    @endforeach
+                                                           </select>
+                               </span>
+                           </div>
+                           <div class="medium-4 columns">
+                               <label class="form-left-label" for="zoek">Search</label>
+                               <span class="form-left-input">
+                               <input type="text" id="zoek" />
+                               </span>
+                           </div>
+                       </div>
+                    </nav>
+                </div>
+            </div>
+        </header>
     
     <div class="items">
     @foreach ($topic as $topic)
@@ -79,39 +92,49 @@
     		<div class="row item" data-id="{{ $topic->id }}" data-authors='["{{ $topic->the_author->name }}"]' data-tags='[{{ implode(',', $t) }}]'>
             <div class="large-2 columns">
                 <h2>{{ $topic->title }}</h2>
-                <div class="extra details laatste_wijziging">
-                    modified
-                    <ul>
-										@if (isset($topic->last_modified))
-                    		<li>{{ date('d/m/Y', strtotime($topic->last_modified)) }}</li>
-                        <li>{{ date('H:i', strtotime($topic->last_modified)) }}</li>
-                        <li>{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</li>
-                    @else
-                    		<li>{{ date('d/m/Y', strtotime($topic->updated_at)) }}</li>
-                        <li>{{ date('H:i', strtotime($topic->updated_at)) }}</li>
-                        <li>{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</li>
-                    	@endif
-                    </ul>
+                <div class="extra laatste_wijziging">
+                   initiated
+                   <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->created_at)) }} {{ date('H:i', strtotime($topic->created_at)) }}</span>
+                   by
+                   <span class="lightgrey">{{ $topic->the_author->name}}</span><br />
                 </div>
+                @if (isset($topic->last_modified))
+                    <div class="extra laatste_wijziging">
+                        last addition
+                        <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }} {{ date('H:i', strtotime($topic->last_modified)) }}</span>
+                        by
+                    <span class="lightgrey">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</span>
+                    </div>
+                @endif
             </div>
             <div class="info">
-                <div class="large-3 columns details laatste_wijziging">
-                    initiated	{{ date('d/m/Y', strtotime($topic->created_at)) }} by {{ $topic->the_author->name}}<br />
-                    @if (isset($topic->last_modified)) 
-                   		{{ date('d/m/Y', strtotime($topic->last_modified)) }} - {{ date('H:i', strtotime($topic->last_modified)) }} - 
-                    	{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}} added
+                <div class="large-3 columns laatste_wijziging">
+                   last addition
+                   @if (isset($topic->last_modified))
+                        <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }}</span>
+                        by
+                    <span class="lightgrey">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</span>
+                    @else
+                        <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->created_at)) }}</span>
+                        by
+                    <span class="lightgrey">{{ $topic->the_author->name}}</span>
                     @endif
                 </div>
-                <div class="large-2 columns details antwoorden">
-                	<?php
-                		foreach ($aantalAntwoorden as $aantal) {
-                			if ($aantal->thread == $topic->thread) echo '<strong>'.$aantal->aantal_antwoorden.'</strong> additions';
-                		}
-                   ?>
+                <div class="large-2 columns antwoorden">
+                		@foreach ($aantalAntwoorden as $aantal)
+                			@if ($aantal->thread == $topic->thread)
+                			 <strong>{{ $aantal->aantal_antwoorden }}</strong>
+                                 @if ($aantal->aantal_antwoorden == 1)
+                                     addition
+                                 @else
+                                     additions
+                                 @endif
+                			 @endif
+                		@endforeach
                 </div>
-                <div class="large-5 columns details tags">
+                <div class="large-5 columns">
                     tags:
-                    <ul>
+                    <ul class="inline slash">
                     @foreach ($topic->tags as $tag)
                         <li>{{$tag->tag}}</li>
                     @endforeach
@@ -120,7 +143,7 @@
             </div>
             <div class="extra">
                 <div class="large-10 columns antwoorden">
-                <ul></ul>
+                <ul class="inline arrow"></ul>
             </div>
             </div>
         </div></a>
@@ -205,9 +228,19 @@
     </div>
     @endif
     
+    <div id="help" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+        <h3 id="modalTitle">bMOOC</h3>
+            <p>bMOOC consists out of topics. A topic is a cluster, a collection of online things that join into some form or shape. This can be a conversation, a discussion, a tension or a kind of unspeakable resonance.</p>
+            <p>What joins the topic, is not fixed. The topic can change its course at all times. The word "topic" derives from the Greek ta topica, which means "commonplace". The topic offers a common place of attention for (some)thing(s), a place for forms of (re)searching that may lead eventually to an artistic practice.</p>
+            <p>A topic is presented by juxtapositions of images/artefacts/things. In other words, it's the relations, commonalities or positions of these things that matter. What these are is often unclear, ambiguous or polysemic.</p>
+        <h3>Navigation</h3>
+            <p>Navigate a topic by moving the images/artefacts/things. Intervene, explore, trouble, clarify or contribute to a topic by adding (some)thing. What you can add, depends on the topic. This could be an audio recording, a piece of text or a mystery. Push "add (some)thing" wherever you want to add/intervene/contribute, and then follow the instructions of the topic.</p>
+          <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+
+    </div>
+
     {!! HTML::script('js/vendor/jquery.js') !!}
     {!! HTML::script('js/foundation.min.js') !!}
-    {!! HTML::script('js/foundation/foundation.equalizer.js') !!}
     <script>
 		var host = "{{ URL::to('/') }}";
 		$(document).foundation();
@@ -227,6 +260,7 @@
             
 			$(".newtopic").click(function(){
 				newTopic.open();
+                $(document).foundation();
 			});
             
 			$(".closenew").click(function(){
@@ -235,23 +269,26 @@
 			$('button.purple').click(showAnswerType);
             
 			/* ANTWOORDEN LADEN */
-			//boolean - bepaalt of er één (true) of meerdere (false) items tegelijk gemaximaliseerd mogen zijn
-			var SINGLE = false;
+			            // boolean - bepaalt of er één (true) of meerdere (false) items tegelijk gemaximaliseerd mogen zijn
+            var SINGLE = true;
             
-			$(".item").click(function(e){
-				//als de view niet uitgeklapt is
-				if(!$(this).hasClass("active")){
-					e.preventDefault();
-				}
-				if(SINGLE){
-					$(".item").removeClass("active");
-					$(".item .extra").slideUp();
-					$(".item .info").show();
-				}
-				$(this).toggleClass("active");
-				$(".info", this).toggle();
-				$(".extra", this).slideToggle();
-			});
+            $(".item a").click(function(e){
+                e.stopImmediatePropagation();
+            });
+
+            $(".item").click(function(e){
+                // als de view niet uitgeklapt is
+                if(!$(this).hasClass("active")){
+                    if(SINGLE){
+                        $(".item").removeClass("active");
+                        $(".item .extra").slideUp();
+                        $(".item .info").show();
+                    }
+                    $(this).toggleClass("active");
+                    $(".info", this).toggle();
+                    $(".extra", this).slideToggle();
+                }
+            });
             
 				//bind an event listener to every item.
 				// on first click: make an ajax call to load all the images & unbind the event listener

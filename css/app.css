@@ -178,6 +178,10 @@ a:hover{
     height: 100px;
 }
 
+.item .antwoorden a{
+    border-bottom: none;
+}
+
 .item .antwoorden li *{
     height: 100%;
     width: auto;
@@ -450,4 +454,8 @@ small{
 strong{
     font-weight: 400;
     color: #ffffff;
+}
+
+.lightgrey{
+    color: #d9d9d9;
 }
