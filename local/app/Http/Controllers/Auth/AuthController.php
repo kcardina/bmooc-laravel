@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\User;
 use Validator;
-//use Session;
+use Session;
 use Redirect;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -75,7 +75,7 @@ class AuthController extends Controller
     	return $authenticateUser->execute($request->all(), $this, $provider);
     }
     
-    public function userHasLoggedIn($user) {
-    	return Redirect::intended();
+    public function userHasLoggedIn(User $user) {
+        return Redirect::intended();
     }
 }

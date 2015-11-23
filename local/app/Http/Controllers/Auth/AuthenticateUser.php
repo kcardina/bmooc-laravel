@@ -19,10 +19,8 @@ class AuthenticateUser {
     }
 
     public function execute($request, $listener, $provider) {
-    	echo 'execute';
        if (!$request) return $this->getAuthorizationFirst($provider);
        $user = $this->users->findByUserNameOrCreate($this->getSocialUser($provider));
-
        $this->auth->login($user, true);
 
        return $listener->userHasLoggedIn($user);
