@@ -39,15 +39,15 @@
 				</div>
 				<div class="small-12 medium-9 large-3 columns">
 					@if (isset($user) && $user->role=="editor")
-                        <button class="big plus newtopic">Start a new topic</button>
+                        <button class="big plus" data-reveal-id="new_topic">Start a new topic</button>
                     @endif
 				</div>
 				<div class="large-7 columns">
                    <nav class="sort">
                       <div class="row sort">
-                           <div class="medium-4 columns">
-                                <label class="form-left-label" for="auteurs">Authors</label>
-                               <span class="form-left-input">
+                           <div class="medium-4 columns form-inline">
+                                <label for="auteurs">Authors</label>
+                               <span class="field">
                                  <select name="auteurs" id="auteurs">
                                   <option>All</option>
                                     <option disabled>──────────</option>
@@ -57,9 +57,9 @@
                                    </select>
                                </span>
                            </div>
-                           <div class="medium-4 columns">
-                               <label class="form-left-label" for="tags">Tags</label>
-                               <span class="form-left-input">
+                           <div class="medium-4 columns form-inline">
+                               <label for="tags">Tags</label>
+                               <span class="field">
                                <select name="tags" id="tags">
                                   <option>All</option>
                                     <option disabled>──────────</option>
@@ -69,9 +69,9 @@
                                                            </select>
                                </span>
                            </div>
-                           <div class="medium-4 columns">
-                               <label class="form-left-label" for="zoek">Search</label>
-                               <span class="form-left-input">
+                           <div class="medium-4 columns form-inline">
+                               <label for="zoek">Search</label>
+                               <span class="field">
                                <input type="text" id="zoek" />
                                </span>
                            </div>
@@ -152,79 +152,121 @@
         
     </div>
     
-		@if (isset($user) && $user->role == 'editor')
-	  <!-- ADD REPLY / NEW ITEM -->
-    <div class="new" id="new_topic">
-        <div class="row text-right">
-            <div class="columns">
-                <a href="#" class="closenew">x</a></div>
-        </div>
-            
+    <!-- ADD NEW TOPIC -->
+    @if (isset($user) && $user->role == 'editor')
+    <div id="new_topic" class="reveal-modal slide screen-right" data-reveal data-options="animation_speed: 0" aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
         <div class="row">  
-           <div class="large-2 show-for-large-up columns"><img src="{{ asset('img/plus_plain.png') }}" alt="plus"/></div>
-            <div class="large-7 medium-12 columns end">
-            	{!! Form::open(array('id'=>'newTopicForm','url'=>'topic/new','method'=>'POST', 'files'=>true)) !!}
-                <h2>start a new topic</h2>
+           <div class="large-2 show-for-large-up columns">
+               <img src="{{ asset('img/plus_plain.png') }}" alt="plus"/>
+            </div>
+            <div class="large-8 medium-12 columns end">
+            	{!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return validation()', 'url'=>'topic/new','method'=>'POST', 'files'=>true)) !!}
+                <h2>Start a new topic</h2>
                 <p>Initiate a topic using a video, text, photo,...</p>
                 <h3>General information</h3>
                 <!-- een gewone input -->
-                <label>Title:
-                    <input type="text" name="topic_title"/>
-                </label>
+                <div class="field_title">
+                    <label>Title:
+                        <input type="text" required name="topic_title"/>
+                    </label>
+                    <small class="error">Please enter a title for the topic.</small>
+                </div>
                 <!-- een checkbox input -->
-                <label for="new-tag-1">Tags (enter 3 below):</label>
-                <label for="new-tag-1">Tag 1:</label><span class="form-left-input"><input id="new-tag-1" type="text" name="topic_new_tag[]"/></span>
-                <label for="new-tag-2">Tag 2:</label><span class="form-left-input"><input id="new-tag-2" type="text" name="topic_new_tag[]"/></span>
-                <label for="new-tag-3">Tag 3:</label><span class="form-left-input"><input id="new-tag-3" type="text" name="topic_new_tag[]"/></span>
-                
+                <label>Tags (enter 3 below):</label>
+                <div class="form-inline">
+                    <div class="field_tag">
+                        <label for="new-tag-1">Tag 1</label>
+                        <span class="field">
+                            <input required data-abide-validator="tag" class="new-tag" id="new-tag-1" type="text" name="topic_new_tag[]"/>
+                            <small class="error">3 different tags are required.</small>
+                        </span>
+                    </div>
+                    <div class="field_tag">
+                        <label for="new-tag-2">Tag 2</label>
+                        <span class="field">
+                           <input required data-abide-validator="tag" class="new-tag" id="new-tag-2" type="text" name="topic_new_tag[]"/>
+                            <small class="error">3 different tags are required.</small>
+                        </span>
+                    </div>
+                    <div class="field_tag">
+                        <label for="new-tag-3">Tag 3</label>
+                        <span class="field">
+                            <input required data-abide-validator="tag" class="new-tag" id="new-tag-3" type="text" name="topic_new_tag[]"/>
+                            <small class="error">3 different tags are required.</small>
+                        </span>
+                    </div>
+                </div>
                 <h3>Choose one of the following:</h3>
-                <div class="row" data-equalizer>
-                   <div class="small-4 columns text-center panel" data-equalizer-watch id="topic_button_text">
-                       <button class="file-button purple" id="button_topic_button_text">
+                <div class="row large" data-equalizer>
+                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_text">
+                       <button class="square purple type_select" id="type_text">
                            <img src="{{ asset('img/file_text.png') }}" alt="text" />
                            text
                        </button>
                    </div>
-                    <div class="small-4 columns text-center panel" data-equalizer-watch id="topic_button_video">
-                       <button class="file-button purple" id="button_topic_button_video">
+                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_image">
+                       <button class="square purple type_select" id="type_image">
+                           <img src="{{ asset('img/file_text.png') }}" alt="image" />
+                           image<br /><small>(jpg, png, gif)</small>
+                       </button>
+                   </div>
+                    <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_video">
+                       <button class="square purple type_select" id="type_video">
                         <img src="{{ asset('img/file_movie.png') }}" alt="video" />
-                          url<br /><small>(image, video, pdf)</small>
+                          video<br /><small>(youtube, vimeo)</small>
                       </button>
                    </div>
-                    <div class="small-4 columns text-center panel end" data-equalizer-watch id="topic_button_file">
-                       <button class="file-button purple" id="button_topic_button_file">
+                    <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="topic_button_file">
+                       <button class="square purple type_select" id="type_file">
                        <img src="{{ asset('img/file_file.png') }}" alt="file" />
-                       file<br /><small>(jpg, png, gif, pdf)</small>
+                       file<br /><small>(pdf)</small>
                        </button>
                    </div>
                 </div>
-                <div class="row" data-equalizer id="topic_input_text" style="display: none;">
-                	<div class="small-12 columns text-center panel" data-equalizer-watch>
-                		<textarea rows="5" cols="50" name="topic_text">Type your topic text here...</textarea>
+                <div class="row">
+                    <div class="small-12 columns">
+                        <small class="error topic_input">Please choose on of the file types.</small>
+                    </div>
+                </div>
+                <div class="row type_input" id="topic_input_text" style="display: none;">
+                	<div class="small-12 columns">
+                		<textarea required rows="5" cols="50" name="topic_text">Type your topic text here...</textarea>
                 	</div>
                 </div>
-                <div class="row" data-equalizer id="topic_input_upload" style="display: none;">
-                	<div class="small-12 columns text-center panel" data-equalizer-watch>
-                		<label class="form-left-label" for="topic_upload">upload a document:</label>
-                		<span class="form-left-input"><input type="file" id="topic_upload" name="topic_upload"/></span>
+                <div class="row type_input" id="topic_input_upload" style="display: none;">
+                	<div class="small-12 columns form-inline">
+                		<label for="topic_upload">upload a file:</label>
+                		<span class="field">
+                		    <input required type="file" id="topic_upload" name="topic_upload"/>
+                		</span>
                 	</div>
                 </div>
-                <div class="row" data-equalizer id="topic_input_video" style="display: none;">
-                	<div class="small-12 columns text-center panel" data-equalizer-watch>
-                		<label class="form-left-label" for="topic_url">url:</label>
-                		<span class="form-left-input"><input id="topic_url" type="text" name="topic_url"/></span>
+                <div class="row type_input" id="topic_input_or" style="display: none;">
+                	<div class="small-12 columns">
+                		<strong>or</strong>
                 	</div>
                 </div>
-                <h3>Extra information</h3>
-                <label class="form-left-label" for="attachment">document:</label>
-                <span class="form-left-input"><input type="file" id="attachment" name="topic_attachment"/></span>
+                <div class="row type_input" id="topic_input_url" style="display: none;">
+                	<div class="small-12 columns form-inline">
+                		<label for="topic_url">url:</label>
+                		<span class="field">
+                           <input required id="topic_url" type="text" name="topic_url"/>
+                		</span>
+                	</div>
+                </div>
+
                 
-                <h3>Create topic</h3>
+                <h3>Extra information</h3>
+                <div class="form-inline">
+                    <label for="attachment">document:</label>
+                    <span class="field"><input type="file" id="attachment" name="topic_attachment"/></span>
+                </div>
                 <input type="hidden" name="topic_temp_type" id="topic_temp_type" />
-                <input type="submit" value="Submit">
+                <input type="submit" class="full purple" value="Create topic"/>
                 </form>
            </div>
         </div>
+        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
     @endif
     
@@ -236,7 +278,6 @@
         <h3>Navigation</h3>
             <p>Navigate a topic by moving the images/artefacts/things. Intervene, explore, trouble, clarify or contribute to a topic by adding (some)thing. What you can add, depends on the topic. This could be an audio recording, a piece of text or a mystery. Push "add (some)thing" wherever you want to add/intervene/contribute, and then follow the instructions of the topic.</p>
           <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-
     </div>
 
     {!! HTML::script('js/vendor/jquery.js') !!}
@@ -245,28 +286,24 @@
 		var host = "{{ URL::to('/') }}";
 		$(document).foundation();
 		$(document).ready(function(){
+            
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
+                var modal = $(this);
+                $(document).foundation('equalizer', 'reflow');
+                if(modal.hasClass('slide')){
+                    modal.animate({right:'0%'},500);
+                }
+            });
+
+            $(document).on('close.fndtn.reveal', '[data-reveal]', function () {
+                var modal = $(this);
+                if(modal.hasClass('slide')){
+                    modal.animate({right:'-50%'},500);
+                }
+            });
+            
 			/* TOPIC TOEVOEGEN */
-			var newTopic = {
-				open: function(){
-					$("#new_topic").show();
-					$("#new_topic").animate({right:'0'},500);
-				},
-				close: function(){
-					$("#new_topic").animate({right:'-50%'},500, function(){
-						$("#new_topic").hide();
-					});
-				}
-			}
-            
-			$(".newtopic").click(function(){
-				newTopic.open();
-                $(document).foundation();
-			});
-            
-			$(".closenew").click(function(){
-				newTopic.close();
-			});
-			$('button.purple').click(showAnswerType);
+			$('.type_select').click(showAnswerType);
             
 			/* ANTWOORDEN LADEN */
 			            // boolean - bepaalt of er één (true) of meerdere (false) items tegelijk gemaximaliseerd mogen zijn
@@ -389,23 +426,91 @@
 			function showAnswerType(e) {
 				e.preventDefault();
 				var $this = $(this);
-				if ($this.attr('id') == 'button_topic_button_text') {
-					$('#topic_input_text').slideToggle();
-					$('#topic_input_video').hide();
-					$('#topic_input_upload').hide();
+                $('.error.topic_input').hide();
+                if($this.hasClass('active')){
+                    return false;
+                }
+                $('.type_select').removeClass('active');
+                $this.addClass('active');
+                $('.type_input').hide();
+				if ($this.attr('id') == 'type_text') {
+					$('#topic_input_text').slideDown();
 					$('#topic_temp_type').val('text');
-				} else if ($this.attr('id') == 'button_topic_button_video') {
-					$('#topic_input_text').hide();
-					$('#topic_input_video').slideToggle();
-					$('#topic_input_upload').hide();
+                } else if ($this.attr('id') == 'type_image') {
+                    $('#topic_input_upload').show();
+                    $('#topic_input_or').slideDown();
+                    $('#topic_input_url').slideDown();
+					$('#topic_temp_type').val('image');
+				} else if ($this.attr('id') == 'type_video') {
+                    $('#topic_input_url').slideDown();
 					$('#topic_temp_type').val('url');
-				} else if ($this.attr('id') == 'button_topic_button_file') {
-					$('#topic_input_text').hide();
-					$('#topic_input_video').hide();
-					$('#topic_input_upload').slideToggle();
+				} else if ($this.attr('id') == 'type_file') {
+                    $('#topic_input_upload').slideDown();
 					$('#topic_temp_type').val('file');
 				}
-			}        
+			}
+
+        function validation(){
+            var valid = true;
+            var msg;
+            if(!$('.type_select').hasClass('active')){
+                valid = false;
+                msg = "Please choose on of the file types."
+            }
+            if($('button#type_text').hasClass('active')){
+                if($('#topic_input_text textarea').val().length == 0 || $('#topic_input_text textarea').val() == "Type your topic text here..."){
+                    valid = false;
+                    msg = "Please enter some text."
+                }
+            }
+            if($('button#type_image').hasClass('active')){
+                if($('#topic_upload').val().length == 0 && $('#topic_url').val().length == 0){
+                    valid = false;
+                    msg = "Please enter a link or select a file."
+                }
+                if($('#topic_upload').val().length != 0 && $('#topic_url').val().length != 0){
+                    valid = false;
+                    msg = "Only one of the options can be chosen."
+                }
+            }
+            if($('button#type_video').hasClass('active')){
+                if($('#topic_url').val().length == 0){
+                    valid = false;
+                    msg = "Please enter a link to a video on YouTube or Vimeo."
+                }
+            }
+            if($('button#type_file').hasClass('active')){
+                if($('#topic_upload').val().length == 0){
+                    valid = false;
+                    msg = "Please select a file."
+                }
+            }
+            if(!valid){
+                $('.error.topic_input').html(msg);
+                $('.error.topic_input').css('display', 'block');
+            } else{
+                $('.error.topic_input').css('display', 'none');
+            }
+            return valid;
+        }
+
+        $(document).foundation({
+            abide : {
+                validators: {
+                    tag: function(el, required, parent){
+                        var tags = [];
+                        var valid = true;
+                        $('[data-abide-validator="tag"]').each(function(){
+                            if($.inArray($(this).val(), tags) > -1){
+                                valid = false;
+                            }
+                            tags.push($(this).val());
+                        });
+                        return valid;
+                    },
+                }
+            }
+        });
     </script>
   </body>
 </html>
