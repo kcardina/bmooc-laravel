@@ -2,11 +2,32 @@ var artefactLeft = null;
 
 function showArtefactLeft(id, answer) {
 	if (!answer) answer = 0;
-	$('#artefact_left_contents').html('<img class="loader" src="' + host + '/img/loader.gif" alt="antwoorden worden geladen..." style="min-width: 10px; min-height: 10px"/>');
+
+    if(answer != null){
+        hideDiv($('#artefact_left_contents'));
+        hideDiv($('#artefact_right_contents'));
+    } else {
+        hideDiv($('#artefact_left_contents'));
+    }
+
 	$.getJSON(host + "/json/topic/" + id, function(result) {
 		artefactLeft = result;
+        // immediatly load right
+        if (answer != null && result.answers.length > answer) {
+			showArtefactRight(answer);
+            if (answer > 0) showArrowUp(answer-1);
+            showArrowDown(answer+1);
+        } else{
+        // if there is no right
+        // show no arrows, but this behaves a bit weird
+            showArrowDown(0);
+            showArrowRight();
+            showArrowUp(-1);
+        }
+
 		displayDiv(result.artefact.type.description, $('#artefact_left_contents'), result.artefact);
 		
+        /*
 		var al = artefactLeft.artefact;
 		$('#artefact_left_title').html(al.title);
 		if (al.title != null) $('#artefact_left_description').html(al.contents);
@@ -22,38 +43,77 @@ function showArtefactLeft(id, answer) {
 		$.each(artefactLeft.related, function(k, v) {
 			$('#artefact_left_related').append('<li><a href="' + host + '/topic/'+v.id+'">'+v.title+'</a></li>');
 		});
-		
-		if (answer != null && result.answers.length > answer) {
+		*/
+
+		/*if (answer != null && result.answers.length > answer) {
 			showArtefactRight(answer);
 			if (answer > 0) showArrowUp(answer-1);
 			showArrowDown(answer+1);
 		} else {
-			$('#artefact_right_contents').html('');
-		}
-		showArrowHead(result.artefact.parent_id);
+			$('#artefact_right_contents').fadeOut();
+            $('#nav_up').fadeOut();
+            $('#nav_right').fadeOut();
+            $('#nav_down').fadeOut();
+		}*/
+		showArrowLeft(result.artefact.parent_id);
 		configAnswer(artefactLeft);
 		configNewInstructionPanel(artefactLeft);
 	});
 }
 
 function showArtefactRight(number_of_answer) {
+    hideDiv($('#artefact_right_contents'));
+
 	var idRight = artefactLeft.answers[number_of_answer].id;
-	$('#artefact_right_contents').html('<img class="loader" src="' + host + '/img/loader.gif" alt="antwoorden worden geladen..." style="min-width: 10px; min-height: 10px"/>');
+
 	$.getJSON(host + "/json/topic/" + idRight, function(result) {
 		if (result.artefact.type != null) displayDiv(result.artefact.type.description, $('#artefact_right_contents'), result.artefact);
 		else displayDiv('text', $('#artefact_right_contents'), result.artefact);
+
 		if (number_of_answer >= 0) showArrowUp(number_of_answer-1);
 		showArrowDown(number_of_answer+1);
-		if (result.answers.length >0) showArrowRight(idRight);
-		else showArrowRight(idRight); // showArrowRight(null);
+
+		if (result.answers.length > 0) showArrowRight(idRight);
+		else showArrowRight(); // showArrowRight(null);
+
 		window.history.pushState("topichistory", "bMOOC - Topic " + artefactLeft.artefact.id + "/" + number_of_answer, host + "/topic/" + artefactLeft.artefact.id + "/" + number_of_answer);
 	});
+}
+
+/*
+<!-- IMAGE -->
+<!-- <img src="../../../img/tests/hoog.png" />
+
+<!-- VIDEO (youtube) -->
+<!-- <iframe src="https://www.youtube.com/embed/Kn5LXZv11ww" frameborder="0" allowfullscreen></iframe>
+
+<!-- VIDEO (vimeo) -->
+<!--<iframe src="https://player.vimeo.com/video/119343870?byline=0&portrait=0&title=0" frameborder="0"  allowfullscreen></iframe>
+
+<!-- PDF -->
+<!-- <object data="../../../uploads/pdftest.pdf" type="application/pdf"><a href="../../../uploads/pdftest.pdf">[PDF]</a></object>
+
+<!-- TEXT -->
+<div class="text">
+    <h2>De verengeling van het leven</h2>
+    <p>tekst</p>
+</div>
+*/
+
+function hideDiv(div){
+    if(div.is(":visible")){
+        div.fadeOut(function(){
+            $('.artefact.loader', div.parent()).show();
+        });
+    } else{
+        $('.artefact.loader', div.parent()).show();
+    }
 }
 
 function displayDiv(type, div, data) {
 	switch (type) {
 	case 'text':
-		div.html(data.contents);
+		div.html("<div class=\"text\"><h2>" + data.title + "</h2>" + data.contents + "</div>");
 		break;
 	case 'local_image': 
 		div.html('<a href="'+ host + "/uploads/"+data.url+'" data-lightbox="image-1" data-title="Image"><img src="'+ host + "/uploads/"+data.url+'"></a>');
@@ -74,33 +134,39 @@ function displayDiv(type, div, data) {
 		div.html('Please, <a href="'+ host + "/uploads/" + data.url +'" target="_new">download</a> the document to open...');
 		break;
 	case 'local_pdf':
+        div.html('<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>');
 		break;
 	case 'remote_pdf':
+        div.html('<object data="' + data.url + '" type="application/pdf"><a href="' +  data.url + '">[PDF]</a></object>');
 		break;
 	}
+    // todo: preload image
+    div.stop(true, true)
+    $('.artefact.loader', div.parent()).hide();
+    div.fadeIn();
 }
 
-function showArrowHead(head_id) {
-	if (head_id != null) {
-		$('#arrow_left').html('<a href="#" onclick="showArtefactLeft('+head_id+')" class="nav left">&larr;</a>').show();
-	} else $('#arrow_left').hide();
+function showArrowLeft(id) {
+	if (id != null) {
+		$('#nav_left').html('<a href="#" onclick="showArtefactLeft('+id+')">&larr;</a>').fadeIn();
+	} else $('#nav_left').fadeOut();
 }
 
 function showArrowUp(id) {
 	if (id >= 0) {
-		$('#arrow_up').html('<a href="#" onclick="showArtefactRight('+id+')" class="nav up" >&uarr;</a>').show();
-	} else $('#arrow_up').hide();
+		$('#nav_up').html('<a href="#" onclick="showArtefactRight('+id+')">&uarr;</a>').fadeIn();
+	} else $('#nav_up').fadeOut();
 }
 
 function showArrowDown(number_of_answer) {
 	if (artefactLeft.answers.length-1 >= number_of_answer)
-		$('#arrow_down').html('<a href="#" onclick="showArtefactRight('+number_of_answer+')" class="nav down">&darr;</a>').show();
-	else $('#arrow_down').hide();
+		$('#nav_down').html('<a href="#" onclick="showArtefactRight('+number_of_answer+')">&darr;</a>').fadeIn();
+	else $('#nav_down').fadeOut();
 }
 function showArrowRight(id) {
 	if (id != null) {
-		$('#arrow_right').html('<a href="#" onclick="showArtefactLeft('+id+', 0); " class="nav right">&rarr;</a>').show();
-	} else $('#arrow_right').hide();
+		$('#nav_right').html('<a href="#" onclick="showArtefactLeft('+id+', 0); ">&rarr;</a>').fadeIn();
+	} else $('#nav_right').fadeOut();
 }
 
 function configAnswer(artefact) {
