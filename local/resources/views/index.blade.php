@@ -39,7 +39,7 @@
 				</div>
 				<div class="small-12 medium-9 large-3 columns">
 					@if (isset($user) && $user->role=="editor")
-                        <button class="big plus" data-reveal-id="new_topic">Start a new topic</button>
+                        <button class="big plus pullup" data-reveal-id="new_topic">Start a new topic</button>
                     @endif
 				</div>
 				<div class="large-7 columns">
@@ -271,7 +271,7 @@
     @endif
     
     <div id="help" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-        <h3 id="modalTitle">bMOOC</h3>
+        <h2 id="modalTitle">bMOOC</h2>
             <p>bMOOC consists out of topics. A topic is a cluster, a collection of online things that join into some form or shape. This can be a conversation, a discussion, a tension or a kind of unspeakable resonance.</p>
             <p>What joins the topic, is not fixed. The topic can change its course at all times. The word "topic" derives from the Greek ta topica, which means "commonplace". The topic offers a common place of attention for (some)thing(s), a place for forms of (re)searching that may lead eventually to an artistic practice.</p>
             <p>A topic is presented by juxtapositions of images/artefacts/things. In other words, it's the relations, commonalities or positions of these things that matter. What these are is often unclear, ambiguous or polysemic.</p>
@@ -443,7 +443,7 @@
 					$('#topic_temp_type').val('image');
 				} else if ($this.attr('id') == 'type_video') {
                     $('#topic_input_url').slideDown();
-					$('#topic_temp_type').val('url');
+					$('#topic_temp_type').val('video');
 				} else if ($this.attr('id') == 'type_file') {
                     $('#topic_input_upload').slideDown();
 					$('#topic_temp_type').val('file');

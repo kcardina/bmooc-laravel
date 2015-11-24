@@ -19,6 +19,7 @@ html, body{
     font-family: 'Muli', sans-serif;
     font-size: 12pt;
     font-weight: 300;
+    height: 100%;
 }
 
 /* GRID */
@@ -26,8 +27,23 @@ html, body{
     max-width: none;
 }
 
-.large{
+.row.large, .columns.large{
     padding-bottom: 1rem;
+}
+
+.full{
+    height: 100%;
+}
+
+.fullflex{
+    position: absolute;
+    height: 100%;
+}
+
+#container {
+	display: flex;
+    flex-flow: column;
+    height: 100%;
 }
 
 /* TITLES */
@@ -47,7 +63,7 @@ h1{
 
 h2{
     font-size: 1.3rem;
-    margin: 0;
+    margin-bottom: 1.3rem;
     color: #fff;
 }
 
@@ -56,14 +72,15 @@ h3{
     color: #17cf1f;
 }
 
-p{
-    margin-top: 1.3rem;
+/* HEADER */
+
+header{
+    padding: 10px 0 10px 0;
+    flex: 0 1 auto;
 }
 
-/* HEADER */
-header.green{
+.green{
     border-bottom: 1px dotted #17cf1f;
-    padding: 10px 0 10px 0;
 }
 
 /* FOOTER */
@@ -90,6 +107,14 @@ nav.sort{
 ul.inline{
     list-style: none;
     display: inline;
+    font-size: inherit;
+    margin: 0;
+    padding: 0;
+    color: #d9d9d9;
+}
+
+ul.block{
+    list-style: none;
     font-size: inherit;
     margin: 0;
     padding: 0;
@@ -125,6 +150,16 @@ ul.inline li:last-child:after{
     content: none;
 }
 
+dl dt {
+	font-size: 0.8rem;
+    font-weight: 300;
+    color: #878787;
+}
+
+dl dd{
+    color: #d9d9d9;
+}
+
 /* LINKS */
 a, a:hover, a:visited, a:active{
     text-decoration: none;
@@ -139,6 +174,14 @@ a:hover{
 .items{
     font-size: 0.80rem;
     color: #878787;
+}
+
+.items h2{
+    margin: 0;
+}
+
+.items p{
+    margin-top: 1.3rem;
 }
 
 .item {
@@ -198,7 +241,6 @@ a:hover{
 .item .antwoorden img.loader{
     height: auto;
     width: auto;
-    margin-top: -8px;
 }
 
 .item .extra, .item.hide_tag, .item.hide_author{
@@ -206,75 +248,125 @@ a:hover{
 }
 
 /* TOPIC PAGINA */
-p.description{
-    padding-bottom: 1.3rem;
-    border-bottom: 1px dotted #17cf1f;
-    color: #d9d9d9;
+.fullflex .columns {
+	overflow-y: scroll;
 }
 
-.topic .laatste_wijziging {
-	font-size: 0.8rem;
+.topic{
+    flex: 1 1 auto;
+    position: relative;
+    margin: 5rem;
 }
 
-.topic .details ul{
+.artefact{
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    display: table;
+    position: relative;
+    transition: background-color 0.5s ease;
+}
+
+.artefact img{
     display: block;
-    margin-bottom: 1.3rem;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    max-height: 100%;
 }
 
-.topic .details li{
+.artefact iframe, .artefact object{
     display: block;
+    width: 100%;
+    height: 100%;
 }
 
-.topic .details.laatste_wijziging li {
-	display: inline;
+.artefact .text{
+    display: table-cell;
+    vertical-align: middle;
 }
 
-.topic a{
-    color: #751e82;
-    text-decoration: underline;
+.artefact .text h2{
+    text-align: center;
 }
 
-.topic a:hover{
+.artefact:hover{
+    cursor: zoom-in;
+}
+
+.artefact_lightbox .row, .artefact_lightbox .columns {
+    height: 100%;
+}
+
+.artefact_lightbox img{
+    height: 100%;
+    width: auto;
+    text-align: center;
+}
+
+.artefact_lightbox iframe{
+	width: 100%;
+    height: 100%;
+    background: none;
+}
+
+.details{
+    margin-bottom: 2rem;
+}
+
+.artefact_lightbox button{
+	position: absolute;
+    bottom: 0.9375rem;
+    left: 0.9375rem;
+}
+
+.topic nav{
+    font-family: sans-serif;
+    font-size: 3rem;
+    line-height: 3rem;
+}
+
+.topic nav .nav{
+    display: none;
+}
+
+.topic nav a:hover{
     border-bottom: none;
 }
 
-.topic a.nav{
-    font-size: 2rem;
-    color: #d9d9d9;
-    text-decoration: none;
-}
-
-.topic .nav{
+.topic nav div{
     position: absolute;
+    z-index: 999;
 }
 
-.topic .nav.up{
-    top: -50px;
-    left: 50%;
+nav #nav_up{
+    left: 75%;
+    top: -4rem;
+    margin-left: -1rem;
 }
 
-.topic .nav.right{
+nav #nav_right{
+    right: -4rem;
     top: 50%;
-    right: -20px;
+    margin-top: -1rem;
 }
 
-.topic .nav.down{
-    bottom: -50px;
-    left: 50%;
+nav #nav_down{
+    left: 75%;
+    bottom: -4rem;
+    margin-left: -1rem;
 }
 
-.topic img{
-    min-height: 100%;
-    min-width: 100%;
-    overflow: hidden;
+nav #nav_left{
+    left: -4rem;
+    top: 50%;
+    margin-top: -1rem;
 }
-
-.topic .topic_img{
-    max-width: 100%;
-    height: 500px;
-    object-fit: contain;
-}
-
 
 /* FORMS */
 
@@ -432,6 +524,9 @@ button.big{
     padding-left: 60px;
     height: 48px;
     font-weight: 400;
+}
+
+button.pullup{
     margin-top: -10px;
 }
 
