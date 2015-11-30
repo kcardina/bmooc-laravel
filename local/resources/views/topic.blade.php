@@ -122,6 +122,7 @@
     {!! HTML::script('js/foundation.min.js') !!}
     {!! HTML::script('js/flexie.min.js') !!}
     {!! HTML::script('js/topic.js') !!}
+    {!! HTML::script('js/imagesloaded.min.js') !!}
     <script>
 		var host = "{{ URL::to('/') }}";
 		$(document).foundation();

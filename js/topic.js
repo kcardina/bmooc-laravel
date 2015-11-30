@@ -26,7 +26,7 @@ function showArtefactLeft(id, answer) {
         }
 
 		displayDiv(result.artefact.type.description, $('#artefact_left_contents'), result.artefact);
-		
+
         /*
 		var al = artefactLeft.artefact;
 		$('#artefact_left_title').html(al.title);
@@ -38,7 +38,7 @@ function showArtefactLeft(id, answer) {
 		$.each(al.tags, function(k, v) {
 			$('#artefact_left_tags').append('<li><a href="' + host + '/search/'+v.id+'">'+v.tag+'</a></li>');
 		});
-		
+
 		$('#artefact_left_related li').remove();
 		$.each(artefactLeft.related, function(k, v) {
 			$('#artefact_left_related').append('<li><a href="' + host + '/topic/'+v.id+'">'+v.title+'</a></li>');
@@ -111,15 +111,19 @@ function hideDiv(div){
 }
 
 function displayDiv(type, div, data) {
+    div.html("");
+    var loadImg = false;
 	switch (type) {
 	case 'text':
 		div.html("<div class=\"text\"><h2>" + data.title + "</h2>" + data.contents + "</div>");
 		break;
-	case 'local_image': 
+	case 'local_image':
 		div.html('<a href="'+ host + "/uploads/"+data.url+'" data-lightbox="image-1" data-title="Image"><img src="'+ host + "/uploads/"+data.url+'"></a>');
+            loadImg = true;
 		break;
 	case 'remote_image':
 		div.html('<a href="'+data.url+'" data-lightbox="image-1" data-title="Image"><img src="'+data.url+'"></a>');
+            loadImg = true;
 		break;
 	case 'video_youtube':
 		div.html('<iframe  src="'+data.url+'?autoplay=0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>');
@@ -140,10 +144,17 @@ function displayDiv(type, div, data) {
         div.html('<object data="' + data.url + '" type="application/pdf"><a href="' +  data.url + '">[PDF]</a></object>');
 		break;
 	}
-    // todo: preload image
-    div.stop(true, true)
-    $('.artefact.loader', div.parent()).hide();
-    div.fadeIn();
+    if(loadImg){
+        div.imagesLoaded( function() {
+            div.stop(true, true)
+            $('.artefact.loader', div.parent()).hide();
+            div.fadeIn();
+        });
+    } else {
+        div.stop(true, true)
+        $('.artefact.loader', div.parent()).hide();
+        div.fadeIn();
+    }
 }
 
 function showArrowLeft(id) {
@@ -177,7 +188,7 @@ function configAnswer(artefact) {
 	$.each(artefact.tags, function(k, tag) {
 		$('#answer_tags').append('<div class="tag-button purple"><label><input type="checkbox" name="answer_tags[]" value="'+tag.id+'"><span>'+tag.tag+'</span></label></div>');
 	});
-	
+
 	// Beschikbare antwoordtypes klaarmaken
 	$('#answer_button_text').hide();
 	$('#answer_button_video').hide();
@@ -192,7 +203,7 @@ function configAnswer(artefact) {
 		$('#answer_button_video').show();
 		$('#answer_button_file').show();
 		$('#answer_button_text').show();
-	}	
+	}
 	$('#answer_parent').val(artefact.artefact.id);
 	showInstruction(artefact.instruction[0], true);
 }
