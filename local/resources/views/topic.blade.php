@@ -52,13 +52,13 @@
                <div class="artefact loader" id="artefact_left_loader">
                     <img src="/img/loader_dark_big.gif" alt="loading...">
                </div>
-               <div class="artefact" id="artefact_left_contents" data-reveal-id="artefact_lightbox"></div>
+               <div class="artefact" id="artefact_left_contents" data-reveal-id="artefact_lightbox_left"></div>
             </div>
-            <div class="small-6 columns full" data-reveal-id="artefact_lightbox">
+            <div class="small-6 columns full">
                 <div class="artefact loader" id="artefact_left_loader">
                     <img src="/img/loader_dark_big.gif" alt="loading...">
                </div>
-                <div class="artefact" id="artefact_right_contents"></div>
+                <div class="artefact" id="artefact_right_contents" data-reveal-id="artefact_lightbox_right"></div>
             </div>
         </div>
         <nav>
@@ -70,23 +70,24 @@
       </div>
     </div>
     
-    <div id="artefact_lightbox" class="artefact_lightbox reveal-modal full" data-reveal role="dialog">
+    <div id="artefact_lightbox_left" class="artefact_lightbox reveal-modal full" data-reveal role="dialog">
        <div class="row">
            <div class="large-3 columns">
-               <h2 id="modalTitle">De verengeling van het leven</h2>
+               <h2 id="modalTitle" class="data-title">Title</h2>
                 <dl class="details">
                   <dt>Added</dt>
-                  <dd>12/11/2015 09:31</dd>
+                  <dd class="data-added">dd/mm/yy hh:mm</dd>
                   <dt>By</dt>
-                  <dd><a href="#">Teis De Greve</a></dd>
+                  <dd class="data-author"><a href="#">John Doe</a></dd>
                   <dt>Tags</dt>
                   <dd>
-                      <ul class="inline slash">
+                      <ul class="inline slash data-tags">
                           <li><a href="#">tag 1</a></li>
-                          <li><a href="#">tag 1</a></li>
-                          <li><a href="#">tag 1</a></li>
+                          <li><a href="#">tag 2</a></li>
+                          <li><a href="#">tag 3</a></li>
                       </ul>
                   </dd>
+                  <!--
                   <dt>Related</dt>
                   <dd>
                       <ul class="block">
@@ -95,13 +96,54 @@
                           <li><a href="#">related 3</a></li>
                       </ul>
                   </dd>
+                  -->
                 </dl>
                 @if (isset($user) && $user->role == 'editor')
                     <button class="big plus" data-reveal-id="new_artefact">Add (some)thing</button>
                 @endif
            </div>
-           <div class="large-9 columns">
-               <iframe src="https://player.vimeo.com/video/119343870?byline=0&portrait=0&title=0" frameborder="0"  allowfullscreen></iframe>
+           <div class="large-9 columns data-item">
+                Item
+           </div>
+       </div>
+
+        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+    </div>
+
+    <div id="artefact_lightbox_right" class="artefact_lightbox reveal-modal full" data-reveal role="dialog">
+       <div class="row">
+           <div class="large-3 columns">
+               <h2 id="modalTitle" class="data-title">Title</h2>
+                <dl class="details">
+                  <dt>Added</dt>
+                  <dd class="data-added">dd/mm/yy hh:mm</dd>
+                  <dt>By</dt>
+                  <dd class="data-author"><a href="#">Author</a></dd>
+                  <dt>Tags</dt>
+                  <dd>
+                      <ul class="inline slash data-tags">
+                          <li><a href="#">tag 1</a></li>
+                          <li><a href="#">tag 2</a></li>
+                          <li><a href="#">tag 3</a></li>
+                      </ul>
+                  </dd>
+                  <!--
+                  <dt>Related</dt>
+                  <dd>
+                      <ul class="block">
+                          <li><a href="#">related 1</a></li>
+                          <li><a href="#">related 2</a></li>
+                          <li><a href="#">related 3</a></li>
+                      </ul>
+                  </dd>
+                  -->
+                </dl>
+                @if (isset($user) && $user->role == 'editor')
+                    <button class="big plus" data-reveal-id="new_artefact">Add (some)thing</button>
+                @endif
+           </div>
+           <div class="large-9 columns data-item">
+               Item
            </div>
        </div>
 
@@ -123,10 +165,14 @@
     {!! HTML::script('js/flexie.min.js') !!}
     {!! HTML::script('js/topic.js') !!}
     {!! HTML::script('js/imagesloaded.min.js') !!}
+    {!! HTML::script('js/pointer-events-polyfill.js') !!}
     <script>
 		var host = "{{ URL::to('/') }}";
 		$(document).foundation();
 		$(document).ready(function(){
+
+            //polyfill
+            PointerEventsPolyfill.initialize({selector: 'iframe'});
 
 			/* ANSWER TOEVOEGEN */
 			var newTopic = {

@@ -130,7 +130,7 @@ ul.inline li{
 }
 
 ul.slash li:after{
-    content: " / ";
+    content: "\00a0/";
     color: #878787;
 }
 
@@ -268,7 +268,7 @@ a:hover{
     transition: background-color 0.5s ease;
 }
 
-.artefact img{
+.artefact img, .artefact_lightbox img {
     display: block;
     position: absolute;
     margin: auto;
@@ -280,19 +280,19 @@ a:hover{
     max-height: 100%;
 }
 
-.artefact iframe, .artefact object{
+.artefact iframe, .artefact object, .artefact_lightbox iframe, .artefact_lightbox object{
     display: block;
     width: 100%;
     height: 100%;
 }
 
-.artefact .textContainer{
+.artefact .textContainer, .artefact_lightbox .textContainer {
     display: table;
     height: 100%;
     width: 100%;
 }
 
-.artefact .text{
+.artefact .text, .artefact_lightbox .text{
     display: table-cell;
     vertical-align: middle;
 }
@@ -301,24 +301,16 @@ a:hover{
     text-align: center;
 }
 
-.artefact:hover{
+.artefact:hover, .artefact a:hover, .artefact object:hover, .artefact iframe:hover{
     cursor: zoom-in;
+}
+
+.artefact iframe{
+	   pointer-events:none;
 }
 
 .artefact_lightbox .row, .artefact_lightbox .columns {
     height: 100%;
-}
-
-.artefact_lightbox img{
-    height: 100%;
-    width: auto;
-    text-align: center;
-}
-
-.artefact_lightbox iframe{
-	width: 100%;
-    height: 100%;
-    background: none;
 }
 
 .details{

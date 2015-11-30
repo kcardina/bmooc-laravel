@@ -94,9 +94,11 @@ function showArtefactRight(number_of_answer) {
 <!-- <object data="../../../uploads/pdftest.pdf" type="application/pdf"><a href="../../../uploads/pdftest.pdf">[PDF]</a></object>
 
 <!-- TEXT -->
-<div class="text">
-    <h2>De verengeling van het leven</h2>
-    <p>tekst</p>
+<div class="textContainer">
+    <div class="text">
+        <h2>De verengeling van het leven</h2>
+        <p>tekst</p>
+    </div>
 </div>
 */
 
@@ -111,39 +113,55 @@ function hideDiv(div){
 }
 
 function displayDiv(type, div, data) {
+    console.log(data);
     div.html("");
     var loadImg = false;
+    // load metadata
+    var lb = div.attr("data-reveal-id");
+    $("#" + lb + " .data-title").html(data.title);
+    $("#" + lb + " .data-added").html(parseDate(data.created_at));
+    $("#" + lb + " .data-author").html("<a href=\"#\">" + data.the_author.name + "</a>");
+    var list = "";
+    $.each(data.tags, function(index, value){
+        list += "<li><a href=\"#\">" + value.tag + "</a></li>\n";
+    });
+    $("#" + lb + " .data-tags").html(list);
+    var html;
+    // load content
 	switch (type) {
 	case 'text':
-		div.html("<div class=\"textContainer\"><div class=\"text\"><h2>" + data.title + "</h2>" + data.contents + "</div></div>");
+        html = "<div class=\"textContainer\"><div class=\"text\"><h2>" + data.title + "</h2>" + data.contents + "</div></div>";
 		break;
 	case 'local_image':
-		div.html('<a href="'+ host + "/uploads/"+data.url+'" data-lightbox="image-1" data-title="Image"><img src="'+ host + "/uploads/"+data.url+'"></a>');
-            loadImg = true;
+        html = '<a href="'+ host + "/uploads/"+data.url+'" data-lightbox="image-1" data-title="Image"><img src="'+ host + "/uploads/"+data.url+'"></a>';
+        loadImg = true;
 		break;
 	case 'remote_image':
-		div.html('<a href="'+data.url+'" data-lightbox="image-1" data-title="Image"><img src="'+data.url+'"></a>');
-            loadImg = true;
+		html = '<a href="'+data.url+'" data-lightbox="image-1" data-title="Image"><img src="'+data.url+'"></a>';
+        loadImg = true;
 		break;
 	case 'video_youtube':
-		div.html('<iframe  src="'+data.url+'?autoplay=0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>');
+		html = '<iframe  src="'+data.url+'?autoplay=0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
 		break;
 	case 'video_vimeo':
-		div.html('<iframe src="'+data.url+'" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>');
+		html = '<iframe src="'+data.url+'" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
 		break;
 	case 'remote_document':
-		div.html('Please, <a href="'+ data.url +'" target="_new">download</a> the document to open...');
+		html = 'Please, <a href="'+ data.url +'" target="_new">download</a> the document to open...';
 		break;
 	case 'local_document':
-		div.html('Please, <a href="'+ host + "/uploads/" + data.url +'" target="_new">download</a> the document to open...');
+		html = 'Please, <a href="'+ host + "/uploads/" + data.url +'" target="_new">download</a> the document to open...';
 		break;
 	case 'local_pdf':
-        div.html('<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>');
+        html = '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>';
 		break;
 	case 'remote_pdf':
-        div.html('<object data="' + data.url + '" type="application/pdf"><a href="' +  data.url + '">[PDF]</a></object>');
+        html = '<object data="' + data.url + '" type="application/pdf"><a href="' +  data.url + '">[PDF]</a></object>';
 		break;
 	}
+    div.html(html);
+    $("#" + lb + " .data-item").html(html);
+
     if(loadImg){
         div.imagesLoaded( function() {
             div.stop(true, true)
@@ -271,3 +289,10 @@ function configNewInstructionPanel(artefact) {
 	$('#instruction_parent').val(artefact.artefact.thread);
 	showInstruction(artefact.instruction[0], false);
 }
+
+function parseDate(d){
+    d = d.replace(/-/g, "/");
+    d = d.substring(0, d.length - 3);
+    return d;
+}
+
