@@ -1,6 +1,6 @@
 var artefactLeft = null;
 
-function showArtefactLeft(id, answer) {
+function showArtefactLeft(id, answer, prev) {
 	if (!answer) answer = 0;
 
     if(answer != null){
@@ -12,6 +12,13 @@ function showArtefactLeft(id, answer) {
 
 	$.getJSON(host + "/json/topic/" + id, function(result) {
 		artefactLeft = result;
+        // make sure to go back to the right answer when using the left arrow
+        if(prev != null){
+            console.log(result.answers);
+            for(var i = 0; i < result.answers.length; i++){
+                if(result.answers[i].id == prev) answer = i;
+            }
+        }
         // immediatly load right
         if (answer != null && result.answers.length > answer) {
 			showArtefactRight(answer);
@@ -113,7 +120,6 @@ function hideDiv(div){
 }
 
 function displayDiv(type, div, data) {
-    console.log(data);
     div.html("");
     var loadImg = false;
     // load metadata
@@ -177,7 +183,7 @@ function displayDiv(type, div, data) {
 
 function showArrowLeft(id) {
 	if (id != null) {
-		$('#nav_left').html('<a href="#" onclick="showArtefactLeft('+id+')">&larr;</a>').fadeIn();
+		$('#nav_left').html('<a href="#" onclick="showArtefactLeft('+id+',null,'+artefactLeft.artefact.id+')">&larr;</a>').fadeIn();
 	} else $('#nav_left').fadeOut().html('');
 }
 
@@ -199,8 +205,8 @@ function showArrowRight(id) {
 }
 
 function configAnswer(artefact) {
-	console.log('!!!!!!!!!!!!!!!!!!!!');
-	console.log(artefact);
+	//console.log('!!!!!!!!!!!!!!!!!!!!');
+	//console.log(artefact);
 	// Tags klaarzetten
 	$('#answer_tags div').remove();
 	$.each(artefact.tags, function(k, tag) {
@@ -268,9 +274,9 @@ function showInstructionType(e) {
 	}
 }
 function showInstruction(instruct, current) {
-	console.log('*********************************');
-	console.log(instruct);
-	console.log(current);
+	//console.log('*********************************');
+	//console.log(instruct);
+	//console.log(current);
 	var prefix = current?'':'new_';
 	if (instruct) {
 		$('#'+prefix+'instruction_title').html('Current instruction: ' + instruct.title);
@@ -285,7 +291,7 @@ function showInstruction(instruct, current) {
 }
 
 function configNewInstructionPanel(artefact) {
-	console.log(artefact);
+	//console.log(artefact);
 	$('#instruction_parent').val(artefact.artefact.thread);
 	showInstruction(artefact.instruction[0], false);
 }
