@@ -160,24 +160,24 @@ function displayDiv(type, div, data) {
 function showArrowLeft(id) {
 	if (id != null) {
 		$('#nav_left').html('<a href="#" onclick="showArtefactLeft('+id+')">&larr;</a>').fadeIn();
-	} else $('#nav_left').fadeOut();
+	} else $('#nav_left').fadeOut().html('');
 }
 
 function showArrowUp(id) {
 	if (id >= 0) {
 		$('#nav_up').html('<a href="#" onclick="showArtefactRight('+id+')">&uarr;</a>').fadeIn();
-	} else $('#nav_up').fadeOut();
+	} else $('#nav_up').fadeOut().html('');
 }
 
 function showArrowDown(number_of_answer) {
 	if (artefactLeft.answers.length-1 >= number_of_answer)
 		$('#nav_down').html('<a href="#" onclick="showArtefactRight('+number_of_answer+')">&darr;</a>').fadeIn();
-	else $('#nav_down').fadeOut();
+	else $('#nav_down').fadeOut().html('');
 }
 function showArrowRight(id) {
 	if (id != null) {
 		$('#nav_right').html('<a href="#" onclick="showArtefactLeft('+id+', 0); ">&rarr;</a>').fadeIn();
-	} else $('#nav_right').fadeOut();
+	} else $('#nav_right').fadeOut().html('');
 }
 
 function configAnswer(artefact) {

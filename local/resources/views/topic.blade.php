@@ -174,6 +174,29 @@
             $('#artefact_right_contents').hide();
 
 			showArtefactLeft({{ $artefactLeft }}, {{ isset($answerRight)? $answerRight : 0 }});
+
+            document.onkeydown = function(evt) {
+                evt = evt || window.event;
+                switch (evt.keyCode) {
+                    case 37:
+                        //left
+                        $('#nav_left a').click();
+                        break;
+                    case 38:
+                        //up
+                        $('#nav_up a').click();
+                        break;
+                    case 39:
+                        //right
+                        $('#nav_right a').click();
+                        break;
+                    case 40:
+                        //down
+                        $('#nav_down a').click();
+                        break;
+                }
+            };
+
 		});    
     </script>
   </body>
