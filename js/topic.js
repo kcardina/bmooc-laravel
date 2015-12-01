@@ -183,118 +183,117 @@ function displayDiv(type, div, data) {
 }
 
 function showArrowLeft(id) {
-	if (id != null) {
-		$('#nav_left').html('<a href="#" onclick="showArtefactLeft('+id+',null,'+artefactLeft.artefact.id+')">&larr;</a>').fadeIn();
-	} else $('#nav_left').fadeOut().html('');
+    if (id != null) {
+            $('#nav_left').html('<a href="#" onclick="showArtefactLeft('+id+',null,'+artefactLeft.artefact.id+')">&larr;</a>').fadeIn();
+    } else $('#nav_left').fadeOut().html('');
 }
 
 function showArrowUp(id) {
-	if (id >= 0) {
-		$('#nav_up').html('<a href="#" onclick="showArtefactRight('+id+')">&uarr;</a>').fadeIn();
-	} else $('#nav_up').fadeOut().html('');
+    if (id >= 0) {
+            $('#nav_up').html('<a href="#" onclick="showArtefactRight('+id+')">&uarr;</a>').fadeIn();
+    } else $('#nav_up').fadeOut().html('');
 }
 
 function showArrowDown(number_of_answer) {
-	if (artefactLeft.answers.length-1 >= number_of_answer)
-		$('#nav_down').html('<a href="#" onclick="showArtefactRight('+number_of_answer+')">&darr;</a>').fadeIn();
-	else $('#nav_down').fadeOut().html('');
+    if (artefactLeft.answers.length-1 >= number_of_answer)
+            $('#nav_down').html('<a href="#" onclick="showArtefactRight('+number_of_answer+')">&darr;</a>').fadeIn();
+    else $('#nav_down').fadeOut().html('');
 }
 function showArrowRight(id) {
-	if (id != null) {
-		$('#nav_right').html('<a href="#" onclick="showArtefactLeft('+id+', 0); ">&rarr;</a>').fadeIn();
-	} else $('#nav_right').fadeOut().html('');
+    if (id != null) {
+            $('#nav_right').html('<a href="#" onclick="showArtefactLeft('+id+', 0); ">&rarr;</a>').fadeIn();
+    } else $('#nav_right').fadeOut().html('');
 }
 
 function configAnswer(artefact) {
-	//console.log('!!!!!!!!!!!!!!!!!!!!');
-	//console.log(artefact);
-	// Tags klaarzetten
-	$('#answer_tags div').remove();
-	$.each(artefact.tags, function(k, tag) {
-		$('#answer_tags').append('<div class="tag-button purple"><label><input type="checkbox" name="answer_tags[]" value="'+tag.id+'"><span>'+tag.tag+'</span></label></div>');
-	});
+    //console.log('!!!!!!!!!!!!!!!!!!!!');
+    //console.log(artefact);
+    // Tags klaarzetten
+    $('#answer_tags div').remove();
+    $.each(artefact.tags, function(k, tag) {
+            $('#answer_tags').append('<div class="tag-button purple"><label><input type="checkbox" name="answer_tags[]" value="'+tag.id+'"><span>'+tag.tag+'</span></label></div>');
+    });
 
-	// Beschikbare antwoordtypes klaarmaken
-	$('#answer_button_text').hide();
-	$('#answer_button_video').hide();
-	$('#answer_button_file').hide();
-	if (artefact.instruction.length > 0) {
-		$.each(artefact.instruction[0].available_types, function(k, atype) {
-			if (atype.description == 'video_vimeo' || atype.description == 'video_youtube') $('#answer_button_video').show();
-			if (atype.description == 'local_image' || atype.description == 'local_document') $('#answer_button_file').show();
-			if (atype.description == 'text') $('#answer_button_text').show();
-		});
-	} else {
-		$('#answer_button_video').show();
-		$('#answer_button_file').show();
-		$('#answer_button_text').show();
-	}
-	$('#answer_parent').val(artefact.artefact.id);
-	showInstruction(artefact.instruction[0], true);
+    // Beschikbare antwoordtypes klaarmaken
+    $('#answer_button_text').hide();
+    $('#answer_button_video').hide();
+    $('#answer_button_file').hide();
+    if (artefact.instruction.length > 0) {
+            $.each(artefact.instruction[0].available_types, function(k, atype) {
+                    if (atype.description == 'video_vimeo' || atype.description == 'video_youtube') $('#answer_button_video').show();
+                    if (atype.description == 'local_image' || atype.description == 'local_document') $('#answer_button_file').show();
+                    if (atype.description == 'text') $('#answer_button_text').show();
+            });
+    } else {
+            $('#answer_button_video').show();
+            $('#answer_button_file').show();
+            $('#answer_button_text').show();
+    }
+    $('#answer_parent').val(artefact.artefact.id);
+    showInstruction(artefact.instruction[0], true);
 }
 
 function showAnswerType(e) {
-	e.preventDefault();
-	var $this = $(this);
-	if ($this.attr('id') == 'button_answer_button_text') {
-		$('#answer_input_text').slideToggle();
-		$('#answer_input_video').hide();
-		$('#answer_input_upload').hide();
-		$('#answer_temp_type').val('text');
-	} else if ($this.attr('id') == 'button_answer_button_video') {
-		$('#answer_input_text').hide();
-		$('#answer_input_video').slideToggle();
-		$('#answer_input_upload').hide();
-		$('#answer_temp_type').val('url');
-	} else if ($this.attr('id') == 'button_answer_button_file') {
-		$('#answer_input_text').hide();
-		$('#answer_input_video').hide();
-		$('#answer_input_upload').slideToggle();
-		$('#answer_temp_type').val('file');
-	}
-
+    e.preventDefault();
+    var $this = $(this);
+    if ($this.attr('id') == 'button_answer_button_text') {
+            $('#answer_input_text').slideToggle();
+            $('#answer_input_video').hide();
+            $('#answer_input_upload').hide();
+            $('#answer_temp_type').val('text');
+    } else if ($this.attr('id') == 'button_answer_button_video') {
+            $('#answer_input_text').hide();
+            $('#answer_input_video').slideToggle();
+            $('#answer_input_upload').hide();
+            $('#answer_temp_type').val('url');
+    } else if ($this.attr('id') == 'button_answer_button_file') {
+            $('#answer_input_text').hide();
+            $('#answer_input_video').hide();
+            $('#answer_input_upload').slideToggle();
+            $('#answer_temp_type').val('file');
+    }
 }
 function showInstructionType(e) {
-	e.preventDefault();
-	var $this = $(this);
-	if ($this.attr('id') == 'button_answer_button_text') {
-		$('#instruction_input_text').slideToggle();
-		$('#instruction_input_video').hide();
-		$('#instruction_input_upload').hide();
-		$('#instruction_temp_type').val('text');
-	} else if ($this.attr('id') == 'button_answer_button_video') {
-		$('#instruction_input_text').hide();
-		$('#instruction_input_video').slideToggle();
-		$('#instruction_input_upload').hide();
-		$('#instruction_temp_type').val('url');
-	} else if ($this.attr('id') == 'button_answer_button_file') {
-		$('#instruction_input_text').hide();
-		$('#instruction_input_video').hide();
-		$('#instruction_input_upload').slideToggle();
-		$('#instruction_temp_type').val('file');
-	}
+    e.preventDefault();
+    var $this = $(this);
+    if ($this.attr('id') == 'button_answer_button_text') {
+            $('#instruction_input_text').slideToggle();
+            $('#instruction_input_video').hide();
+            $('#instruction_input_upload').hide();
+            $('#instruction_temp_type').val('text');
+    } else if ($this.attr('id') == 'button_answer_button_video') {
+            $('#instruction_input_text').hide();
+            $('#instruction_input_video').slideToggle();
+            $('#instruction_input_upload').hide();
+            $('#instruction_temp_type').val('url');
+    } else if ($this.attr('id') == 'button_answer_button_file') {
+            $('#instruction_input_text').hide();
+            $('#instruction_input_video').hide();
+            $('#instruction_input_upload').slideToggle();
+            $('#instruction_temp_type').val('file');
+    }
 }
 function showInstruction(instruct, current) {
-	//console.log('*********************************');
-	//console.log(instruct);
-	//console.log(current);
-	var prefix = current?'':'new_';
-	if (instruct) {
-		$('#'+prefix+'instruction_title').html('Current instruction: ' + instruct.title);
-		$('#'+prefix+'instruction_title').click(function() {
-			$('#'+prefix+'instruction_content').slideToggle();
-		});
-		if (instruct.instruction_type) displayDiv(instruct.instruction_type.description, $('#'+prefix+'instruction_content'), instruct);
-	} else {
-		//$('#'+prefix+'instruction_title').hide();
-		$('#'+prefix+'instruction_title').html('Current instruction');
-	}
+    //console.log('*********************************');
+    //console.log(instruct);
+    //console.log(current);
+    var prefix = current?'':'new_';
+    if (instruct) {
+            $('#'+prefix+'instruction_title').html('Current instruction: ' + instruct.title);
+            $('#'+prefix+'instruction_title').click(function() {
+                    $('#'+prefix+'instruction_content').slideToggle();
+            });
+            if (instruct.instruction_type) displayDiv(instruct.instruction_type.description, $('#'+prefix+'instruction_content'), instruct);
+    } else {
+            //$('#'+prefix+'instruction_title').hide();
+            $('#'+prefix+'instruction_title').html('Current instruction');
+    }
 }
 
 function configNewInstructionPanel(artefact) {
-	//console.log(artefact);
-	$('#instruction_parent').val(artefact.artefact.thread);
-	showInstruction(artefact.instruction[0], false);
+    //console.log(artefact);
+    $('#instruction_parent').val(artefact.artefact.thread);
+    showInstruction(artefact.instruction[0], false);
 }
 
 function parseDate(d){
