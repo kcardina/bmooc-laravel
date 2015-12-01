@@ -407,6 +407,10 @@ nav #nav_left{
     color: inherit;
 }
 
+form.sort{
+
+}
+
 @media only screen and (min-width: 40.063em) {
     .new{
         width: 50%;
@@ -418,12 +422,12 @@ form{
     color: #d9d9d9;
 }
 
-form input, form input:focus, form textarea{
-    background: none !important;
-    border: 1px solid white !important;
-    color: #fff !important;
-    margin-top: 5px !important;
-    box-shadow: none !important;
+form .form-inline input, form .form-inline input:focus, form textarea, .reveal-modal input, .reveal-modal input:focus, .reveal-modal textarea{
+    background: none;
+    border: 1px solid white;
+    color: #fff;
+    margin-top: 5px;
+    box-shadow: none;
 }
 
 input[type="file"], input[type="submit"]{
@@ -458,6 +462,10 @@ form label{
 
 form .form-inline label{
     padding-top: 0.8rem;
+}
+
+form.sort .form-inline label{
+    padding-top: 0;
 }
 
 .tag-button{
@@ -524,12 +532,20 @@ button.big{
     font-weight: 400;
 }
 
+button.space{
+        margin-right: 3rem;
+}
+
 button.pullup{
     margin-top: -10px;
 }
 
 button.plus{
     background: url(../img/plus.png) no-repeat left center;
+}
+
+button.information{
+    background: url(../img/info.png) no-repeat left center;
 }
 
 .error label, label.error{

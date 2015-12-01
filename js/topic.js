@@ -302,3 +302,10 @@ function parseDate(d){
     return d;
 }
 
+function loadInstruction(id){
+    if(!id) id = artefactLeft.id;
+    console.log(artefactLeft);
+    $.getJSON(host + "/json/topic/" + id, function(result) {
+        console.log(result);
+    });
+}

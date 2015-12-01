@@ -28,7 +28,7 @@ class BmoocController extends Controller
 		$user = $request->user();
 		//dd($request);
 		$topics = Artefact::with(['the_author', 'tags', 'last_modifier'])->whereNull('parent_id')->orderBy('created_at', 'desc')->orderBy('last_modified', 'desc')->get();
-		$auteurs = DB::table('users')->select('name')->distinct()->get();
+		$auteurs = DB::table('users')->select('id', 'name')->distinct()->get();
 		$tags = Tags::orderBy('tag')->get();
 
 		$aantalAntwoorden = DB::table('artefacts')->select(DB::raw('count(*) as aantal_antwoorden, thread'))
@@ -150,6 +150,58 @@ class BmoocController extends Controller
 				
 		return view('index', ['topic'=>$discussies, 'user'=>$user, 'titel'=>"van auteur ".$author, 'auteurs' => $auteurs, 'tags' => $tags, 'aantalAntwoorden'=>$aantalAntwoorden]);
 	}
+
+    public function searchDiscussions($author = null, $tag = null, $keyword = null){
+        $user = Auth::user();
+        //filter the artefacts on author first
+        $discussies = DB::table('artefacts');
+        if(isset($author) && $author != "all"){
+            $discussies
+                ->where('author', $author);
+        }
+        // tags
+        if(isset($tag) && $tag != "all"){
+            $discussies
+                ->join('artefacts_tags', 'artefacts.id', '=', 'artefacts_tags.artefact_id')
+                ->join('tags', 'artefacts_tags.tag_id', '=', 'tags.id')
+                ->where('tag_id', $tag);
+        }
+        // query
+        if(isset($keyword)){
+            $discussies
+                ->where(function($q) use( &$keyword)
+                {
+                    $q
+                        ->where('title', 'LIKE', '%'.$keyword.'%')
+                        ->orWhere('contents', 'LIKE', '%'.$keyword.'%');
+                });
+        }
+        // the current implementation is to return treads, not artefacts
+        $discussies = $discussies
+            ->select('thread')
+            ->distinct()
+            ->lists('thread');
+        // SORT?
+            //->distinct();
+        $discs = Artefact::whereIn('thread', $discussies)
+            ->whereNull('parent_id')
+            ->orderBy('last_modified')
+            ->get();
+        // extra information needed
+        $auteurs = DB::table('users')->select('name', 'id')->distinct()->get();
+		$tags = Tags::orderBy('tag')->get();
+        $aantalAntwoorden = DB::table('artefacts')
+            ->select(DB::raw('count(*) as aantal_antwoorden, thread'))
+            ->groupBy('thread')->get();
+
+        //dd("Your search for tag: " . $tag . ", author: " . $author . " and keyword: " . $query . " returned " . $discussies->count() . " results");
+        //dd($discs);
+
+
+
+
+        return view('index', ['topic'=>$discs, 'user'=>$user, 'auteurs' => $auteurs, 'tags' => $tags, 'titel'=>"met tag '".$tag."'", 'aantalAntwoorden'=>$aantalAntwoorden, 'search'=>['tag'=>$tag, 'author'=>$author, 'keyword'=>$keyword]]);
+    }
 	
 	public function commentDiscussion(Request $request)
 	{

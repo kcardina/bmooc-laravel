@@ -44,15 +44,23 @@
 				</div>
 				<div class="large-7 columns">
                    <nav class="sort">
+                     <form class="sort">
                       <div class="row sort">
                            <div class="medium-4 columns form-inline">
-                                <label for="auteurs">Authors</label>
+                            <label for="auteurs">Authors</label>
                                <span class="field">
                                  <select name="auteurs" id="auteurs">
-                                  <option>All</option>
+                                  <option value ="all">All</option>
                                     <option disabled>──────────</option>
                                     @foreach ($auteurs as $auteur)
-                                        <option>{{ $auteur->name }}</option>
+                                      @if(isset($search))
+                                           @if($auteur->id == $search['author'])
+                                            <option value="{{ $auteur->id }}" selected>{{ $auteur->name }}</option>
+                                            @else
+                                            <option value="{{ $auteur->id }}">{{ $auteur->name }}</option>
+                                            @endif
+                                        @endif
+                                        <option value="{{ $auteur->id }}">{{ $auteur->name }}</option>
                                     @endforeach
                                    </select>
                                </span>
@@ -61,10 +69,17 @@
                                <label for="tags">Tags</label>
                                <span class="field">
                                <select name="tags" id="tags">
-                                  <option>All</option>
+                                  <option value="all">All</option>
                                     <option disabled>──────────</option>
                                     @foreach ($tags as $tag)
-                                        <option>{{ $tag->tag }}</option>
+                                      @if(isset($search))
+                                           @if($tag->id == $search['tag'])
+                                            <option value="{{ $tag->id }}" selected>{{ $tag->tag }}</option>
+                                            @else
+                                            <option value="{{ $tag->id }}">{{ $tag->tag }}</option>
+                                            @endif
+                                        @endif
+                                        <option value="{{ $tag->id }}">{{ $tag->tag }}</option>
                                     @endforeach
                                                            </select>
                                </span>
@@ -72,10 +87,15 @@
                            <div class="medium-4 columns form-inline">
                                <label for="zoek">Search</label>
                                <span class="field">
-                               <input type="text" id="zoek" />
+                                @if(isset($search))
+                                    <input type="text" id="zoek" value="{{ $search['keyword'] }}"/>
+                                @else
+                                    <input type="text" id="zoek" />
+                                @endif
                                </span>
                            </div>
                        </div>
+                       </form>
                     </nav>
                 </div>
             </div>
@@ -347,7 +367,27 @@
 							}
 						});
 					}
-					/* FILTERS */
+
+                    $("nav select#auteurs").change(function(){
+                        $(".sort").submit();
+                    });
+                    $("nav select#tags").change(function(){
+                        $(".sort").submit();
+                    });
+
+                    $(".sort").submit(function(e){
+                        e.preventDefault();
+                        search();
+                    });
+
+                    function search(){
+                        var author = $("nav select#auteurs").val();
+                        var tag = $("nav select#tags").val();
+                        var keyword = $("nav input#zoek").val();
+                        window.location = host + '/search/' + author + '/' + tag + '/' + keyword;
+                    }
+
+					/* FILTERS *//*
 					$("nav select#auteurs").change(function(){
 						//toon alles
 						$(".item").removeClass("hide_author");
@@ -392,7 +432,7 @@
 								}
 							});                    
 						}
-					});
+					});*/
 				});
 
         function displayAnswer(type, data) {

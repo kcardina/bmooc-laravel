@@ -38,7 +38,8 @@
 				<div class="small-3 large-2 columns">
 					<h1>{!! HTML::link('/','bMOOC') !!}</h1>
 				</div>
-				<div class="small-12 medium-9 large-3 columns end">
+				<div class="small-12 large-10 columns end">
+				    <button class="big information pullup space" data-reveal-id="instruction">Topic instruction</button>
 					@if (isset($user) && $user->role=="editor")
                         <button class="big plus pullup" data-reveal-id="new_instruction">New instruction</button>
                     @endif
@@ -106,7 +107,6 @@
                 Item
            </div>
        </div>
-
         <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
 
@@ -145,8 +145,46 @@
            <div class="large-9 columns data-item">
                Item
            </div>
-       </div>
+        </div>
+        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+    </div>
 
+    <div id="instruction" class="artefact_lightbox reveal-modal full" data-reveal role="dialog">
+       <div class="row">
+           <div class="large-3 columns">
+               <h2 id="modalTitle" class="data-title">Title</h2>
+                <dl class="details">
+                  <dt>Added</dt>
+                  <dd class="data-added">dd/mm/yy hh:mm</dd>
+                  <dt>By</dt>
+                  <dd class="data-author"><a href="#">Author</a></dd>
+                  <dt>Tags</dt>
+                  <dd>
+                      <ul class="inline slash data-tags">
+                          <li><a href="#">tag 1</a></li>
+                          <li><a href="#">tag 2</a></li>
+                          <li><a href="#">tag 3</a></li>
+                      </ul>
+                  </dd>
+                  <!--
+                  <dt>Related</dt>
+                  <dd>
+                      <ul class="block">
+                          <li><a href="#">related 1</a></li>
+                          <li><a href="#">related 2</a></li>
+                          <li><a href="#">related 3</a></li>
+                      </ul>
+                  </dd>
+                  -->
+                </dl>
+                @if (isset($user) && $user->role == 'editor')
+                    <button class="big plus" data-reveal-id="new_artefact">Add (some)thing</button>
+                @endif
+           </div>
+           <div class="large-9 columns data-item">
+               <img src="/img/loader_overlay_big.gif" alt="loading...">
+           </div>
+        </div>
         <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
     
@@ -173,6 +211,13 @@
 
             //polyfill
             PointerEventsPolyfill.initialize({selector: 'iframe'});
+
+
+            //loadInstruction({{ $artefactLeft }});
+            $(document).on('open.fndtn.reveal', '#instruction[data-reveal]', function () {
+                var modal = $(this);
+                loadInstruction();
+            });
 
 			/* ANSWER TOEVOEGEN */
 			var newTopic = {
