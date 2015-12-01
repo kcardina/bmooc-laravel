@@ -1,7 +1,8 @@
 var artefactLeft = null;
+var artefactRight = null;
 
 function showArtefactLeft(id, answer, prev) {
-	if (!answer) answer = 0;
+    if (!answer) answer = 0;
 
     if(answer != null){
         hideDiv($('#artefact_left_contents'));
@@ -10,29 +11,31 @@ function showArtefactLeft(id, answer, prev) {
         hideDiv($('#artefact_left_contents'));
     }
 
-	$.getJSON(host + "/json/topic/" + id, function(result) {
-		artefactLeft = result;
+    $.getJSON(host + "/json/topic/" + id, function(result) {
+        artefactLeft = result;
         // make sure to go back to the right answer when using the left arrow
         if(prev != null){
-            console.log(result.answers);
             for(var i = 0; i < result.answers.length; i++){
                 if(result.answers[i].id == prev) answer = i;
             }
         }
         // immediatly load right
         if (answer != null && result.answers.length > answer) {
-			showArtefactRight(answer);
+                        showArtefactRight(answer);
             if (answer > 0) showArrowUp(answer-1);
             showArrowDown(answer+1);
         } else{
-        // if there is no right
-        // show no arrows, but this behaves a bit weird
+            // if there is no right
+            // show no arrows, but this behaves a bit weird
             showArrowDown(0);
             showArrowRight();
             showArrowUp(-1);
         }
 
-		displayDiv(result.artefact.type.description, $('#artefact_left_contents'), result.artefact);
+        displayDiv(result.artefact.type.description, $('#artefact_left_contents'), result.artefact);
+        showArrowLeft(result.artefact.parent_id);
+        configAnswer(artefactLeft);
+        configNewInstructionPanel(artefactLeft);
 
         /*
 		var al = artefactLeft.artefact;
@@ -62,29 +65,27 @@ function showArtefactLeft(id, answer, prev) {
             $('#nav_right').fadeOut();
             $('#nav_down').fadeOut();
 		}*/
-		showArrowLeft(result.artefact.parent_id);
-		configAnswer(artefactLeft);
-		configNewInstructionPanel(artefactLeft);
-	});
+    });
 }
 
 function showArtefactRight(number_of_answer) {
     hideDiv($('#artefact_right_contents'));
 
-	var idRight = artefactLeft.answers[number_of_answer].id;
+    var idRight = artefactLeft.answers[number_of_answer].id;
 
-	$.getJSON(host + "/json/topic/" + idRight, function(result) {
-		if (result.artefact.type != null) displayDiv(result.artefact.type.description, $('#artefact_right_contents'), result.artefact);
-		else displayDiv('text', $('#artefact_right_contents'), result.artefact);
+    $.getJSON(host + "/json/topic/" + idRight, function(result) {
+        artefactRight = result;
+        if (result.artefact.type != null) displayDiv(result.artefact.type.description, $('#artefact_right_contents'), result.artefact);
+        else displayDiv('text', $('#artefact_right_contents'), result.artefact);
 
-		if (number_of_answer >= 0) showArrowUp(number_of_answer-1);
-		showArrowDown(number_of_answer+1);
+        if (number_of_answer >= 0) showArrowUp(number_of_answer-1);
+        showArrowDown(number_of_answer+1);
 
-		if (result.answers.length > 0) showArrowRight(idRight);
-		else showArrowRight(); // showArrowRight(null);
+        if (result.answers.length > 0) showArrowRight(idRight);
+        else showArrowRight(); // showArrowRight(null);
 
-		window.history.pushState("topichistory", "bMOOC - Topic " + artefactLeft.artefact.id + "/" + number_of_answer, host + "/topic/" + artefactLeft.artefact.id + "/" + number_of_answer);
-	});
+        window.history.pushState("topichistory", "bMOOC - Topic " + artefactLeft.artefact.id + "/" + number_of_answer, host + "/topic/" + artefactLeft.artefact.id + "/" + number_of_answer);
+    });
 }
 
 /*
@@ -134,37 +135,37 @@ function displayDiv(type, div, data) {
     $("#" + lb + " .data-tags").html(list);
     var html;
     // load content
-	switch (type) {
-	case 'text':
+    switch (type) {
+    case 'text':
         html = "<div class=\"textContainer\"><div class=\"text\"><h2>" + data.title + "</h2>" + data.contents + "</div></div>";
-		break;
-	case 'local_image':
+        break;
+    case 'local_image':
         html = '<a href="'+ host + "/uploads/"+data.url+'" data-lightbox="image-1" data-title="Image"><img src="'+ host + "/uploads/"+data.url+'"></a>';
         loadImg = true;
-		break;
-	case 'remote_image':
-		html = '<a href="'+data.url+'" data-lightbox="image-1" data-title="Image"><img src="'+data.url+'"></a>';
+        break;
+    case 'remote_image':
+        html = '<a href="'+data.url+'" data-lightbox="image-1" data-title="Image"><img src="'+data.url+'"></a>';
         loadImg = true;
-		break;
-	case 'video_youtube':
-		html = '<iframe  src="'+data.url+'?autoplay=0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-		break;
-	case 'video_vimeo':
-		html = '<iframe src="'+data.url+'" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-		break;
-	case 'remote_document':
-		html = 'Please, <a href="'+ data.url +'" target="_new">download</a> the document to open...';
-		break;
-	case 'local_document':
-		html = 'Please, <a href="'+ host + "/uploads/" + data.url +'" target="_new">download</a> the document to open...';
-		break;
-	case 'local_pdf':
+        break;
+    case 'video_youtube':
+        html = '<iframe  src="'+data.url+'?autoplay=0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+        break;
+    case 'video_vimeo':
+        html = '<iframe src="'+data.url+'" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+        break;
+    case 'remote_document':
+        html = 'Please, <a href="'+ data.url +'" target="_new">download</a> the document to open...';
+        break;
+    case 'local_document':
+        html = 'Please, <a href="'+ host + "/uploads/" + data.url +'" target="_new">download</a> the document to open...';
+        break;
+    case 'local_pdf':
         html = '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>';
-		break;
-	case 'remote_pdf':
+        break;
+    case 'remote_pdf':
         html = '<object data="' + data.url + '" type="application/pdf"><a href="' +  data.url + '">[PDF]</a></object>';
-		break;
-	}
+        break;
+    }
     div.html(html);
     $("#" + lb + " .data-item").html(html);
 
