@@ -485,7 +485,9 @@
                     $('#topic_input_url').slideDown();
 					$('#topic_temp_type').val('video');
 				} else if ($this.attr('id') == 'type_file') {
-                    $('#topic_input_upload').slideDown();
+                    $('#topic_input_upload').show();
+                    $('#topic_input_or').slideDown();
+                    $('#topic_input_url').slideDown();
 					$('#topic_temp_type').val('file');
 				}
 			}
