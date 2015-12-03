@@ -42,7 +42,9 @@
 		</header>
 
    <div class="datavis">
-       <?php dd($topic); ?>
+       <div class="row">
+           <div class="small-12 columns"></div>
+       </div>
    </div>
 
     <div id="help" class="reveal-modal" data-reveal aria-labelledby="Help" aria-hidden="true" role="dialog">
@@ -61,7 +63,48 @@
 		var host = "{{ URL::to('/') }}";
 		$(document).foundation();
 		$(document).ready(function(){
-
+            $.getJSON(host + '/json/topic/24/answers', function(data) {
+                var div = $(".datavis .columns");
+                
+                /*var html = "<table><tr><td>";
+                
+                function recurse(d){
+                    console.log(d);
+                    html += "<td>";
+                    $.each(d, function(index, value){
+                        html += "<tr>" + value.id + "</tr>";
+                        if(value.answers.length > 0){
+                            recurse(value.answers);
+                        }
+                    });
+                    html += "</td>";
+                }
+                
+                recurse(data.answers);
+                html += "<td></tr></table>";*/
+                
+                var html = "<table><tr><td>";
+                
+                function recurse(d){
+                    console.log(d);
+                    var i = 0;
+                    $.each(d, function(index, value){
+                        i++
+                        if(value.answers.length > 0){
+                            recurse(value.answers);
+                        } else {
+                            html += "<br />";
+                        }
+                    });
+                    html += i;
+                }
+                
+                recurse(data.answers);
+                html += "<td></tr></table>";
+                
+                div.append(html);
+                
+            });
         });
     </script>
   </body>
