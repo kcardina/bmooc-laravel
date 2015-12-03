@@ -239,38 +239,38 @@
                     <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="topic_button_file">
                        <button class="square purple type_select" id="type_file">
                        <img src="{{ asset('img/file_file.png') }}" alt="file" />
-                       file<br /><small>(pdf)</small>
+                       document<br /><small>(pdf)</small>
                        </button>
                    </div>
                 </div>
                 <div class="row">
                     <div class="small-12 columns">
-                        <small class="error topic_input">Please choose on of the file types.</small>
+                        <small class="error topic_input">Please choose one of the file types.</small>
                     </div>
                 </div>
-                <div class="row type_input" id="topic_input_text" style="display: none;">
+                <div class="row type_input" id="topic_input_text" style="display: none;"> <!-- Div om text-input mogelijk te maken -->
                 	<div class="small-12 columns">
                 		<textarea required rows="5" cols="50" name="topic_text">Type your topic text here...</textarea>
                 	</div>
                 </div>
-                <div class="row type_input" id="topic_input_upload" style="display: none;">
+                <div class="row type_input" id="topic_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                 	<div class="small-12 columns form-inline">
                 		<label for="topic_upload">upload a file:</label>
                 		<span class="field">
-                		    <input required type="file" id="topic_upload" name="topic_upload"/>
+                		    <input type="file" id="topic_upload" name="topic_upload"/>
                 		</span>
                 	</div>
                 </div>
-                <div class="row type_input" id="topic_input_or" style="display: none;">
+                <div class="row type_input" id="topic_input_or" style="display: none;"> <!-- Div voor 'or' bij file upload aan te zetten -->
                 	<div class="small-12 columns">
                 		<strong>or</strong>
                 	</div>
                 </div>
-                <div class="row type_input" id="topic_input_url" style="display: none;">
+                <div class="row type_input" id="topic_input_url" style="display: none;"> <!-- Div voor url mogelijk te maken -->
                 	<div class="small-12 columns form-inline">
                 		<label for="topic_url">url:</label>
                 		<span class="field">
-                           <input required id="topic_url" type="text" name="topic_url"/>
+                                    <input id="topic_url" type="text" name="topic_url"/>
                 		</span>
                 	</div>
                 </div>
@@ -280,6 +280,7 @@
                 <div class="form-inline">
                     <label for="attachment">document:</label>
                     <span class="field"><input type="file" id="attachment" name="topic_attachment"/></span>
+                    <small class="error topic_input">3 different tags are required.</small>
                 </div>
                 <input type="hidden" name="topic_temp_type" id="topic_temp_type" />
                 <input type="submit" class="full purple" value="Create topic"/>
@@ -303,10 +304,9 @@
     {!! HTML::script('js/vendor/jquery.js') !!}
     {!! HTML::script('js/foundation.min.js') !!}
     <script>
-		var host = "{{ URL::to('/') }}";
-		$(document).foundation();
-		$(document).ready(function(){
-            
+        var host = "{{ URL::to('/') }}";
+        $(document).foundation();
+        $(document).ready(function(){
             $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 $(document).foundation('equalizer', 'reflow');
@@ -321,12 +321,12 @@
                     modal.animate({right:'-50%'},500);
                 }
             });
+
+            /* TOPIC TOEVOEGEN */
+            $('.type_select').click(showAnswerType);
             
-			/* TOPIC TOEVOEGEN */
-			$('.type_select').click(showAnswerType);
-            
-			/* ANTWOORDEN LADEN */
-			            // boolean - bepaalt of er één (true) of meerdere (false) items tegelijk gemaximaliseerd mogen zijn
+            /* ANTWOORDEN LADEN */
+            // boolean - bepaalt of er één (true) of meerdere (false) items tegelijk gemaximaliseerd mogen zijn
             var SINGLE = true;
             
             $(".item a").click(function(e){
@@ -347,150 +347,150 @@
                 }
             });
             
-				//bind an event listener to every item.
-				// on first click: make an ajax call to load all the images & unbind the event listener
-				$(".item").bind('click', loadAnswers);
-					function loadAnswers(e){
-						$(this).unbind(e);
-						var data = $(this).data();
-						var $this = $(this);
-						$(".antwoorden ul", this).append('<li id="li_loader"><img class="loader" src="{{ asset("img/loader.gif") }}" alt="antwoorden worden geladen..."/></li>');
-						$.getJSON(host + '/json/topic/' + data['id'] + '/answers', function(data) {
-							$('#li_loader').remove();
-							for(var i = 0; i < data.length; i++){
-								var answer = data[i];
-								// voor UX: voeg een loading-spinner toe
-								var url = answer.url;
-								var alt = "afbeelding " + i;
-								// plaats de afbeelding
-								$(".antwoorden ul", $this).append('<li><a href="' + "{{ URL::to('/topic/') }}/" + answer.id + '">'+ displayAnswer(answer.type.description, answer) +'</a></li>');
-							}
-						});
-					}
-
-                    $("nav select#auteurs").change(function(){
-                        $(".sort").submit();
-                    });
-                    $("nav select#tags").change(function(){
-                        $(".sort").submit();
-                    });
-
-                    $(".sort").submit(function(e){
-                        e.preventDefault();
-                        search();
-                    });
-
-                    function search(){
-                        var author = $("nav select#auteurs").val();
-                        var tag = $("nav select#tags").val();
-                        var keyword = $("nav input#zoek").val();
-                        window.location = host + '/search/' + author + '/' + tag + '/' + keyword;
+            //bind an event listener to every item.
+            // on first click: make an ajax call to load all the images & unbind the event listener
+            $(".item").bind('click', loadAnswers);
+            function loadAnswers(e){
+                $(this).unbind(e);
+                var data = $(this).data();
+                var $this = $(this);
+                $(".antwoorden ul", this).append('<li id="li_loader"><img class="loader" src="{{ asset("img/loader.gif") }}" alt="antwoorden worden geladen..."/></li>');
+                $.getJSON(host + '/json/topic/' + data['id'] + '/answers', function(data) {
+                    $('#li_loader').remove();
+                    for(var i = 0; i < data.length; i++){
+                        var answer = data[i];
+                        // voor UX: voeg een loading-spinner toe
+                        var url = answer.url;
+                        var alt = "afbeelding " + i;
+                        // plaats de afbeelding
+                        $(".antwoorden ul", $this).append('<li><a href="' + "{{ URL::to('/topic/') }}/" + answer.id + '">'+ displayAnswer(answer.type.description, answer) +'</a></li>');
                     }
+                });
+            }
 
-					/* FILTERS *//*
-					$("nav select#auteurs").change(function(){
-						//toon alles
-						$(".item").removeClass("hide_author");
-						var s = $("option:selected", this).text();
-						// if selectie != all
-						if(s != $("option:first", this).text()){
-							// voor ieder item
-							$.each($(".item"), function(){
-								var item = $(this);
-								var show = 0;
-								// kijk of de auteur voorkomt in de lijst
-								$.each(item.data('authors'), function(index, value){
-									if(value == s){
-										show++;
-									}
-								});
-								if(show == 0){
-									item.addClass("hide_author");
-								}
-							});                    
-						}
-					});
-            
-					$("nav select#tags").change(function(){
-						// toon alles
-						$(".item").removeClass("hide_tag");
-						var s = $("option:selected", this).text();
-						// if selectie != all
-						if(s != $("option:first", this).text()){
-							// voor ieder item
-							$.each($(".item"), function(){
-								var item = $(this);
-								var show = 0;
-								// kijk of de auteur voorkomt in de lijst
-								$.each(item.data('tags'), function(index, value){
-									if(value == s){
-										show++;
-									}
-								});
-								if(show == 0){
-									item.addClass("hide_tag");
-								}
-							});                    
-						}
-					});*/
-				});
+            $("nav select#auteurs").change(function(){
+                $(".sort").submit();
+            });
+            $("nav select#tags").change(function(){
+                $(".sort").submit();
+            });
+
+            $(".sort").submit(function(e){
+                e.preventDefault();
+                search();
+            });
+
+            function search(){
+                var author = $("nav select#auteurs").val();
+                var tag = $("nav select#tags").val();
+                var keyword = $("nav input#zoek").val();
+                window.location = host + '/search/' + author + '/' + tag + '/' + keyword;
+            }
+
+                    /* FILTERS *//*
+                    $("nav select#auteurs").change(function(){
+                            //toon alles
+                            $(".item").removeClass("hide_author");
+                            var s = $("option:selected", this).text();
+                            // if selectie != all
+                            if(s != $("option:first", this).text()){
+                                    // voor ieder item
+                                    $.each($(".item"), function(){
+                                            var item = $(this);
+                                            var show = 0;
+                                            // kijk of de auteur voorkomt in de lijst
+                                            $.each(item.data('authors'), function(index, value){
+                                                    if(value == s){
+                                                            show++;
+                                                    }
+                                            });
+                                            if(show == 0){
+                                                    item.addClass("hide_author");
+                                            }
+                                    });                    
+                            }
+                    });
+
+                    $("nav select#tags").change(function(){
+                            // toon alles
+                            $(".item").removeClass("hide_tag");
+                            var s = $("option:selected", this).text();
+                            // if selectie != all
+                            if(s != $("option:first", this).text()){
+                                    // voor ieder item
+                                    $.each($(".item"), function(){
+                                            var item = $(this);
+                                            var show = 0;
+                                            // kijk of de auteur voorkomt in de lijst
+                                            $.each(item.data('tags'), function(index, value){
+                                                    if(value == s){
+                                                            show++;
+                                                    }
+                                            });
+                                            if(show == 0){
+                                                    item.addClass("hide_tag");
+                                            }
+                                    });                    
+                            }
+                    });*/
+        });
 
         function displayAnswer(type, data) {
-        	switch (type) {
-        	case 'text':
-        		return '<p style="width: 100px; font-size: 8px; overflow:hidden; display: inline-block">' + data.contents + '</p>';
-        		break;
-        	case 'local_image':
-        		return '<img src="'+ host + "/uploads/"+data.url+'">';
-        		break;
-        	case 'remote_image':
-        		return '<img src="'+data.url+'">';
-        		break;
-        	case 'video_youtube':
-        		//return '<iframe  src="'+data.url+'?autoplay=0" style="width: 100px; height: 100px; vertical-align: middle" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-        		var thumbnail = data.url.replace('www.youtube.com/embed', 'img.youtube.com/vi');
-        		return '<img src="'+ thumbnail +'/0.jpg">';
-        		break;
-        	case 'video_vimeo':
-        		return '<iframe src="'+data.url+'" style="width: 100px; height: 100px; vertical-align: middle" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-        		break;
-        	case 'remote_document':
-        		return 'Please, <a href="'+ data.url +'">download</a> the document to open...';
-        		break;
-        	case 'local_pdf':
-        		break;
-        	case 'remote_pdf':
-        		break;
-        	}
+            switch (type) {
+            case 'text':
+                return '<p style="width: 100px; font-size: 8px; overflow:hidden; display: inline-block">' + data.contents + '</p>';
+                break;
+            case 'local_image':
+                return '<img src="'+ host + "/uploads/"+data.url+'">';
+                break;
+            case 'remote_image':
+                return '<img src="'+data.url+'">';
+                break;
+            case 'video_youtube':
+                //return '<iframe  src="'+data.url+'?autoplay=0" style="width: 100px; height: 100px; vertical-align: middle" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+                var thumbnail = data.url.replace('www.youtube.com/embed', 'img.youtube.com/vi');
+                return '<img src="'+ thumbnail +'/0.jpg">';
+                break;
+            case 'video_vimeo':
+                return '<iframe src="'+data.url+'" style="width: 100px; height: 100px; vertical-align: middle" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+                break;
+            case 'local_document':
+                return 'Please, <a href="'+ data.url +'" target="_new">download</a> the document to open...';
+                break;
+            case 'remote_document':
+                return 'Please, <a href="'+ data.url +'" target="_new">download</a> the document to open...';
+                break;
+            }
         }
-			function showAnswerType(e) {
-				e.preventDefault();
-				var $this = $(this);
-                $('.error.topic_input').hide();
-                if($this.hasClass('active')){
-                    return false;
-                }
-                $('.type_select').removeClass('active');
-                $this.addClass('active');
-                $('.type_input').hide();
-				if ($this.attr('id') == 'type_text') {
-					$('#topic_input_text').slideDown();
-					$('#topic_temp_type').val('text');
-                } else if ($this.attr('id') == 'type_image') {
-                    $('#topic_input_upload').show();
-                    $('#topic_input_or').slideDown();
-                    $('#topic_input_url').slideDown();
-					$('#topic_temp_type').val('image');
-				} else if ($this.attr('id') == 'type_video') {
-                    $('#topic_input_url').slideDown();
-					$('#topic_temp_type').val('video');
-				} else if ($this.attr('id') == 'type_file') {
-                    $('#topic_input_upload').show();
-                    $('#topic_input_or').slideDown();
-                    $('#topic_input_url').slideDown();
-					$('#topic_temp_type').val('file');
-				}
-			}
+
+        function showAnswerType(e) {
+            e.preventDefault();
+            var $this = $(this);
+            $('.error.topic_input').hide();
+            if($this.hasClass('active')){
+                return false;
+            }
+            $('.type_select').removeClass('active');
+            $this.addClass('active');
+            $('.type_input').hide();
+            if ($this.attr('id') == 'type_text') {
+                $('#topic_input_text').slideDown();
+                $('#topic_temp_type').val('text');
+            } else if ($this.attr('id') == 'type_image') {
+                $('#topic_input_upload').show();
+                $('#topic_input_or').slideDown();
+                $('#topic_input_url').slideDown();
+                $('#topic_temp_type').val('image');
+            } else if ($this.attr('id') == 'type_video') {
+                $('#topic_input_url').slideDown();
+                $('#topic_temp_type').val('video');
+            } else if ($this.attr('id') == 'type_file') {
+                $('#topic_input_upload').show();
+                $('#topic_input_or').slideDown();
+                $('#topic_input_url').slideDown();
+                $('#topic_temp_type').val('file');
+            }
+        }
 
         function validation(){
             var valid = true;
@@ -504,8 +504,7 @@
                     valid = false;
                     msg = "Please enter some text."
                 }
-            }
-            if($('button#type_image').hasClass('active')){
+            } else if($('button#type_image').hasClass('active')){
                 if($('#topic_upload').val().length == 0 && $('#topic_url').val().length == 0){
                     valid = false;
                     msg = "Please enter a link or select a file."
@@ -514,19 +513,43 @@
                     valid = false;
                     msg = "Only one of the options can be chosen."
                 }
-            }
-            if($('button#type_video').hasClass('active')){
+                if($('#topic_upload').val().length != 0) {
+                    var f = $('#topic_upload')[0].files[0];
+                    if (f.size > 2000000) {
+                        msg = "The document is too large (> 2MB)";
+                        valid = false;
+                    }
+                }
+            } else if($('button#type_video').hasClass('active')){
                 if($('#topic_url').val().length == 0){
                     valid = false;
                     msg = "Please enter a link to a video on YouTube or Vimeo."
                 }
-            }
-            if($('button#type_file').hasClass('active')){
-                if($('#topic_upload').val().length == 0){
+            } else if($('button#type_file').hasClass('active')){
+                if($('#topic_upload').val().length == 0 && $('#topic_url').val().length == 0){
                     valid = false;
-                    msg = "Please select a file."
+                    msg = "Please enter a link or select a pdf document."
+                }
+                if($('#topic_upload').val().length != 0 && $('#topic_url').val().length != 0){
+                    valid = false;
+                    msg = "Only one of the options can be chosen."
+                }
+                if($('#topic_upload').val().length != 0) {
+                    var f = $('#topic_upload')[0].files[0];
+                    if (f.size > 2000000) {
+                        msg = "The document is too large (> 2MB)";
+                        valid = false;
+                    }
                 }
             }
+            if($('#attachment').val().length != 0) {
+                var f = $('#attachment')[0].files[0];
+                if (f.size > 2000000) {
+                    msg = "The attached document is too large (> 2MB)";
+                    valid = false;
+                }
+            }
+            
             if(!valid){
                 $('.error.topic_input').html(msg);
                 $('.error.topic_input').css('display', 'block');
