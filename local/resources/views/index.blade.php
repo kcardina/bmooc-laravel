@@ -59,8 +59,9 @@
                                             @else
                                             <option value="{{ $auteur->id }}">{{ $auteur->name }}</option>
                                             @endif
-                                        @endif
+                                        @else
                                         <option value="{{ $auteur->id }}">{{ $auteur->name }}</option>
+                                        @endif
                                     @endforeach
                                    </select>
                                </span>
@@ -78,8 +79,9 @@
                                             @else
                                             <option value="{{ $tag->id }}">{{ $tag->tag }}</option>
                                             @endif
-                                        @endif
+                                        @else
                                         <option value="{{ $tag->id }}">{{ $tag->tag }}</option>
+                                        @endif
                                     @endforeach
                                                            </select>
                                </span>
@@ -384,7 +386,7 @@
                 var author = $("nav select#auteurs").val();
                 var tag = $("nav select#tags").val();
                 var keyword = $("nav input#zoek").val();
-                window.location = host + '/search/' + author + '/' + tag + '/' + keyword;
+                window.location = host + '/search/' + author + '/' + tag + (keyword?'/' + keyword:'');
             }
 
                     /* FILTERS *//*

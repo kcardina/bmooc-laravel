@@ -139,6 +139,8 @@ function displayDiv(type, div, data) {
         $("#" + lb + " .data-title").html(data.title);
         $("#" + lb + " .data-added").html(parseDate(data.created_at));
         $("#" + lb + " .data-author").html("<a href=\"#\">" + data.the_author.name + "</a>");
+        if (data.attachment && data.attachment != null) $("#" + lb + " .data-attachment").html("<a href=\""+ host + "/uploads/attachments/" + data.attachment +"\" target=\"_new\">document</a>");
+        else $("#" + lb + " .data-attachment").html("No attachment");
     }
     if (data.tags) {
         var list = "";
@@ -166,12 +168,6 @@ function displayDiv(type, div, data) {
             break;
         case 'video_vimeo':
             html = '<iframe src="' + data.url + '" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-            break;
-        case 'remote_document':
-            html = 'Please, <a href="' + data.url + '" target="_new">download</a> the document to open...';
-            break;
-        case 'local_document':
-            html = 'Please, <a href="' + host + "/uploads/" + data.url + '" target="_new">download</a> the document to open...';
             break;
         case 'local_pdf':
             html = '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>';
@@ -341,52 +337,56 @@ function configCurrentInstructionPanel(div, data) {
     //div.html("");
     var loadImg = false;
     lb = div.attr('id');
-    $("#" + lb + " .data-title").html(data.title);
-    $("#" + lb + " .data-added").html(parseDate(data.created_at));
-    $("#" + lb + " .data-author").html("<a href=\"#\">" + data.the_author.name + "</a>");
-    if (data.tags) {
-        var list = "";
-        $.each(data.tags, function (index, value) {
-            list += "<li><a href=\"#\">" + value.tag + "</a></li>\n";
-        });
-        $("#" + lb + " .data-tags").html(list);
-    }
-    var html;
-    // load content
-    switch (data.instruction_type.description) {
-        case 'text':
-            html = "<div class=\"textContainer\"><div class=\"text\"><h2>" + data.title + "</h2>" + data.contents + "</div></div>";
-            break;
-        case 'local_image':
-            html = '<a href="' + host + "/uploads/" + data.url + '" data-lightbox="image-1" data-title="Image"><img src="' + host + "/uploads/" + data.url + '"></a>';
-            loadImg = true;
-            break;
-        case 'remote_image':
-            html = '<a href="' + data.url + '" data-lightbox="image-1" data-title="Image"><img src="' + data.url + '"></a>';
-            loadImg = true;
-            break;
-        case 'video_youtube':
-            html = '<iframe  src="' + data.url + '?autoplay=0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-            break;
-        case 'video_vimeo':
-            html = '<iframe src="' + data.url + '" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-            break;
-        case 'remote_document':
-            html = 'Please, <a href="' + data.url + '" target="_new">download</a> the document to open...';
-            break;
-        case 'local_document':
-            html = 'Please, <a href="' + host + "/uploads/" + data.url + '" target="_new">download</a> the document to open...';
-            break;
-        case 'local_pdf':
-            html = '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>';
-            break;
-        case 'remote_pdf':
-            html = '<object data="' + data.url + '" type="application/pdf"><a href="' + data.url + '">[PDF]</a></object>';
-            break;
-    }
+    if (data !== undefined && data!==null) {
+        $("#" + lb + " .data-title").html(data.title);
+        $("#" + lb + " .data-added").html(parseDate(data.created_at));
+        $("#" + lb + " .data-author").html("<a href=\"#\">" + data.the_author.name + "</a>");
+        if (data.tags) {
+            var list = "";
+            $.each(data.tags, function (index, value) {
+                list += "<li><a href=\"#\">" + value.tag + "</a></li>\n";
+            });
+            $("#" + lb + " .data-tags").html(list);
+        }
+        var html;
+        // load content
+        switch (data.instruction_type.description) {
+            case 'text':
+                html = "<div class=\"textContainer\"><div class=\"text\"><h2>" + data.title + "</h2>" + data.contents + "</div></div>";
+                break;
+            case 'local_image':
+                html = '<a href="' + host + "/uploads/" + data.url + '" data-lightbox="image-1" data-title="Image"><img src="' + host + "/uploads/" + data.url + '"></a>';
+                loadImg = true;
+                break;
+            case 'remote_image':
+                html = '<a href="' + data.url + '" data-lightbox="image-1" data-title="Image"><img src="' + data.url + '"></a>';
+                loadImg = true;
+                break;
+            case 'video_youtube':
+                html = '<iframe  src="' + data.url + '?autoplay=0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+                break;
+            case 'video_vimeo':
+                html = '<iframe src="' + data.url + '" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+                break;
+            case 'remote_document':
+                html = 'Please, <a href="' + data.url + '" target="_new">download</a> the document to open...';
+                break;
+            case 'local_document':
+                html = 'Please, <a href="' + host + "/uploads/" + data.url + '" target="_new">download</a> the document to open...';
+                break;
+            case 'local_pdf':
+                html = '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>';
+                break;
+            case 'remote_pdf':
+                html = '<object data="' + data.url + '" type="application/pdf"><a href="' + data.url + '">[PDF]</a></object>';
+                break;
+        }
 
-    $("#" + lb + " .data-item").html(html);
-
+        $("#" + lb + " .data-item").html(html);
+    } else {
+        $('#instruction_metadata').html('&nbsp;');
+        $("#" + lb + " .data-item").html("No instruction given...");
+    }
     if (loadImg) {
         div.imagesLoaded(function () {
             div.stop(true, true)
@@ -483,7 +483,6 @@ function validation() {
             fo.replaceWith(fo = fo.clone(true));
         }
     }
-
 
     if ($('#answer_tags input:checked').length != 2) {
         valid = false;

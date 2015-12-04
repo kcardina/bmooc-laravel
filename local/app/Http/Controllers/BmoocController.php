@@ -194,7 +194,7 @@ class BmoocController extends Controller {
         //->distinct();
         $discs = Artefact::whereIn('thread', $discussies)
                 ->whereNull('parent_id')
-                ->orderBy('last_modified')
+                ->orderBy('last_modified', 'desc')
                 ->get();
         // extra information needed
         $auteurs = DB::table('users')->select('name', 'id')->distinct()->get();
@@ -202,12 +202,6 @@ class BmoocController extends Controller {
         $aantalAntwoorden = DB::table('artefacts')
                         ->select(DB::raw('count(*) as aantal_antwoorden, thread'))
                         ->groupBy('thread')->get();
-
-        //dd("Your search for tag: " . $tag . ", author: " . $author . " and keyword: " . $query . " returned " . $discussies->count() . " results");
-        //dd($discs);
-
-
-
 
         return view('index', ['topic' => $discs, 'user' => $user, 'auteurs' => $auteurs, 'tags' => $tags, 'titel' => "met tag '" . $tag . "'", 'aantalAntwoorden' => $aantalAntwoorden, 'search' => ['tag' => $tag, 'author' => $author, 'keyword' => $keyword]]);
     }
@@ -302,10 +296,10 @@ class BmoocController extends Controller {
 
                 // Attachment verwerken
                 if (Input::file('answer_attachment') && Input::file('answer_attachment')->isValid()) {
-                    $extension = strtolower(Input::file('topic_upload')->getClientOriginalExtension());
+                    $extension = strtolower(Input::file('answer_attachment')->getClientOriginalExtension());
                     if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg', 'pdf'])) {
                         $destinationPath = 'uploads/attachments';
-                        $filename = base64_encode(Input::file('answer_attachment')->getClientOriginalName());
+                        $filename = base64_encode(Input::file('answer_attachment')->getClientOriginalName()).'.'.$extension;
                         Input::file('answer_attachment')->move($destinationPath, $filename);
                         $comment->attachment = $filename;
                     } else throw new Exception('Wrong file uploaded for new topic attachment');

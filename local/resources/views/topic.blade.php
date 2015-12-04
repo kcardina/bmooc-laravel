@@ -88,6 +88,8 @@
                                 <li><a href="#">tag 3</a></li>
                             </ul>
                         </dd>
+                        <dt>Attachment</dt>
+                        <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
                         <!--
                         <dt>Related</dt>
                         <dd>
@@ -127,6 +129,8 @@
                                 <li><a href="#">tag 3</a></li>
                             </ul>
                         </dd>
+                        <dt>Attachment</dt>
+                        <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
                         <!--
                         <dt>Related</dt>
                         <dd>
@@ -151,7 +155,7 @@
 
         <div id="instruction" class="artefact_lightbox reveal-modal full" data-reveal role="dialog">
             <div class="row">
-                <div class="large-3 columns">
+                <div class="large-3 columns" id="instruction_metadata">
                     <h2 id="modalTitle" class="data-title">Title</h2>
                     <dl class="details">
                         <dt>Added</dt>
