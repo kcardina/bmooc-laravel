@@ -101,7 +101,7 @@
                         </dd>
                         -->
                     </dl>
-                    @if (isset($user) && $user->role == 'editor')
+                    @if (isset($user))
                     <button id="button_add_left" class="big plus" data-reveal-id="new_artefact"  data-artefact="left">Add (some)thing</button>
                     @endif
                 </div>
