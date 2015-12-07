@@ -12,9 +12,10 @@ Route::post('instruction/new', 'BmoocController@newInstruction');
 
 Route::get('discussion/{links}/{rechts}/{pre?}', ['uses'=>'BmoocController@showDiscussion']);
 Route::get('discussion/{encodedlink?}', array('as'=>'discussionEncoded', 'uses'=>'BmoocController@showDiscussionEncoded'));
-Route::get('search/{tag?}', 'BmoocController@searchDiscussionsByTag');
-Route::get('search/author/{author?}', 'BmoocController@searchDiscussionsByAuthor');
-Route::get('tags/{start}', 'TagsController@searchTags');
+//Route::get('search/{tag?}', 'BmoocController@searchDiscussionsByTag');
+//Route::get('search/author/{author?}', 'BmoocController@searchDiscussionsByAuthor');
+//Route::get('tags/{start}', 'TagsController@searchTags');
+Route::get('search/{author?}/{tag?}/{keyword?}', 'BmoocController@searchDiscussions');
 Route::post('comment', 'BmoocController@commentDiscussion');
 
 Route::get('json/instruction/{thread}', 'BmoocJsonController@instruction');
