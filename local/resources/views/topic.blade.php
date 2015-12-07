@@ -35,10 +35,10 @@
                     </div>
                 </div>
                 <div class="row large">
-                    <div class="small-3 large-2 columns">
+                    <div class="small-4 medium-3 large-2 columns">
                         <h1>{!! HTML::link('/','bMOOC') !!}</h1>
                     </div>
-                    <div class="small-12 large-10 columns end">
+                    <div class="small-8 medium-9 large-10 columns end">
                         <button class="big information pullup space" data-reveal-id="instruction">Topic instruction</button>
                         @if (isset($user) && $user->role=="editor")
                         <button class="big plus pullup" data-reveal-id="new_instruction">New instruction</button>
@@ -49,13 +49,13 @@
 
             <div class="topic">
                 <div class="row fullflex">
-                    <div class="small-6 columns full" style="overflow-y: hidden">
+                    <div class="small-6 columns full">
                         <div class="artefact loader" id="artefact_left_loader">
                             {!! HTML::image(asset("img/loader_dark_big.gif"), 'loading...') !!}
                         </div>
                         <div class="artefact" id="artefact_left_contents" data-reveal-id="artefact_lightbox_left"></div>
                     </div>
-                    <div class="small-6 columns full" style="overflow-y: hidden">
+                    <div class="small-6 columns full">
                         <div class="artefact loader" id="artefact_right_loader">
                             {!! HTML::image(asset("img/loader_dark_big.gif"), 'loading...') !!}
                         </div>
@@ -73,23 +73,33 @@
 
         <div id="artefact_lightbox_left" class="artefact_lightbox reveal-modal full" data-reveal role="dialog">
             <div class="row">
-                <div class="large-3 columns">
+                <div class="small-12 large-3 columns large-float">
                     <h2 id="modalTitle" class="data-title">Title</h2>
                     <dl class="details">
-                        <dt>Added</dt>
-                        <dd class="data-added">dd/mm/yy hh:mm</dd>
-                        <dt>By</dt>
-                        <dd class="data-author"><a href="#">John Doe</a></dd>
-                        <dt>Tags</dt>
-                        <dd>
-                            <ul class="inline slash data-tags">
-                                <li><a href="#">tag 1</a></li>
-                                <li><a href="#">tag 2</a></li>
-                                <li><a href="#">tag 3</a></li>
-                            </ul>
-                        </dd>
-                        <dt>Attachment</dt>
-                        <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
+                       <div class="row">
+                           <div class="small-6 medium-3 large-12 columns">
+                            <dt>Added</dt>
+                            <dd class="data-added">dd/mm/yy hh:mm</dd>
+                           </div>
+                           <div class="small-6 medium-3 large-12 columns">
+                            <dt>By</dt>
+                            <dd class="data-author"><a href="#">Author</a></dd>
+                           </div>
+                            <div class="small-6 medium-3 large-12 columns">
+                            <dt>Tags</dt>
+                            <dd>
+                                <ul class="inline slash data-tags">
+                                    <li><a href="#">tag 1</a></li>
+                                    <li><a href="#">tag 2</a></li>
+                                    <li><a href="#">tag 3</a></li>
+                                </ul>
+                            </dd>
+                           </div>
+                           <div class="small-6 medium-3 large-12 columns">
+                            <dt>Attachment</dt>
+                            <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
+                           </div>
+                        </div>
                         <!--
                         <dt>Related</dt>
                         <dd>
@@ -105,7 +115,7 @@
                     <button id="button_add_left" class="big plus" data-reveal-id="new_artefact"  data-artefact="left">Add (some)thing</button>
                     @endif
                 </div>
-                <div class="large-9 columns data-item">
+                <div class="small-12 large-9 columns data-item large-float">
                     Item
                 </div>
             </div>
@@ -114,23 +124,33 @@
 
         <div id="artefact_lightbox_right" class="artefact_lightbox reveal-modal full" data-reveal role="dialog">
             <div class="row">
-                <div class="large-3 columns">
+                <div class="small-12 large-3 columns large-float">
                     <h2 id="modalTitle" class="data-title">Title</h2>
                     <dl class="details">
-                        <dt>Added</dt>
-                        <dd class="data-added">dd/mm/yy hh:mm</dd>
-                        <dt>By</dt>
-                        <dd class="data-author"><a href="#">Author</a></dd>
-                        <dt>Tags</dt>
-                        <dd>
-                            <ul class="inline slash data-tags">
-                                <li><a href="#">tag 1</a></li>
-                                <li><a href="#">tag 2</a></li>
-                                <li><a href="#">tag 3</a></li>
-                            </ul>
-                        </dd>
-                        <dt>Attachment</dt>
-                        <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
+                       <div class="row">
+                           <div class="small-6 medium-3 large-12 columns">
+                            <dt>Added</dt>
+                            <dd class="data-added">dd/mm/yy hh:mm</dd>
+                           </div>
+                           <div class="small-6 medium-3 large-12 columns">
+                            <dt>By</dt>
+                            <dd class="data-author"><a href="#">Author</a></dd>
+                           </div>
+                            <div class="small-6 medium-3 large-12 columns">
+                            <dt>Tags</dt>
+                            <dd>
+                                <ul class="inline slash data-tags">
+                                    <li><a href="#">tag 1</a></li>
+                                    <li><a href="#">tag 2</a></li>
+                                    <li><a href="#">tag 3</a></li>
+                                </ul>
+                            </dd>
+                           </div>
+                           <div class="small-6 medium-3 large-12 columns">
+                            <dt>Attachment</dt>
+                            <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
+                           </div>
+                        </div>
                         <!--
                         <dt>Related</dt>
                         <dd>
@@ -146,7 +166,7 @@
                     <button id="button_add_right" class="big plus" data-reveal-id="new_artefact"  data-artefact="right">Add (some)thing</button>
                     @endif
                 </div>
-                <div class="large-9 columns data-item">
+                <div class="small-12 large-9 columns data-item large-float">
                     Item
                 </div>
             </div>
@@ -155,7 +175,7 @@
 
         <div id="instruction" class="artefact_lightbox reveal-modal full" data-reveal role="dialog">
             <div class="row">
-                <div class="large-3 columns" id="instruction_metadata">
+                <div class="medium-3 columns" id="instruction_metadata">
                     <h2 id="modalTitle" class="data-title">Title</h2>
                     <dl class="details">
                         <dt>Added</dt>
@@ -169,7 +189,7 @@
                     @endif
                     -->
                 </div>
-                <div class="large-9 columns data-item">
+                <div class="medium-9 columns data-item">
                     {!! HTML::image(asset("img/loader_overlay_big.gif"), 'loading...') !!}
                 </div>
             </div>

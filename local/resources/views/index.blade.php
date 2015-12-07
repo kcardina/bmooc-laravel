@@ -34,10 +34,10 @@
                 </div>
             </div>
             <div class="row large">
-				<div class="small-3 large-2 columns">
+				<div class="small-4 medium-3 large-2 columns">
 					<h1>{!! HTML::link('/','bMOOC') !!}</h1>
 				</div>
-				<div class="small-12 medium-9 large-3 columns">
+				<div class="small-8 medium-9 large-3 columns">
 					@if (isset($user) && $user->role=="editor")
                         <button class="big plus pullup" data-reveal-id="new_topic">Start a new topic</button>
                     @endif
