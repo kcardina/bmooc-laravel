@@ -319,9 +319,10 @@ function showInstruction(instruct, current) {
     //console.log(instruct);
     //console.log(current);
     var prefix = current ? '' : 'new_';
+    $('#' + prefix + 'instruction_title').off('click');
     if (instruct) {
         $('#' + prefix + 'instruction_title').html('Current instruction: ' + instruct.title);
-        $('#' + prefix + 'instruction_title').click(function () {
+        $('#' + prefix + 'instruction_title').click(function() {
             $('#' + prefix + 'instruction_content').slideToggle();
         });
         if (instruct.instruction_type)

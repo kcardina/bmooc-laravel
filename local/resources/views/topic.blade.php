@@ -49,13 +49,13 @@
 
             <div class="topic">
                 <div class="row fullflex">
-                    <div class="small-6 columns full">
+                    <div class="small-6 columns full" style="overflow-y: hidden">
                         <div class="artefact loader" id="artefact_left_loader">
                             {!! HTML::image(asset("img/loader_dark_big.gif"), 'loading...') !!}
                         </div>
                         <div class="artefact" id="artefact_left_contents" data-reveal-id="artefact_lightbox_left"></div>
                     </div>
-                    <div class="small-6 columns full">
+                    <div class="small-6 columns full" style="overflow-y: hidden">
                         <div class="artefact loader" id="artefact_right_loader">
                             {!! HTML::image(asset("img/loader_dark_big.gif"), 'loading...') !!}
                         </div>

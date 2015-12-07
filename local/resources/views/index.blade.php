@@ -456,10 +456,12 @@
             case 'video_vimeo':
                 return '<iframe src="'+data.url+'" style="width: 100px; height: 100px; vertical-align: middle" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
                 break;
-            case 'local_document':
-                return 'Please, <a href="'+ data.url +'" target="_new">download</a> the document to open...';
+            case 'local_pdf':
+                return '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>';
+
+                //return 'Please, <a href="'+ host + "/uploads/"+ data.url +'" target="_new">download</a> the document to open...';
                 break;
-            case 'remote_document':
+            case 'remote_pdf':
                 return 'Please, <a href="'+ data.url +'" target="_new">download</a> the document to open...';
                 break;
             }
