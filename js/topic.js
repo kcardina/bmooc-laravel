@@ -164,7 +164,7 @@ function displayDiv(type, div, data) {
             loadImg = true;
             break;
         case 'video_youtube':
-            html = '<iframe  src="' + data.url + '?autoplay=0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+            html = '<iframe  id="ytplayer" src="' + data.url + '?autoplay=0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
             break;
         case 'video_vimeo':
             html = '<iframe src="' + data.url + '" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
@@ -356,11 +356,11 @@ function configCurrentInstructionPanel(div, data) {
                 html = "<div class=\"textContainer\"><div class=\"text\"><h2>" + data.title + "</h2>" + data.contents + "</div></div>";
                 break;
             case 'local_image':
-                html = '<a href="' + host + "/uploads/" + data.url + '" data-lightbox="image-1" data-title="Image"><img src="' + host + "/uploads/" + data.url + '"></a>';
+                html = '<img src="' + host + "/uploads/" + data.url + '">';
                 loadImg = true;
                 break;
             case 'remote_image':
-                html = '<a href="' + data.url + '" data-lightbox="image-1" data-title="Image"><img src="' + data.url + '"></a>';
+                html = '<img src="' + data.url + '">';
                 loadImg = true;
                 break;
             case 'video_youtube':

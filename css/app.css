@@ -332,7 +332,7 @@ a:hover{
     cursor: zoom-in;
 }
 
-.artefact iframe{
+.artefact iframe, .artefact object{
 	   pointer-events:none;
 }
 

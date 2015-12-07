@@ -421,6 +421,7 @@
         {!! HTML::script('js/topic.js') !!}
         {!! HTML::script('js/imagesloaded.min.js') !!}
         {!! HTML::script('js/pointer-events-polyfill.js') !!}
+        {!! HTML::script('https://www.youtube.com/iframe_api') !!}
         <script>
             var host = "{{ URL::to('/') }}";
             var newTopic;
@@ -451,6 +452,21 @@
                     }
                 });
                 
+                // if there's a video playing: reset it
+                $(document).on('closed.fndtn.reveal', '#artefact_lightbox_left[data-reveal]', function () {
+                    if($("#artefact_lightbox_left iframe").length > 0){
+                        var div = $("#artefact_lightbox_left .data-item");
+                        div.html(div.html());
+                    }
+                });
+
+                $(document).on('closed.fndtn.reveal', '#artefact_lightbox_right[data-reveal]', function () {
+                    if($("#artefact_lightbox_right iframe").length > 0){
+                        var div = $("#artefact_lightbox_right .data-item");
+                        div.html(div.html());
+                    }
+                });
+
                 $('#new_artefact button.purple').click(showAnswerType); // Click on button in modal window to toggle the answer options
                 $('#new_instruction button.purple').click(showInstructionType); // Click on button in modal window for new instruction
                 $('#artefact_left_contents').hide();
@@ -518,6 +534,7 @@
                     break;
                     }
                 };
+
             });
 
         $(document).foundation({
