@@ -301,12 +301,12 @@
 
                     <h3>Extra information</h3>
                     <div class="form-inline">
-                        <label for="attachment">document:</label>
+                        <label for="attachment">upload an image <small>(jpg, png, gif)</small> or a file <small>(pdf)</small>:</label>
                         <span class="field"><input type="file" id="attachment" name="answer_attachment"/></span>
                     </div>
                     <input type="hidden" name="answer_temp_type" id="answer_temp_type" />
                     <input type="hidden" name="answer_parent" id="answer_parent" />
-                    <input type="submit" class="full purple" value="Create topic"/>
+                    <input type="submit" class="full purple" value="Add (some)thing"/>
                     </form>
                </div>
             </div>
@@ -407,7 +407,7 @@
 
                     <input type="hidden" name="instruction_temp_type" id="instruction_temp_type" />
                     <input type="hidden" name="instruction_parent" id="instruction_parent" />
-                    <input type="submit" class="full purple" value="Create instruction"/>
+                    <input type="submit" class="full purple" value="Add instruction"/>
                     </form>
                </div>
             </div>

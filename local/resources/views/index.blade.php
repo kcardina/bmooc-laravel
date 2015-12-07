@@ -280,12 +280,12 @@
                 
                 <h3>Extra information</h3>
                 <div class="form-inline">
-                    <label for="attachment">document:</label>
+                    <label for="attachment">upload an image <small>(jpg, png, gif)</small> or a file <small>(pdf)</small>:</label>
                     <span class="field"><input type="file" id="attachment" name="topic_attachment"/></span>
                     <small class="error topic_input">3 different tags are required.</small>
                 </div>
                 <input type="hidden" name="topic_temp_type" id="topic_temp_type" />
-                <input type="submit" class="full purple" value="Create topic"/>
+                <input type="submit" class="full purple" value="Add topic"/>
                 </form>
            </div>
         </div>

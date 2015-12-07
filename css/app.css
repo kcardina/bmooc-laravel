@@ -630,6 +630,11 @@ small.error.topic_input{
     width: 100%;
 }
 
+label small{
+    text-transform: none;
+    color: inherit;
+}
+
 /* MODAL */
 .reveal-modal {
 	background: url('../img/bg.png');
