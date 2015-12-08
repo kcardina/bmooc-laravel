@@ -321,6 +321,7 @@ function showInstruction(instruct, current) {
     var prefix = current ? '' : 'new_';
     $('#' + prefix + 'instruction_title').off('click');
     if (instruct) {
+        $('button[data-reveal-id="instruction"]').show();
         $('#' + prefix + 'instruction_title').html('Current instruction: ' + instruct.title);
         $('#' + prefix + 'instruction_title').click(function() {
             $('#' + prefix + 'instruction_content').slideToggle();
@@ -328,6 +329,7 @@ function showInstruction(instruct, current) {
         if (instruct.instruction_type)
             displayDiv(instruct.instruction_type.description, $('#' + prefix + 'instruction_content'), instruct);
     } else {
+        $('button[data-reveal-id="instruction"]').hide();
         //$('#'+prefix+'instruction_title').hide();
         $('#' + prefix + 'instruction_title').html('Current instruction');
         $('#' + prefix + 'instruction_content').html('No specific instruction given');

@@ -39,7 +39,7 @@
                         <h1>{!! HTML::link('/','bMOOC') !!}</h1>
                     </div>
                     <div class="small-8 medium-9 large-10 columns end">
-                        <button class="big information pullup space" data-reveal-id="instruction">Topic instruction</button>
+                        <button class="big information pullup space" data-reveal-id="instruction" style="display: none;">Topic instruction</button>
                         @if (isset($user) && $user->role=="editor")
                         <button class="big plus pullup" data-reveal-id="new_instruction">New instruction</button>
                         @endif
