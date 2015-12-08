@@ -7,6 +7,7 @@
         <link rel="icon" type="img/ico" href="{{ URL::to('/') }}/img/favicon.ico">
         <!-- webfonts -->
         {!! HTML::style('https://fonts.googleapis.com/css?family=Muli:400,300') !!}
+        {!! HTML::style('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css') !!}
         <!-- stylesheets -->
         {!! HTML::style('css/foundation.css') !!}
         {!! HTML::style('css/app.css') !!}
@@ -217,9 +218,10 @@
                     {!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return validation()', 'url'=>'comment', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add (some)thing</h2>
                     <p>add (some)thing to this topic using the form below...</p>
-                    <h3 id="instruction_title" style="cursor: pointer;">Instruction</h3>
-                    <div class="row" data-equalizer>
-                        <div class="small-12 columns text-center panel" data-equalizer-watch id="instruction_content">
+                    <h3 id="instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
+                    <div class="row">
+                        <div class="small-12 columns">
+                            <div class="panel" id="instruction_content"></div>
                         </div>
                     </div>
                     <h3>General information</h3>
@@ -242,31 +244,31 @@
                     </div>
                     <h3>Choose one of the following:</h3>
                     <div class="row large" data-equalizer>
-                       <div class="small-6 large-3 columns text-center" data-equalizer-watch id="answer_button_text">
-                           <button class="square purple type_select" id="type_text">
-                               <img src="{{ asset('img/file_text.png') }}" alt="text" />
-                               text
-                           </button>
-                       </div>
-                       <div class="small-6 large-3 columns text-center" data-equalizer-watch id="answer_button_image">
-                           <button class="square purple type_select" id="type_image">
-                               <img src="{{ asset('img/file_text.png') }}" alt="image" />
-                               image<br /><small>(jpg, png, gif)</small>
-                           </button>
-                       </div>
-                        <div class="small-6 large-3 columns text-center" data-equalizer-watch id="answer_button_video">
-                           <button class="square purple type_select" id="type_video">
-                            <img src="{{ asset('img/file_movie.png') }}" alt="video" />
-                              video<br /><small>(youtube, vimeo)</small>
-                          </button>
-                       </div>
-                        <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="answer_button_file">
-                           <button class="square purple type_select" id="type_file">
-                           <img src="{{ asset('img/file_file.png') }}" alt="file" />
-                           pdf
-                           </button>
-                       </div>
-                    </div>
+                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_text">
+                       <button class="square purple type_select" id="type_text">
+                           <i class="fa fa-align-justify"></i>
+                           text
+                       </button>
+                   </div>
+                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_image">
+                       <button class="square purple type_select" id="type_image">
+                           <i class="fa fa-camera"></i>
+                           image<br /><small>(jpg, png, gif)</small>
+                       </button>
+                   </div>
+                    <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_video">
+                       <button class="square purple type_select" id="type_video">
+                        <i class="fa fa-video-camera"></i>
+                          video<br /><small>(youtube, vimeo)</small>
+                      </button>
+                   </div>
+                    <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="topic_button_file">
+                       <button class="square purple type_select" id="type_file">
+                       <i class="fa fa-file"></i>
+                       document<br /><small>(pdf)</small>
+                       </button>
+                   </div>
+                </div>
                     <div class="row">
                         <div class="small-12 columns">
                             <small class="error answer_input">Please choose one of the file types.</small>
@@ -325,9 +327,10 @@
                     {!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return instruction_validation()', 'url'=>'instruction/new', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add instruction</h2>
                     <p>add an instruction to this topic. The current instruction will be disabled.</p>
-                    <h3 id="new_instruction_title" style="cursor: pointer;">Current Instruction</h3>
-                    <div class="row" data-equalizer>
-                        <div class="small-12 columns text-center panel" data-equalizer-watch id="new_instruction_content">
+                    <h3 id="new_instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
+                    <div class="row">
+                        <div class="small-12 columns">
+                            <div class="panel" id="new_instruction_content"></div>
                         </div>
                     </div>
                     <h3>General information</h3>
@@ -340,44 +343,39 @@
                     </div>
                     <label>Available types (check to enable):</label>
                    <div class="tag-select" id="instruction_types">
-                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="text"><span>Text</span></label></div>
-                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="image"><span>Image</span></label></div>
-                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="video"><span>Video</span></label></div>
-                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="file"><span>Document (pdf)</span></label></div>
+                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="text"><span>Text</span></label></div><!--
+                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="image"><span>Image</span></label></div><!--
+                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="video"><span>Video</span></label></div><!--
+                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="file"><span>Document (pdf)</span></label></div>
                         <small class="error" id="error_types">Select at least 1 available option.</small>
                     </div>
                     <h3>Choose one of the following:</h3>
                     <div class="row large" data-equalizer>
-                       <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_text">
-                           <button class="square purple type_select" id="type_text">
-                               <img src="{{ asset('img/file_text.png') }}" alt="text" />
-                               text
-                           </button>
-                       </div>
-                       <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_image">
-                           <button class="square purple type_select" id="type_image">
-                               <img src="{{ asset('img/file_text.png') }}" alt="image" />
-                               image<br /><small>(jpg, png, gif)</small>
-                           </button>
-                       </div>
-                        <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_video">
-                           <button class="square purple type_select" id="type_video">
-                            <img src="{{ asset('img/file_movie.png') }}" alt="video" />
-                              video<br /><small>(youtube, vimeo)</small>
-                          </button>
-                       </div>
-                        <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="instruction_button_file">
-                           <button class="square purple type_select" id="type_file">
-                           <img src="{{ asset('img/file_file.png') }}" alt="file" />
-                           pdf
-                           </button>
-                       </div>
-                    </div>
-                    <div class="row">
-                        <div class="small-12 columns">
-                            <small class="error instruction_input">Please choose one of the file types.</small>
-                        </div>
-                    </div>
+                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_text">
+                       <button class="square purple type_select" id="type_text">
+                           <i class="fa fa-align-justify"></i>
+                           text
+                       </button>
+                   </div>
+                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_image">
+                       <button class="square purple type_select" id="type_image">
+                           <i class="fa fa-camera"></i>
+                           image<br /><small>(jpg, png, gif)</small>
+                       </button>
+                   </div>
+                    <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_video">
+                       <button class="square purple type_select" id="type_video">
+                        <i class="fa fa-video-camera"></i>
+                          video<br /><small>(youtube, vimeo)</small>
+                      </button>
+                   </div>
+                    <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="instruction_button_file">
+                       <button class="square purple type_select" id="type_file">
+                       <i class="fa fa-file"></i>
+                       document<br /><small>(pdf)</small>
+                       </button>
+                   </div>
+                </div>
                     <div class="row type_input" id="instruction_input_text" style="display: none;">
                             <div class="small-12 columns">
                                     <textarea required rows="5" cols="50" name="instruction_text">Type your instruction text here...</textarea>
@@ -437,14 +435,14 @@
                         case 'right': configAnswer(artefactRight); break;
                     }
                 });
-                $(document).on('open.fndtn.reveal', '#new_artefact[data-reveal]', function () {
+                $(document).on('opened.fndtn.reveal', '#new_artefact[data-reveal]', function () {
                     var modal = $(this);
                     $(document).foundation('equalizer', 'reflow');
                     if(modal.hasClass('slide')){
                         modal.animate({right:'0%'},500);
                     }
                 });
-                $(document).on('open.fndtn.reveal', '#new_instruction[data-reveal]', function () {
+                $(document).on('opened.fndtn.reveal', '#new_instruction[data-reveal]', function () {
                     var modal = $(this);
                     $(document).foundation('equalizer', 'reflow');
                     if(modal.hasClass('slide')){
@@ -452,6 +450,13 @@
                     }
                 });
                 
+                $(document).on('close.fndtn.reveal', '[data-reveal]', function () {
+                var modal = $(this);
+                if(modal.hasClass('slide')){
+                    modal.animate({right:'-50%'},500);
+                }
+            });
+
                 // if there's a video playing: reset it
                 $(document).on('closed.fndtn.reveal', '#artefact_lightbox_left[data-reveal]', function () {
                     if($("#artefact_lightbox_left iframe").length > 0){

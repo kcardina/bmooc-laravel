@@ -67,6 +67,17 @@ html, body{
     margin-right: 0rem;
 }
 
+.panel{
+    background: none;
+    border: 1px solid white;
+    color: white;
+    font-size: 0.8rem;
+}
+
+.panel h1, .panel h2, .panel h3{
+    color: white;
+}
+
 /* TITLES */
 h1, h2, h3{
     font-family: inherit;
@@ -520,6 +531,7 @@ form.sort .form-inline label{
 
 .tag-button{
     display: inline-block;
+    margin-left: -1px;
 }
 
 .purple{
@@ -527,7 +539,7 @@ form.sort .form-inline label{
 }
 
 .purple:hover, .purple.active{
-    background: #03191a !important;
+    background: #03191a;
 }
 
 .tag-button label{
@@ -633,6 +645,21 @@ small.error.topic_input{
 label small{
     text-transform: none;
     color: inherit;
+}
+
+button .fa{
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #751e82;
+}
+
+button.type_select.active{
+    background: #751e82;
+}
+
+button.type_select.active .fa{
+    color: #ffffff;
 }
 
 /* MODAL */

@@ -322,17 +322,25 @@ function showInstruction(instruct, current) {
     $('#' + prefix + 'instruction_title').off('click');
     if (instruct) {
         $('button[data-reveal-id="instruction"]').show();
-        $('#' + prefix + 'instruction_title').html('Current instruction: ' + instruct.title);
+        $('#' + prefix + 'instruction_title').show();
+        $('#' + prefix + 'instruction_content').show();
         $('#' + prefix + 'instruction_title').click(function() {
-            $('#' + prefix + 'instruction_content').slideToggle();
+            $('#' + prefix + 'instruction_content').slideToggle(function(){
+                if ($(this).is(':visible')) {
+                     $('#' + prefix + 'instruction_title').html('&#x25BC; Current instruction');
+                } else {
+                     $('#' + prefix + 'instruction_title').html('&#x25B6; Current instruction');
+                }
+            });
         });
         if (instruct.instruction_type)
             displayDiv(instruct.instruction_type.description, $('#' + prefix + 'instruction_content'), instruct);
     } else {
         $('button[data-reveal-id="instruction"]').hide();
+
         //$('#'+prefix+'instruction_title').hide();
-        $('#' + prefix + 'instruction_title').html('Current instruction');
-        $('#' + prefix + 'instruction_content').html('No specific instruction given');
+        $('#' + prefix + 'instruction_title').hide();
+        $('#' + prefix + 'instruction_content').hide();
     }
 }
 

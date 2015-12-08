@@ -7,6 +7,7 @@
     <link rel="icon" type="img/ico" href="img/favicon.ico">
     <!-- webfonts -->
     {!! HTML::style('https://fonts.googleapis.com/css?family=Muli:400,300') !!}
+    {!! HTML::style('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css') !!}
     <!-- stylesheets -->
     {!! HTML::style('css/foundation.css') !!}
     {!! HTML::style('css/app.css') !!}
@@ -222,25 +223,25 @@
                 <div class="row large" data-equalizer>
                    <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_text">
                        <button class="square purple type_select" id="type_text">
-                           <img src="{{ asset('img/file_text.png') }}" alt="text" />
+                           <i class="fa fa-align-justify"></i>
                            text
                        </button>
                    </div>
                    <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_image">
                        <button class="square purple type_select" id="type_image">
-                           <img src="{{ asset('img/file_text.png') }}" alt="image" />
+                           <i class="fa fa-camera"></i>
                            image<br /><small>(jpg, png, gif)</small>
                        </button>
                    </div>
                     <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_video">
                        <button class="square purple type_select" id="type_video">
-                        <img src="{{ asset('img/file_movie.png') }}" alt="video" />
+                        <i class="fa fa-video-camera"></i>
                           video<br /><small>(youtube, vimeo)</small>
                       </button>
                    </div>
                     <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="topic_button_file">
                        <button class="square purple type_select" id="type_file">
-                       <img src="{{ asset('img/file_file.png') }}" alt="file" />
+                       <i class="fa fa-file"></i>
                        document<br /><small>(pdf)</small>
                        </button>
                    </div>
