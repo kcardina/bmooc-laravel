@@ -111,21 +111,21 @@
 					foreach ($topic->tags as $tag) $t[] = '"'.$tag->tag.'"';
 				?>
     	
-    		<div class="row item" data-id="{{ $topic->id }}" data-authors='["{{ $topic->the_author->name }}"]' data-tags='[{{ implode(',', $t) }}]'>
+    		<div class="row item" data-id="{{ $topic->id }}">
             <div class="large-2 columns">
                 <h2>{{ $topic->title }}</h2>
                 <div class="extra laatste_wijziging">
                    initiated
                    <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->created_at)) }} {{ date('H:i', strtotime($topic->created_at)) }}</span>
                    by
-                   <span class="lightgrey">{{ $topic->the_author->name}}</span><br />
+                    <span class="lightgrey"><a href="/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span><br />
                 </div>
                 @if (isset($topic->last_modified))
                     <div class="extra laatste_wijziging">
                         last addition
                         <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }} {{ date('H:i', strtotime($topic->last_modified)) }}</span>
                         by
-                    <span class="lightgrey">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</span>
+                        <span class="lightgrey"><a href="/search/{{ isset($topic->last_modifier) ? $topic->last_modifier->id : $topic->the_author->id}}">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</a></span>
                     </div>
                 @endif
             </div>
@@ -135,11 +135,11 @@
                    @if (isset($topic->last_modified))
                         <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }}</span>
                         by
-                    <span class="lightgrey">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</span>
+                    <span class="lightgrey"><a href="/search/{{ isset($topic->last_modifier) ? $topic->last_modifier->id : $topic->the_author->id}}">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</a></span>
                     @else
                         <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->created_at)) }}</span>
                         by
-                    <span class="lightgrey">{{ $topic->the_author->name}}</span>
+                    <span class="lightgrey"><a href="/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span>
                     @endif
                 </div>
                 <div class="large-2 columns antwoorden">
@@ -158,7 +158,7 @@
                     tags:
                     <ul class="inline slash">
                     @foreach ($topic->tags as $tag)
-                        <li>{{$tag->tag}}</li>
+                        <li><a href="/search/all/{{$tag->id}}">{{$tag->tag}}</a></li>
                     @endforeach
                     </ul>
                 </div>

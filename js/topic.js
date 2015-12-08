@@ -138,14 +138,14 @@ function displayDiv(type, div, data) {
         var lb = div.attr("data-reveal-id");
         $("#" + lb + " .data-title").html(data.title);
         $("#" + lb + " .data-added").html(parseDate(data.created_at));
-        $("#" + lb + " .data-author").html("<a href=\"#\">" + data.the_author.name + "</a>");
+        $("#" + lb + " .data-author").html("<a href=\""+host+"/search/"+data.the_author.id+ "\">" + data.the_author.name + "</a>");
         if (data.attachment && data.attachment != null) $("#" + lb + " .data-attachment").html("<a href=\""+ host + "/uploads/attachments/" + data.attachment +"\" target=\"_new\">document</a>");
         else $("#" + lb + " .data-attachment").html("No attachment");
     }
     if (data.tags) {
         var list = "";
         $.each(data.tags, function (index, value) {
-            list += "<li><a href=\"#\">" + value.tag + "</a></li>\n";
+            list += "<li><a href=\""+host+"/search/all/"+value.id+ "\">" + value.tag + "</a></li>\n";
         });
         $("#" + lb + " .data-tags").html(list);
     }
@@ -164,7 +164,7 @@ function displayDiv(type, div, data) {
             loadImg = true;
             break;
         case 'video_youtube':
-            html = '<iframe  id="ytplayer" src="' + data.url + '?autoplay=0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+            html = '<iframe  id="ytplayer" src="' + data.url + '?autoplay=0&controls=2" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
             break;
         case 'video_vimeo':
             html = '<iframe src="' + data.url + '" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
