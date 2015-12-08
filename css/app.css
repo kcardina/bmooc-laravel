@@ -17,9 +17,15 @@ html, body{
     background: #080808;
     color: #ffffff;
     font-family: 'Muli', sans-serif;
-    font-size: 12pt;
+    font-size: 10pt;
     font-weight: 300;
     height: 100%;
+}
+
+@media only screen and (min-width: 40.063em) {
+    html, body{
+        font-size: 12pt
+    }
 }
 
 /* GRID */
@@ -46,6 +52,32 @@ html, body{
     height: 100%;
 }
 
+@media only screen and (min-width: 64.063em) {
+    .float-medium{
+        float: none;
+    }
+} /* min-width 1025px, large screens */
+
+.float-medium{
+    float: left;
+    margin-right: 3rem;
+}
+
+.float-medium:last-child{
+    margin-right: 0rem;
+}
+
+.panel{
+    background: none;
+    border: 1px solid white;
+    color: white;
+    font-size: 0.8rem;
+}
+
+.panel h1, .panel h2, .panel h3{
+    color: white;
+}
+
 /* TITLES */
 h1, h2, h3{
     font-family: inherit;
@@ -54,11 +86,17 @@ h1, h2, h3{
 }
 
 h1{
-    font-size: 2.5rem;
+    font-size: 2rem;
     line-height: 2rem;
     margin: 0;
     display: inline-block;
     color: #fff;
+}
+
+@media only screen and (min-width: 40.063em) {
+    h1{
+        font-size: 2.5rem
+    }
 }
 
 h2{
@@ -249,7 +287,7 @@ a:hover{
 
 /* TOPIC PAGINA */
 .fullflex .columns {
-	overflow-y: scroll;
+	overflow-y: auto;
 }
 
 .topic{
@@ -305,22 +343,45 @@ a:hover{
     cursor: zoom-in;
 }
 
-.artefact iframe{
+.artefact iframe, .artefact object{
 	   pointer-events:none;
 }
 
-.artefact_lightbox .row, .artefact_lightbox .columns {
+@media only screen and (min-width: 64.063em) {
+    .artefact_lightbox .columns.large-float, .artefact_lightbox .columns.data-item{
+	    height: 100% !important;
+    }
+
+    .artefact_lightbox button.big{
+        position: absolute;
+        bottom: 0.9375rem;
+        left: 0.9375rem;
+        margin-bottom: 0 !important;
+    }
+
+    .artefact_lightbox img{
+        bottom: 0 !important;
+    }
+} /* large screens */
+
+.artefact_lightbox button.big {
+	margin-bottom: 2rem;
+}
+
+.artefact_lightbox img {
+    bottom: auto;
+}
+
+.artefact_lightbox .row{
     height: 100%;
+}
+
+.artefact_lightbox .columns.data-item{
+    height: 60%;
 }
 
 .details{
     margin-bottom: 2rem;
-}
-
-.artefact_lightbox button{
-	position: absolute;
-    bottom: 0.9375rem;
-    left: 0.9375rem;
 }
 
 .topic nav{
@@ -470,6 +531,7 @@ form.sort .form-inline label{
 
 .tag-button{
     display: inline-block;
+    margin-left: -1px;
 }
 
 .purple{
@@ -477,7 +539,7 @@ form.sort .form-inline label{
 }
 
 .purple:hover, .purple.active{
-    background: #03191a !important;
+    background: #03191a;
 }
 
 .tag-button label{
@@ -527,13 +589,25 @@ button.big{
     margin: 0;
     padding: 0;
     color: #17cf1f;
-    padding-left: 60px;
-    height: 48px;
     font-weight: 400;
+    padding-left: 30px;
+    height: 24px;
+    font-size: 0.9rem;
+}
+
+@media only screen and (min-width: 40.0625em) {
+    button.space{
+        margin-right: 3rem !important;
+    }
+    button.big{
+        padding-left: 60px;
+        height: 48px;
+        font-size: 1rem;
+    }
 }
 
 button.space{
-        margin-right: 3rem;
+        margin-right: 1rem;
 }
 
 button.pullup{
@@ -542,10 +616,12 @@ button.pullup{
 
 button.plus{
     background: url(../img/plus.png) no-repeat left center;
+    background-size: contain;
 }
 
 button.information{
     background: url(../img/info.png) no-repeat left center;
+    background-size: contain;
 }
 
 .error label, label.error{
@@ -564,6 +640,26 @@ button.information{
 
 small.error.topic_input{
     width: 100%;
+}
+
+label small{
+    text-transform: none;
+    color: inherit;
+}
+
+button .fa{
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #751e82;
+}
+
+button.type_select.active{
+    background: #751e82;
+}
+
+button.type_select.active .fa{
+    color: #ffffff;
 }
 
 /* MODAL */

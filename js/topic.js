@@ -138,14 +138,14 @@ function displayDiv(type, div, data) {
         var lb = div.attr("data-reveal-id");
         $("#" + lb + " .data-title").html(data.title);
         $("#" + lb + " .data-added").html(parseDate(data.created_at));
-        $("#" + lb + " .data-author").html("<a href=\"#\">" + data.the_author.name + "</a>");
+        $("#" + lb + " .data-author").html("<a href=\""+host+"/search/"+data.the_author.id+ "\">" + data.the_author.name + "</a>");
         if (data.attachment && data.attachment != null) $("#" + lb + " .data-attachment").html("<a href=\""+ host + "/uploads/attachments/" + data.attachment +"\" target=\"_new\">document</a>");
         else $("#" + lb + " .data-attachment").html("No attachment");
     }
     if (data.tags) {
         var list = "";
         $.each(data.tags, function (index, value) {
-            list += "<li><a href=\"#\">" + value.tag + "</a></li>\n";
+            list += "<li><a href=\""+host+"/search/all/"+value.id+ "\">" + value.tag + "</a></li>\n";
         });
         $("#" + lb + " .data-tags").html(list);
     }
@@ -164,7 +164,7 @@ function displayDiv(type, div, data) {
             loadImg = true;
             break;
         case 'video_youtube':
-            html = '<iframe  src="' + data.url + '?autoplay=0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+            html = '<iframe  id="ytplayer" src="' + data.url + '?autoplay=0&controls=2" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
             break;
         case 'video_vimeo':
             html = '<iframe src="' + data.url + '" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
@@ -321,16 +321,26 @@ function showInstruction(instruct, current) {
     var prefix = current ? '' : 'new_';
     $('#' + prefix + 'instruction_title').off('click');
     if (instruct) {
-        $('#' + prefix + 'instruction_title').html('Current instruction: ' + instruct.title);
+        $('button[data-reveal-id="instruction"]').show();
+        $('#' + prefix + 'instruction_title').show();
+        $('#' + prefix + 'instruction_content').show();
         $('#' + prefix + 'instruction_title').click(function() {
-            $('#' + prefix + 'instruction_content').slideToggle();
+            $('#' + prefix + 'instruction_content').slideToggle(function(){
+                if ($(this).is(':visible')) {
+                     $('#' + prefix + 'instruction_title').html('&#x25BC; Current instruction');
+                } else {
+                     $('#' + prefix + 'instruction_title').html('&#x25B6; Current instruction');
+                }
+            });
         });
         if (instruct.instruction_type)
             displayDiv(instruct.instruction_type.description, $('#' + prefix + 'instruction_content'), instruct);
     } else {
+        $('button[data-reveal-id="instruction"]').hide();
+
         //$('#'+prefix+'instruction_title').hide();
-        $('#' + prefix + 'instruction_title').html('Current instruction');
-        $('#' + prefix + 'instruction_content').html('No specific instruction given');
+        $('#' + prefix + 'instruction_title').hide();
+        $('#' + prefix + 'instruction_content').hide();
     }
 }
 
@@ -356,11 +366,11 @@ function configCurrentInstructionPanel(div, data) {
                 html = "<div class=\"textContainer\"><div class=\"text\"><h2>" + data.title + "</h2>" + data.contents + "</div></div>";
                 break;
             case 'local_image':
-                html = '<a href="' + host + "/uploads/" + data.url + '" data-lightbox="image-1" data-title="Image"><img src="' + host + "/uploads/" + data.url + '"></a>';
+                html = '<img src="' + host + "/uploads/" + data.url + '">';
                 loadImg = true;
                 break;
             case 'remote_image':
-                html = '<a href="' + data.url + '" data-lightbox="image-1" data-title="Image"><img src="' + data.url + '"></a>';
+                html = '<img src="' + data.url + '">';
                 loadImg = true;
                 break;
             case 'video_youtube':

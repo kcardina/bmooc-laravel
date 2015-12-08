@@ -7,6 +7,7 @@
     <link rel="icon" type="img/ico" href="img/favicon.ico">
     <!-- webfonts -->
     {!! HTML::style('https://fonts.googleapis.com/css?family=Muli:400,300') !!}
+    {!! HTML::style('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css') !!}
     <!-- stylesheets -->
     {!! HTML::style('css/foundation.css') !!}
     {!! HTML::style('css/app.css') !!}
@@ -34,10 +35,10 @@
                 </div>
             </div>
             <div class="row large">
-				<div class="small-3 large-2 columns">
+				<div class="small-4 medium-3 large-2 columns">
 					<h1>{!! HTML::link('/','bMOOC') !!}</h1>
 				</div>
-				<div class="small-12 medium-9 large-3 columns">
+				<div class="small-8 medium-9 large-3 columns">
 					@if (isset($user) && $user->role=="editor")
                         <button class="big plus pullup" data-reveal-id="new_topic">Start a new topic</button>
                     @endif
@@ -111,21 +112,21 @@
 					foreach ($topic->tags as $tag) $t[] = '"'.$tag->tag.'"';
 				?>
     	
-    		<div class="row item" data-id="{{ $topic->id }}" data-authors='["{{ $topic->the_author->name }}"]' data-tags='[{{ implode(',', $t) }}]'>
+    		<div class="row item" data-id="{{ $topic->id }}">
             <div class="large-2 columns">
                 <h2>{{ $topic->title }}</h2>
                 <div class="extra laatste_wijziging">
                    initiated
                    <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->created_at)) }} {{ date('H:i', strtotime($topic->created_at)) }}</span>
                    by
-                   <span class="lightgrey">{{ $topic->the_author->name}}</span><br />
+                    <span class="lightgrey"><a href="/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span><br />
                 </div>
                 @if (isset($topic->last_modified))
                     <div class="extra laatste_wijziging">
                         last addition
                         <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }} {{ date('H:i', strtotime($topic->last_modified)) }}</span>
                         by
-                    <span class="lightgrey">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</span>
+                        <span class="lightgrey"><a href="/search/{{ isset($topic->last_modifier) ? $topic->last_modifier->id : $topic->the_author->id}}">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</a></span>
                     </div>
                 @endif
             </div>
@@ -135,11 +136,11 @@
                    @if (isset($topic->last_modified))
                         <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }}</span>
                         by
-                    <span class="lightgrey">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</span>
+                    <span class="lightgrey"><a href="/search/{{ isset($topic->last_modifier) ? $topic->last_modifier->id : $topic->the_author->id}}">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</a></span>
                     @else
                         <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->created_at)) }}</span>
                         by
-                    <span class="lightgrey">{{ $topic->the_author->name}}</span>
+                    <span class="lightgrey"><a href="/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span>
                     @endif
                 </div>
                 <div class="large-2 columns antwoorden">
@@ -158,7 +159,7 @@
                     tags:
                     <ul class="inline slash">
                     @foreach ($topic->tags as $tag)
-                        <li>{{$tag->tag}}</li>
+                        <li><a href="/search/all/{{$tag->id}}">{{$tag->tag}}</a></li>
                     @endforeach
                     </ul>
                 </div>
@@ -222,25 +223,25 @@
                 <div class="row large" data-equalizer>
                    <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_text">
                        <button class="square purple type_select" id="type_text">
-                           <img src="{{ asset('img/file_text.png') }}" alt="text" />
+                           <i class="fa fa-align-justify"></i>
                            text
                        </button>
                    </div>
                    <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_image">
                        <button class="square purple type_select" id="type_image">
-                           <img src="{{ asset('img/file_text.png') }}" alt="image" />
+                           <i class="fa fa-camera"></i>
                            image<br /><small>(jpg, png, gif)</small>
                        </button>
                    </div>
                     <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_video">
                        <button class="square purple type_select" id="type_video">
-                        <img src="{{ asset('img/file_movie.png') }}" alt="video" />
+                        <i class="fa fa-video-camera"></i>
                           video<br /><small>(youtube, vimeo)</small>
                       </button>
                    </div>
                     <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="topic_button_file">
                        <button class="square purple type_select" id="type_file">
-                       <img src="{{ asset('img/file_file.png') }}" alt="file" />
+                       <i class="fa fa-file"></i>
                        document<br /><small>(pdf)</small>
                        </button>
                    </div>
@@ -280,12 +281,12 @@
                 
                 <h3>Extra information</h3>
                 <div class="form-inline">
-                    <label for="attachment">document:</label>
+                    <label for="attachment">upload an image <small>(jpg, png, gif)</small> or a file <small>(pdf)</small>:</label>
                     <span class="field"><input type="file" id="attachment" name="topic_attachment"/></span>
                     <small class="error topic_input">3 different tags are required.</small>
                 </div>
                 <input type="hidden" name="topic_temp_type" id="topic_temp_type" />
-                <input type="submit" class="full purple" value="Create topic"/>
+                <input type="submit" class="full purple" value="Add topic"/>
                 </form>
            </div>
         </div>

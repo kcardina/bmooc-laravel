@@ -7,6 +7,7 @@
         <link rel="icon" type="img/ico" href="{{ URL::to('/') }}/img/favicon.ico">
         <!-- webfonts -->
         {!! HTML::style('https://fonts.googleapis.com/css?family=Muli:400,300') !!}
+        {!! HTML::style('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css') !!}
         <!-- stylesheets -->
         {!! HTML::style('css/foundation.css') !!}
         {!! HTML::style('css/app.css') !!}
@@ -35,11 +36,11 @@
                     </div>
                 </div>
                 <div class="row large">
-                    <div class="small-3 large-2 columns">
+                    <div class="small-4 medium-3 large-2 columns">
                         <h1>{!! HTML::link('/','bMOOC') !!}</h1>
                     </div>
-                    <div class="small-12 large-10 columns end">
-                        <button class="big information pullup space" data-reveal-id="instruction">Topic instruction</button>
+                    <div class="small-8 medium-9 large-10 columns end">
+                        <button class="big information pullup space" data-reveal-id="instruction" style="display: none;">Topic instruction</button>
                         @if (isset($user) && $user->role=="editor")
                         <button class="big plus pullup" data-reveal-id="new_instruction">New instruction</button>
                         @endif
@@ -49,13 +50,13 @@
 
             <div class="topic">
                 <div class="row fullflex">
-                    <div class="small-6 columns full" style="overflow-y: hidden">
+                    <div class="small-6 columns full">
                         <div class="artefact loader" id="artefact_left_loader">
                             {!! HTML::image(asset("img/loader_dark_big.gif"), 'loading...') !!}
                         </div>
                         <div class="artefact" id="artefact_left_contents" data-reveal-id="artefact_lightbox_left"></div>
                     </div>
-                    <div class="small-6 columns full" style="overflow-y: hidden">
+                    <div class="small-6 columns full">
                         <div class="artefact loader" id="artefact_right_loader">
                             {!! HTML::image(asset("img/loader_dark_big.gif"), 'loading...') !!}
                         </div>
@@ -73,23 +74,33 @@
 
         <div id="artefact_lightbox_left" class="artefact_lightbox reveal-modal full" data-reveal role="dialog">
             <div class="row">
-                <div class="large-3 columns">
+                <div class="small-12 large-3 columns large-float">
                     <h2 id="modalTitle" class="data-title">Title</h2>
                     <dl class="details">
-                        <dt>Added</dt>
-                        <dd class="data-added">dd/mm/yy hh:mm</dd>
-                        <dt>By</dt>
-                        <dd class="data-author"><a href="#">John Doe</a></dd>
-                        <dt>Tags</dt>
-                        <dd>
-                            <ul class="inline slash data-tags">
-                                <li><a href="#">tag 1</a></li>
-                                <li><a href="#">tag 2</a></li>
-                                <li><a href="#">tag 3</a></li>
-                            </ul>
-                        </dd>
-                        <dt>Attachment</dt>
-                        <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
+                       <div class="row">
+                           <div class="small-6 medium-3 large-12 columns">
+                            <dt>Added</dt>
+                            <dd class="data-added">dd/mm/yy hh:mm</dd>
+                           </div>
+                           <div class="small-6 medium-3 large-12 columns">
+                            <dt>By</dt>
+                            <dd class="data-author"><a href="#">Author</a></dd>
+                           </div>
+                            <div class="small-6 medium-3 large-12 columns">
+                            <dt>Tags</dt>
+                            <dd>
+                                <ul class="inline slash data-tags">
+                                    <li><a href="#">tag 1</a></li>
+                                    <li><a href="#">tag 2</a></li>
+                                    <li><a href="#">tag 3</a></li>
+                                </ul>
+                            </dd>
+                           </div>
+                           <div class="small-6 medium-3 large-12 columns">
+                            <dt>Attachment</dt>
+                            <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
+                           </div>
+                        </div>
                         <!--
                         <dt>Related</dt>
                         <dd>
@@ -105,7 +116,7 @@
                     <button id="button_add_left" class="big plus" data-reveal-id="new_artefact"  data-artefact="left">Add (some)thing</button>
                     @endif
                 </div>
-                <div class="large-9 columns data-item">
+                <div class="small-12 large-9 columns data-item large-float">
                     Item
                 </div>
             </div>
@@ -114,23 +125,33 @@
 
         <div id="artefact_lightbox_right" class="artefact_lightbox reveal-modal full" data-reveal role="dialog">
             <div class="row">
-                <div class="large-3 columns">
+                <div class="small-12 large-3 columns large-float">
                     <h2 id="modalTitle" class="data-title">Title</h2>
                     <dl class="details">
-                        <dt>Added</dt>
-                        <dd class="data-added">dd/mm/yy hh:mm</dd>
-                        <dt>By</dt>
-                        <dd class="data-author"><a href="#">Author</a></dd>
-                        <dt>Tags</dt>
-                        <dd>
-                            <ul class="inline slash data-tags">
-                                <li><a href="#">tag 1</a></li>
-                                <li><a href="#">tag 2</a></li>
-                                <li><a href="#">tag 3</a></li>
-                            </ul>
-                        </dd>
-                        <dt>Attachment</dt>
-                        <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
+                       <div class="row">
+                           <div class="small-6 medium-3 large-12 columns">
+                            <dt>Added</dt>
+                            <dd class="data-added">dd/mm/yy hh:mm</dd>
+                           </div>
+                           <div class="small-6 medium-3 large-12 columns">
+                            <dt>By</dt>
+                            <dd class="data-author"><a href="#">Author</a></dd>
+                           </div>
+                            <div class="small-6 medium-3 large-12 columns">
+                            <dt>Tags</dt>
+                            <dd>
+                                <ul class="inline slash data-tags">
+                                    <li><a href="#">tag 1</a></li>
+                                    <li><a href="#">tag 2</a></li>
+                                    <li><a href="#">tag 3</a></li>
+                                </ul>
+                            </dd>
+                           </div>
+                           <div class="small-6 medium-3 large-12 columns">
+                            <dt>Attachment</dt>
+                            <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
+                           </div>
+                        </div>
                         <!--
                         <dt>Related</dt>
                         <dd>
@@ -146,7 +167,7 @@
                     <button id="button_add_right" class="big plus" data-reveal-id="new_artefact"  data-artefact="right">Add (some)thing</button>
                     @endif
                 </div>
-                <div class="large-9 columns data-item">
+                <div class="small-12 large-9 columns data-item large-float">
                     Item
                 </div>
             </div>
@@ -155,7 +176,7 @@
 
         <div id="instruction" class="artefact_lightbox reveal-modal full" data-reveal role="dialog">
             <div class="row">
-                <div class="large-3 columns" id="instruction_metadata">
+                <div class="medium-3 columns" id="instruction_metadata">
                     <h2 id="modalTitle" class="data-title">Title</h2>
                     <dl class="details">
                         <dt>Added</dt>
@@ -169,7 +190,7 @@
                     @endif
                     -->
                 </div>
-                <div class="large-9 columns data-item">
+                <div class="medium-9 columns data-item">
                     {!! HTML::image(asset("img/loader_overlay_big.gif"), 'loading...') !!}
                 </div>
             </div>
@@ -197,9 +218,10 @@
                     {!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return validation()', 'url'=>'comment', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add (some)thing</h2>
                     <p>add (some)thing to this topic using the form below...</p>
-                    <h3 id="instruction_title" style="cursor: pointer;">Instruction</h3>
-                    <div class="row" data-equalizer>
-                        <div class="small-12 columns text-center panel" data-equalizer-watch id="instruction_content">
+                    <h3 id="instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
+                    <div class="row">
+                        <div class="small-12 columns">
+                            <div class="panel" id="instruction_content"></div>
                         </div>
                     </div>
                     <h3>General information</h3>
@@ -222,31 +244,31 @@
                     </div>
                     <h3>Choose one of the following:</h3>
                     <div class="row large" data-equalizer>
-                       <div class="small-6 large-3 columns text-center" data-equalizer-watch id="answer_button_text">
-                           <button class="square purple type_select" id="type_text">
-                               <img src="{{ asset('img/file_text.png') }}" alt="text" />
-                               text
-                           </button>
-                       </div>
-                       <div class="small-6 large-3 columns text-center" data-equalizer-watch id="answer_button_image">
-                           <button class="square purple type_select" id="type_image">
-                               <img src="{{ asset('img/file_text.png') }}" alt="image" />
-                               image<br /><small>(jpg, png, gif)</small>
-                           </button>
-                       </div>
-                        <div class="small-6 large-3 columns text-center" data-equalizer-watch id="answer_button_video">
-                           <button class="square purple type_select" id="type_video">
-                            <img src="{{ asset('img/file_movie.png') }}" alt="video" />
-                              video<br /><small>(youtube, vimeo)</small>
-                          </button>
-                       </div>
-                        <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="answer_button_file">
-                           <button class="square purple type_select" id="type_file">
-                           <img src="{{ asset('img/file_file.png') }}" alt="file" />
-                           pdf
-                           </button>
-                       </div>
-                    </div>
+                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_text">
+                       <button class="square purple type_select" id="type_text">
+                           <i class="fa fa-align-justify"></i>
+                           text
+                       </button>
+                   </div>
+                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_image">
+                       <button class="square purple type_select" id="type_image">
+                           <i class="fa fa-camera"></i>
+                           image<br /><small>(jpg, png, gif)</small>
+                       </button>
+                   </div>
+                    <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_video">
+                       <button class="square purple type_select" id="type_video">
+                        <i class="fa fa-video-camera"></i>
+                          video<br /><small>(youtube, vimeo)</small>
+                      </button>
+                   </div>
+                    <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="topic_button_file">
+                       <button class="square purple type_select" id="type_file">
+                       <i class="fa fa-file"></i>
+                       document<br /><small>(pdf)</small>
+                       </button>
+                   </div>
+                </div>
                     <div class="row">
                         <div class="small-12 columns">
                             <small class="error answer_input">Please choose one of the file types.</small>
@@ -281,12 +303,12 @@
 
                     <h3>Extra information</h3>
                     <div class="form-inline">
-                        <label for="attachment">document:</label>
+                        <label for="attachment">upload an image <small>(jpg, png, gif)</small> or a file <small>(pdf)</small>:</label>
                         <span class="field"><input type="file" id="attachment" name="answer_attachment"/></span>
                     </div>
                     <input type="hidden" name="answer_temp_type" id="answer_temp_type" />
                     <input type="hidden" name="answer_parent" id="answer_parent" />
-                    <input type="submit" class="full purple" value="Create topic"/>
+                    <input type="submit" class="full purple" value="Add (some)thing"/>
                     </form>
                </div>
             </div>
@@ -305,9 +327,10 @@
                     {!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return instruction_validation()', 'url'=>'instruction/new', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add instruction</h2>
                     <p>add an instruction to this topic. The current instruction will be disabled.</p>
-                    <h3 id="new_instruction_title" style="cursor: pointer;">Current Instruction</h3>
-                    <div class="row" data-equalizer>
-                        <div class="small-12 columns text-center panel" data-equalizer-watch id="new_instruction_content">
+                    <h3 id="new_instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
+                    <div class="row">
+                        <div class="small-12 columns">
+                            <div class="panel" id="new_instruction_content"></div>
                         </div>
                     </div>
                     <h3>General information</h3>
@@ -320,44 +343,39 @@
                     </div>
                     <label>Available types (check to enable):</label>
                    <div class="tag-select" id="instruction_types">
-                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="text"><span>Text</span></label></div>
-                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="image"><span>Image</span></label></div>
-                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="video"><span>Video</span></label></div>
-                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="file"><span>Document (pdf)</span></label></div>
+                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="text"><span>Text</span></label></div><!--
+                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="image"><span>Image</span></label></div><!--
+                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="video"><span>Video</span></label></div><!--
+                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="file"><span>Document (pdf)</span></label></div>
                         <small class="error" id="error_types">Select at least 1 available option.</small>
                     </div>
                     <h3>Choose one of the following:</h3>
                     <div class="row large" data-equalizer>
-                       <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_text">
-                           <button class="square purple type_select" id="type_text">
-                               <img src="{{ asset('img/file_text.png') }}" alt="text" />
-                               text
-                           </button>
-                       </div>
-                       <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_image">
-                           <button class="square purple type_select" id="type_image">
-                               <img src="{{ asset('img/file_text.png') }}" alt="image" />
-                               image<br /><small>(jpg, png, gif)</small>
-                           </button>
-                       </div>
-                        <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_video">
-                           <button class="square purple type_select" id="type_video">
-                            <img src="{{ asset('img/file_movie.png') }}" alt="video" />
-                              video<br /><small>(youtube, vimeo)</small>
-                          </button>
-                       </div>
-                        <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="instruction_button_file">
-                           <button class="square purple type_select" id="type_file">
-                           <img src="{{ asset('img/file_file.png') }}" alt="file" />
-                           pdf
-                           </button>
-                       </div>
-                    </div>
-                    <div class="row">
-                        <div class="small-12 columns">
-                            <small class="error instruction_input">Please choose one of the file types.</small>
-                        </div>
-                    </div>
+                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_text">
+                       <button class="square purple type_select" id="type_text">
+                           <i class="fa fa-align-justify"></i>
+                           text
+                       </button>
+                   </div>
+                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_image">
+                       <button class="square purple type_select" id="type_image">
+                           <i class="fa fa-camera"></i>
+                           image<br /><small>(jpg, png, gif)</small>
+                       </button>
+                   </div>
+                    <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_video">
+                       <button class="square purple type_select" id="type_video">
+                        <i class="fa fa-video-camera"></i>
+                          video<br /><small>(youtube, vimeo)</small>
+                      </button>
+                   </div>
+                    <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="instruction_button_file">
+                       <button class="square purple type_select" id="type_file">
+                       <i class="fa fa-file"></i>
+                       document<br /><small>(pdf)</small>
+                       </button>
+                   </div>
+                </div>
                     <div class="row type_input" id="instruction_input_text" style="display: none;">
                             <div class="small-12 columns">
                                     <textarea required rows="5" cols="50" name="instruction_text">Type your instruction text here...</textarea>
@@ -387,7 +405,7 @@
 
                     <input type="hidden" name="instruction_temp_type" id="instruction_temp_type" />
                     <input type="hidden" name="instruction_parent" id="instruction_parent" />
-                    <input type="submit" class="full purple" value="Create instruction"/>
+                    <input type="submit" class="full purple" value="Add instruction"/>
                     </form>
                </div>
             </div>
@@ -401,6 +419,7 @@
         {!! HTML::script('js/topic.js') !!}
         {!! HTML::script('js/imagesloaded.min.js') !!}
         {!! HTML::script('js/pointer-events-polyfill.js') !!}
+        {!! HTML::script('https://www.youtube.com/iframe_api') !!}
         <script>
             var host = "{{ URL::to('/') }}";
             var newTopic;
@@ -416,14 +435,14 @@
                         case 'right': configAnswer(artefactRight); break;
                     }
                 });
-                $(document).on('open.fndtn.reveal', '#new_artefact[data-reveal]', function () {
+                $(document).on('opened.fndtn.reveal', '#new_artefact[data-reveal]', function () {
                     var modal = $(this);
                     $(document).foundation('equalizer', 'reflow');
                     if(modal.hasClass('slide')){
                         modal.animate({right:'0%'},500);
                     }
                 });
-                $(document).on('open.fndtn.reveal', '#new_instruction[data-reveal]', function () {
+                $(document).on('opened.fndtn.reveal', '#new_instruction[data-reveal]', function () {
                     var modal = $(this);
                     $(document).foundation('equalizer', 'reflow');
                     if(modal.hasClass('slide')){
@@ -431,6 +450,28 @@
                     }
                 });
                 
+                $(document).on('close.fndtn.reveal', '[data-reveal]', function () {
+                var modal = $(this);
+                if(modal.hasClass('slide')){
+                    modal.animate({right:'-50%'},500);
+                }
+            });
+
+                // if there's a video playing: reset it
+                $(document).on('closed.fndtn.reveal', '#artefact_lightbox_left[data-reveal]', function () {
+                    if($("#artefact_lightbox_left iframe").length > 0){
+                        var div = $("#artefact_lightbox_left .data-item");
+                        div.html(div.html());
+                    }
+                });
+
+                $(document).on('closed.fndtn.reveal', '#artefact_lightbox_right[data-reveal]', function () {
+                    if($("#artefact_lightbox_right iframe").length > 0){
+                        var div = $("#artefact_lightbox_right .data-item");
+                        div.html(div.html());
+                    }
+                });
+
                 $('#new_artefact button.purple').click(showAnswerType); // Click on button in modal window to toggle the answer options
                 $('#new_instruction button.purple').click(showInstructionType); // Click on button in modal window for new instruction
                 $('#artefact_left_contents').hide();
@@ -498,6 +539,7 @@
                     break;
                     }
                 };
+
             });
 
         $(document).foundation({

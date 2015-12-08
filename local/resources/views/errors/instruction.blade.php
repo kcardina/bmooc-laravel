@@ -48,8 +48,7 @@
         </header>
         <div class="columns small-12">
             <p>There is an error creating the instruction: {{ $error->getMessage() }}</p>
-            <p>Please go back to correct the error and try to submit the form again</p>
-        </div>    
+            <p>Please <a href="#" onclick="window.history.back()">go back</a> to correct the error and try to submit the form again</p>
+        </div>
     </body>
 </html>
-            
