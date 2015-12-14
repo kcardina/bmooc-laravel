@@ -12,6 +12,55 @@
     {!! HTML::style('css/app.css') !!}
     <!-- scripts -->
     {!! HTML::script('js/vendor/modernizr.js') !!}
+
+    <style>
+        table, table tr, table tr td{
+            border-collapse: collapse;
+            vertical-align: top;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            border: none;
+            background: none;
+            color: #ffffff;
+        }
+
+        table td{
+            width: 3rem;
+            height: 3rem;
+        }
+
+        table > tbody > tr:before{
+            content: "\2198 ";
+            /* content: "\21B3 "; */
+        }
+
+        table:first-child > tbody > tr:before{
+            content: "\2192 ";
+        }
+
+        article > table:first-child > tbody > tr:before{
+            content: " ";
+        }
+
+        span[data-answers]{
+            border-radius: 50%;
+            display: block;
+            text-align: center;
+            height: 2rem;
+            width: 2rem;
+            background-color: hsl(123, 80%, 45%);
+        }
+
+        article{
+            border-bottom: 1px dotted white;
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
+
+    </style>
+
   </head>
 	<body>
        <div id="container" class="full">
@@ -65,44 +114,135 @@
 		$(document).ready(function(){
             $.getJSON(host + '/json/topic/24/answers', function(data) {
                 var div = $(".datavis .columns");
+                console.log(data);
                 
-                /*var html = "<table><tr><td>";
+                var html = "";
                 
-                function recurse(d){
-                    console.log(d);
-                    html += "<td>";
-                    $.each(d, function(index, value){
-                        html += "<tr>" + value.id + "</tr>";
-                        if(value.answers.length > 0){
-                            recurse(value.answers);
-                        }
-                    });
-                    html += "</td>";
+                function recurseList(d){
+                    html += "<ul>";
+                    html += "<li>" + d.id;
+                    if(d.answers.length > 0){
+                        $.each(d.answers, function(index, value){
+                            recurseList(value);
+                        });
+                    }
+                    html += "</li></ul>";
                 }
                 
-                recurse(data.answers);
-                html += "<td></tr></table>";*/
-                
-                var html = "<table><tr><td>";
-                
-                function recurse(d){
-                    console.log(d);
-                    var i = 0;
-                    $.each(d, function(index, value){
-                        i++
-                        if(value.answers.length > 0){
-                            recurse(value.answers);
-                        } else {
-                            html += "<br />";
-                        }
-                    });
-                    html += i;
+                function recurseTable(d){
+                    html += "<table><tr>";
+                    html += "<td>" + d.id + "</td>";
+                    if(d.answers.length > 0){
+                        html += "<td>";
+                        $.each(d.answers, function(index, value){
+                            recurseTable(value);
+                        });
+                        html += "</td>";
+                    }
+                    html += "</tr></table>";
+                }
+
+                function recurseTableHeatmap(d){
+                    html += "<table><tr>";
+                    html += "<td><span data-answers=\"" + d.answers.length + "\">" + d.id + "<span></td>";
+                    if(d.answers.length > 0){
+                        html += "<td>";
+                        $.each(d.answers, function(index, value){
+                            recurseTableHeatmap(value);
+                        });
+                        html += "</td>";
+                    }
+                    html += "</tr></table>";
                 }
                 
-                recurse(data.answers);
-                html += "<td></tr></table>";
+                function recurseTableHeatmapAnswers(d){
+                    html += "<table><tr>";
+                    html += "<td><span data-answers=\"" + d.answers.length + "\">" + d.answers.length + "<span></td>";
+                    if(d.answers.length > 0){
+                        html += "<td>";
+                        $.each(d.answers, function(index, value){
+                            recurseTableHeatmapAnswers(value);
+                        });
+                        html += "</td>";
+                    }
+                    html += "</tr></table>";
+                }
+
+                function recurseTableHeatmapAnswersCleaned(d){
+                    if(d.answers.length > 0){
+                        html += "<table><tr>";
+                        html += "<td><span data-answers=\"" + d.answers.length + "\">" + d.answers.length + "<span></td>";
+                        html += "<td>";
+                        $.each(d.answers, function(index, value){
+                            recurseTableHeatmapAnswersCleaned(value);
+                        });
+                        html += "</td>";
+                        html += "</tr></table>";
+                    }
+                }
                 
-                div.append(html);
+                function recurseTableHeatmapCleaned(d){
+                    if(d.answers.length > 0){
+                        html += "<table><tr>";
+                        html += "<td><span data-answers=\"" + d.answers.length + "\">&nbsp;<span></td>";
+                        html += "<td>";
+                        $.each(d.answers, function(index, value){
+                            recurseTableHeatmapCleaned(value);
+                        });
+                        html += "</td>";
+                        html += "</tr></table>";
+                    }
+                }
+                
+                html += "<article>"
+                recurseList(data);
+                html += "</article><article>";
+                recurseTable(data);
+                html += "</article><article>";
+                recurseTableHeatmap(data);
+                html += "</article><article>";
+                recurseTableHeatmapAnswers(data);
+                html += "</article><article>";
+                recurseTableHeatmapAnswersCleaned(data);
+                html += "</article><article>";
+                recurseTableHeatmapCleaned(data);
+                html += "</article>";
+
+                div.html(html);
+                
+                /* Style the heatmap */
+                // get the heighest value of data-answers
+                var e = 'span[data-answers]';
+                var max = minMax(e).max;
+
+                var SIZE = true;
+                var COLOR = true;
+
+                $(e).each(function(){
+                    if(COLOR){
+                        $(this).css('background-color', 'hsla(123, 80%, 45%, ' + 1 / max * $(this).attr('data-answers') + ')');
+                    }
+                    if(SIZE){
+                        $(this).css('width', 2 / max * $(this).attr('data-answers') + 'rem');
+                        $(this).css('height', 2 / max * $(this).attr('data-answers') + 'rem');
+                    }
+                });
+
+                //positioning
+                $(e).each(function(){
+                    $(this).css('margin-top', '-' + $(this).height()/2);
+                });
+
+                /* helper function */
+                function minMax(selector) {
+                  var min=null, max=null;
+                  $(selector).each(function() {
+                    var i = parseInt($(this).attr('data-answers') , 10);
+                    if ((min===null) || (i < min)) { min = i; }
+                    if ((max===null) || (i > max)) { max = i; }
+                  });
+                  return {min:min, max:max};
+                }
                 
             });
         });
