@@ -69,6 +69,16 @@
                     <div class="nav" id="nav_down">&darr;</div>
                     <div class="nav" id="nav_left">&larr;</div>
                 </nav>
+                <div class="row buttons">
+                    <div class="small-6 columns">
+                        <button class="small information space" data-reveal-id="artefact_lightbox_left">Details</button>
+                        <button class="small plus" data-artefact="left" data-reveal-id="new_artefact">Add (some)thing</button>
+                    </div>
+                    <div class="small-6 columns">
+                        <button class="small information space" data-reveal-id="artefact_lightbox_right">Details</button>
+                        <button class="small plus" data-artefact="right" data-reveal-id="new_artefact">Add (some)thing</button>
+                    </div>
+                </div>
             </div>
         </div>
 

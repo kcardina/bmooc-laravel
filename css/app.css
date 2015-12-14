@@ -290,10 +290,20 @@ a:hover{
 	overflow-y: auto;
 }
 
+.topic .fullflex{
+    padding-bottom: 2rem;
+}
+
 .topic{
     flex: 1 1 auto;
     position: relative;
     margin: 5rem;
+}
+
+.topic .buttons{
+    position: absolute;
+    /* bottom: -3rem; */
+    bottom: 0;
 }
 
 .artefact{
@@ -344,7 +354,7 @@ a:hover{
 }
 
 .artefact iframe, .artefact object{
-	   pointer-events:none;
+	   /* pointer-events:none; */
 }
 
 @media only screen and (min-width: 64.063em) {
@@ -584,7 +594,13 @@ button.square img{
     margin-bottom: 1rem;
 }
 
-button.big{
+button.small.block{
+    display: block;
+    margin-top: 0.5rem;
+    position: relative;
+}
+
+button.big, button.small{
     border: none;
     margin: 0;
     padding: 0;
