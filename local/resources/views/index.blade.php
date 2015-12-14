@@ -364,21 +364,18 @@
             //bind an event listener to every item.
             // on first click: make an ajax call to load all the images & unbind the event listener
             $(".item").bind('click', loadAnswers);
+
             function loadAnswers(e){
                 $(this).unbind(e);
                 var data = $(this).data();
-                var $this = $(this);
-                $(".antwoorden ul", this).append('<li id="li_loader"><img class="loader" src="{{ asset("img/loader.gif") }}" alt="antwoorden worden geladen..."/></li>');
+                $(".antwoorden ul", $(this)).append('<li id="li_loader"><img class="loader" src="{{ asset("img/loader.gif") }}" alt="antwoorden worden geladen..."/></li>');
+
+                console.log(data['id']);
+                console.log(host + '/json/topic/' + data['id'] + '/answers');
                 $.getJSON(host + '/json/topic/' + data['id'] + '/answers', function(data) {
+                    console.log(data);
                     $('#li_loader').remove();
-                    for(var i = 0; i < data.length; i++){
-                        var answer = data[i];
-                        // voor UX: voeg een loading-spinner toe
-                        var url = answer.url;
-                        var alt = "afbeelding " + i;
-                        // plaats de afbeelding
-                        $(".antwoorden ul", $this).append('<li><a href="' + "{{ URL::to('/topic/') }}/" + answer.id + '">'+ displayAnswer(answer.type.description, answer) +'</a></li>');
-                    }
+
                 });
             }
 
