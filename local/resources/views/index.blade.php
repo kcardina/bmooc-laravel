@@ -11,6 +11,7 @@
     <!-- stylesheets -->
     {!! HTML::style('css/foundation.css') !!}
     {!! HTML::style('css/app.css') !!}
+    {!! HTML::style('css/visualize.css') !!}
     <!-- scripts -->
     {!! HTML::script('js/vendor/modernizr.js') !!}
 
@@ -176,9 +177,9 @@
                 </div>
             </div>
             <div class="extra">
-                <div class="large-10 columns antwoorden">
-                <ul class="inline arrow"></ul>
-            </div>
+                <div class="large-10 columns antwoorden visualize">
+                    <img class="loader" src="{{ asset("img/loader.gif") }}" alt="antwoorden worden geladen..."/>
+                </div>
             </div>
         </div></a>
         <!-- END item -->
@@ -317,6 +318,7 @@
 
     {!! HTML::script('js/vendor/jquery.js') !!}
     {!! HTML::script('js/foundation.min.js') !!}
+    {!! HTML::script('js/visualize.js') !!}
     <script>
         var host = "{{ URL::to('/') }}";
         $(document).foundation();
@@ -367,16 +369,15 @@
 
             function loadAnswers(e){
                 $(this).unbind(e);
+                $this = $(this);
                 var data = $(this).data();
-                $(".antwoorden ul", $(this)).append('<li id="li_loader"><img class="loader" src="{{ asset("img/loader.gif") }}" alt="antwoorden worden geladen..."/></li>');
 
                 $.getJSON(host + '/json/topic/' + data['id'] + '/answers', function(data) {
-                    console.log(data);
-                    $('#li_loader').remove();
-
+                    visualize(data, $(".visualize", $this));
                 });
             }
 
+            /* ZOEKEN */
             $("nav select#auteurs").change(function(){
                 $(".sort").submit();
             });
@@ -395,53 +396,6 @@
                 var keyword = $("nav input#zoek").val();
                 window.location = host + '/search/' + author + '/' + tag + (keyword?'/' + keyword:'');
             }
-
-                    /* FILTERS *//*
-                    $("nav select#auteurs").change(function(){
-                            //toon alles
-                            $(".item").removeClass("hide_author");
-                            var s = $("option:selected", this).text();
-                            // if selectie != all
-                            if(s != $("option:first", this).text()){
-                                    // voor ieder item
-                                    $.each($(".item"), function(){
-                                            var item = $(this);
-                                            var show = 0;
-                                            // kijk of de auteur voorkomt in de lijst
-                                            $.each(item.data('authors'), function(index, value){
-                                                    if(value == s){
-                                                            show++;
-                                                    }
-                                            });
-                                            if(show == 0){
-                                                    item.addClass("hide_author");
-                                            }
-                                    });                    
-                            }
-                    });
-
-                    $("nav select#tags").change(function(){
-                            // toon alles
-                            $(".item").removeClass("hide_tag");
-                            var s = $("option:selected", this).text();
-                            // if selectie != all
-                            if(s != $("option:first", this).text()){
-                                    // voor ieder item
-                                    $.each($(".item"), function(){
-                                            var item = $(this);
-                                            var show = 0;
-                                            // kijk of de auteur voorkomt in de lijst
-                                            $.each(item.data('tags'), function(index, value){
-                                                    if(value == s){
-                                                            show++;
-                                                    }
-                                            });
-                                            if(show == 0){
-                                                    item.addClass("hide_tag");
-                                            }
-                                    });                    
-                            }
-                    });*/
         });
 
         function displayAnswer(type, data) {

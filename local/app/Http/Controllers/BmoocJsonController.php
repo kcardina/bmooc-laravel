@@ -51,6 +51,21 @@ class BmoocJsonController extends Controller
         $parent->answers = BmoocJsonController::buildTree($parent->answers, $parent->id);
         return response()->json($tree);
 	}
+
+    function buildTree($elements, $parentId = 0) {
+        $branch = array();
+        foreach ($elements as $element) {
+            if ($element['parent_id'] == $parentId) {
+                $children = BmoocJsonController::buildTree($element->answers, $element['id']);
+                if ($children) {
+                    //$element['children'] = $children;
+                }
+                $branch[] = $element;
+            }
+        }
+
+        return $branch;
+    }
 	
 
 }
