@@ -27,30 +27,42 @@
         }
 
         table td{
-            width: 3rem;
-            height: 3rem;
+            height: 2rem;
         }
 
         table > tbody > tr:before{
             content: "\2198 ";
             /* content: "\21B3 "; */
+            color: #878787;
+            font-family: arial, sans-serif;
+            font-size: 1.2rem;
         }
 
         table:first-child > tbody > tr:before{
             content: "\2192 ";
+            color: #878787;
+            font-family: arial, sans-serif;
+            font-size: 1.2rem;
         }
 
         article > table:first-child > tbody > tr:before{
-            content: " ";
+            content: none;
         }
 
         span[data-answers]{
             border-radius: 50%;
             display: block;
             text-align: center;
-            height: 2rem;
-            width: 2rem;
-            background-color: hsl(123, 80%, 45%);
+            height: 1rem;
+            width: 1rem;
+            font-weight: 400;
+            border: 1px solid transparent;
+            /* background-color: hsl(123, 80%, 45%); */
+            /* border-color: hsl(123, 80%, 45%); */
+            /* padding-top: 0.4rem; */
+            /* color: hsl(123, 80%, 45%); */
+            /* margin-top: -0.5rem */
+            margin-top: 0.1rem;
         }
 
         article{
@@ -58,7 +70,6 @@
             padding-bottom: 2rem;
             margin-bottom: 2rem;
         }
-
     </style>
 
   </head>
@@ -91,6 +102,12 @@
 		</header>
 
    <div class="datavis">
+       <div class="row">
+           <div class="small-12 columns"></div>
+       </div>
+   </div>
+
+    <div class="datavis2">
        <div class="row">
            <div class="small-12 columns"></div>
        </div>
@@ -215,8 +232,9 @@
                 var e = 'span[data-answers]';
                 var max = minMax(e).max;
 
-                var SIZE = true;
+                var SIZE = false;
                 var COLOR = true;
+                var BORDER = false;
 
                 $(e).each(function(){
                     if(COLOR){
@@ -225,6 +243,9 @@
                     if(SIZE){
                         $(this).css('width', 2 / max * $(this).attr('data-answers') + 'rem');
                         $(this).css('height', 2 / max * $(this).attr('data-answers') + 'rem');
+                    }
+                    if(BORDER){
+                        $(this).css('border-color', 'hsla(123, 80%, 45%, ' + 1 / max * $(this).attr('data-answers') + ')');
                     }
                 });
 
