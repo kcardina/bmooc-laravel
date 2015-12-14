@@ -370,8 +370,6 @@
                 var data = $(this).data();
                 $(".antwoorden ul", $(this)).append('<li id="li_loader"><img class="loader" src="{{ asset("img/loader.gif") }}" alt="antwoorden worden geladen..."/></li>');
 
-                console.log(data['id']);
-                console.log(host + '/json/topic/' + data['id'] + '/answers');
                 $.getJSON(host + '/json/topic/' + data['id'] + '/answers', function(data) {
                     console.log(data);
                     $('#li_loader').remove();
