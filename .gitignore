@@ -1,2 +1,6 @@
 /local/config/services.php
 /local/config/app.php
+
+local/nbproject/project.xml
+
+local/nbproject/project.properties
