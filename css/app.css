@@ -222,6 +222,10 @@ a:hover{
     margin-top: 1.3rem;
 }
 
+.items iframe, .items object{
+	   pointer-events:none;
+}
+
 .item {
     padding-top: 20px;
     padding-bottom: 20px;
