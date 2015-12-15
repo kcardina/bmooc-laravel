@@ -355,12 +355,12 @@
                         </label>
                         <small class="error">Please enter a title for the topic.</small>
                     </div>
-                    <label>Available types (check to enable):</label>
+                    <label>Accepted answer types (click to disable):</label>
                    <div class="tag-select" id="instruction_types">
-                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="text"><span>Text</span></label></div><!--
-                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="image"><span>Image</span></label></div><!--
-                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="video"><span>Video</span></label></div><!--
-                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="file"><span>Document (pdf)</span></label></div>
+                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="text"><span>Text</span></label></div><!--
+                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="image"><span>Image</span></label></div><!--
+                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="video"><span>Video</span></label></div><!--
+                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="file"><span>Document (pdf)</span></label></div>
                         <small class="error" id="error_types">Select at least 1 available option.</small>
                     </div>
                     <h3>Choose one of the following:</h3>
