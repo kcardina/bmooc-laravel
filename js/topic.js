@@ -332,6 +332,16 @@ function configCurrentInstructionPanel(div, data) {
         $("#" + lb + " .data-title").html(data.title);
         $("#" + lb + " .data-added").html(parseDate(data.created_at));
         $("#" + lb + " .data-author").html("<a href=\"#\">" + data.the_author.name + "</a>");
+        // available data-types to icon
+        var answer_types = document.createElement('ul');
+        $(answer_types).addClass('inline slash');
+        var ft = filetypesToIcons(data.available_types);
+
+        $.each(ft, function(key, value){
+            console.log(value);
+            $(answer_types).append("<li>" + value + "</li>\n");
+        });
+        $("#" + lb + " .data-answer-types").html(answer_types);
         if (data.tags) {
             var list = "";
             $.each(data.tags, function (index, value) {
@@ -402,6 +412,43 @@ function parseDate(d) {
     d = d.replace(/-/g, "/");
     d = d.substring(0, d.length - 3);
     return d;
+}
+
+function filetypesToIcons(f){
+    console.log(f);
+    var r = [];
+    $.each(f, function(key, value){
+        var icon = filetypeToIcon(value.id);
+        if($.inArray(icon, r) != 0){
+            r.push(icon);
+        }
+    });
+    return r;
+}
+
+function filetypeToIcon(f){
+    switch(f){
+        case 28: //text
+            return "<i class=\"fa fa-align-justify\"></i>";
+        case 29: //text
+            return "<i class=\"fa fa-camera\"></i>";
+        case 30: //text
+            return "<i class=\"fa fa-camera\"></i>";
+        case 31: //text
+            return "<i class=\"fa fa-video-camera\"></i>";
+        case 32: //text
+            return "<i class=\"fa fa-video-camera\"></i>";
+        case 33: //text
+            return "<i class=\"fa fa-file\"></i>";
+        case 34: //text
+            return "<i class=\"fa fa-file\"></i>";
+        case 37: //text
+            return "<i class=\"fa fa-file\"></i>";
+        case 38: //text
+            return "<i class=\"fa fa-file\"></i>";
+        default:
+            return "";
+    }
 }
 
 //function loadInstruction(id) {
