@@ -214,28 +214,30 @@ function configAnswer(artefact) {
     });
 
     // Beschikbare antwoordtypes klaarmaken
-    $('#answer_button_text').hide();
-    $('#answer_button_image').hide();
-    $('#answer_button_video').hide();
-    $('#answer_button_file').hide();
+    $('#topic_button_text').hide();
+    $('#topic_button_image').hide();
+    $('#topic_button_video').hide();
+    $('#topic_button_file').hide();
     if (artefact.instruction.length > 0) {
         $.each(artefact.instruction[0].available_types, function (k, atype) {
+            console.log('****');
             console.log(k);
             console.log(atype);
             if (atype.description == 'video_vimeo' || atype.description == 'video_youtube')
-                $('#answer_button_video').show();
+                $('#topic_button_video').show();
             if (atype.description == 'local_image' || atype.description == 'remote_image')
-                $('#answer_button_image').show();
+                $('#topic_button_image').show();
             if (atype.description == 'local_pdf' || atype.description == 'remote_pdf')
-                $('#answer_button_file').show();
+                $('#topic_button_file').show();
             if (atype.description == 'text')
-                $('#answer_button_text').show();
+                $('#topic_button_text').show();
         });
     } else {
-        $('#answer_button_video').show();
-        $('#answer_button_image').show();
-        $('#answer_button_file').show();
-        $('#answer_button_text').show();
+        console.log('!!!!!!');
+        $('#topic_button_video').show();
+        $('#topic_button_image').show();
+        $('#topic_button_file').show();
+        $('#topic_button_text').show();
     }
     console.log(artefact);
     $('#answer_parent').val(artefact.artefact.id);

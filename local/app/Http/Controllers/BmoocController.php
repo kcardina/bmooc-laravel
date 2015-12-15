@@ -412,7 +412,7 @@ class BmoocController extends Controller {
                             if (in_array($extension, ['pdf'])) {
                                 $destinationPath = 'uploads';
                                 $filename = base64_encode(Input::file('instruction_upload')->getClientOriginalName());
-                                Input::file('topic_upload')->move($destinationPath, $filename);
+                                Input::file('instruction_upload')->move($destinationPath, $filename);
                                 $instruction->url = $filename;
                                 $at = ArtefactType::where('description', 'local_pdf')->first();
                             } else
