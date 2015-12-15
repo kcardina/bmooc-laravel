@@ -1,6 +1,9 @@
 var artefactLeft = null;
 var artefactRight = null;
 
+var temp_future = null;
+var future = null;
+
 function showArtefactLeft(id, answer, prev) {
     if (!answer)
         answer = 0;
@@ -15,6 +18,7 @@ function showArtefactLeft(id, answer, prev) {
     $.getJSON(host + "/json/topic/" + id, function (result) {
         artefactLeft = result;
         // make sure to go back to the right answer when using the left arrow
+        // convert from id to number of answer
         if (prev != null) {
             for (var i = 0; i < result.answers.length; i++) {
                 if (result.answers[i].id == prev)
@@ -34,46 +38,19 @@ function showArtefactLeft(id, answer, prev) {
             showArrowRight();
             showArrowUp(-1);
             $('#artefact_right_loader').hide();
+            $('#artefact_right_buttons').hide();
         }
 
         displayDiv(result.artefact.type.description, $('#artefact_left_contents'), result.artefact);
         showArrowLeft(result.artefact.parent_id);
         //configAnswer(artefactLeft);
         configNewInstructionPanel(artefactLeft);
-        configCurrentInstructionPanel($('#instruction'), artefactLeft.instruction[0]); // Panel for current instruction
-
-        /*
-         var al = artefactLeft.artefact;
-         $('#artefact_left_title').html(al.title);
-         if (al.title != null) $('#artefact_left_description').html(al.contents);
-         if (al.last_modifier) $('#artefact_left_last_author').html('<a href="' + host + '/search/author/'+al.last_modifier.id+'">'+al.last_modifier.name+'</a>');
-         else $('#artefact_left_last_author').html('<a href="' + host + '/search/author/'+al.the_author.id+'">'+al.the_author.name+'</a>');
-         if (al.the_author) $('#artefact_left_author').html('<a href="' + host + '/search/author/'+al.the_author.id+'">'+al.the_author.name+'</a>');
-         $('#artefact_left_tags li').remove();
-         $.each(al.tags, function(k, v) {
-         $('#artefact_left_tags').append('<li><a href="' + host + '/search/'+v.id+'">'+v.tag+'</a></li>');
-         });
-         
-         $('#artefact_left_related li').remove();
-         $.each(artefactLeft.related, function(k, v) {
-         $('#artefact_left_related').append('<li><a href="' + host + '/topic/'+v.id+'">'+v.title+'</a></li>');
-         });
-         */
-
-        /*if (answer != null && result.answers.length > answer) {
-         showArtefactRight(answer);
-         if (answer > 0) showArrowUp(answer-1);
-         showArrowDown(answer+1);
-         } else {
-         $('#artefact_right_contents').fadeOut();
-         $('#nav_up').fadeOut();
-         $('#nav_right').fadeOut();
-         $('#nav_down').fadeOut();
-         }*/
+        configCurrentInstructionPanel($('#instruction'), artefactLeft.instruction[0]);
     });
 }
 
 function showArtefactRight(number_of_answer) {
+    temp_future = number_of_answer;
     hideDiv($('#artefact_right_contents'));
 
     var idRight = artefactLeft.answers[number_of_answer].id;
@@ -84,6 +61,9 @@ function showArtefactRight(number_of_answer) {
             displayDiv(result.artefact.type.description, $('#artefact_right_contents'), result.artefact);
         else
             displayDiv('text', $('#artefact_right_contents'), result.artefact);
+
+        $('#artefact_right_buttons').show();
+
 
         if (number_of_answer >= 0)
             showArrowUp(number_of_answer - 1);
@@ -195,27 +175,31 @@ function displayDiv(type, div, data) {
 
 function showArrowLeft(id) {
     if (id != null) {
-        $('#nav_left').html('<a href="#" onclick="showArtefactLeft(' + id + ',null,' + artefactLeft.artefact.id + ')">&larr;</a>').fadeIn();
+        $('#nav_left').html('<a href="#" onclick="showArtefactLeft(' + id + ',null,' + artefactLeft.artefact.id + '); future = temp_future;">&larr;</a>').fadeIn();
     } else
         $('#nav_left').fadeOut().html('');
 }
 
 function showArrowUp(id) {
     if (id >= 0) {
-        $('#nav_up').html('<a href="#" onclick="showArtefactRight(' + id + ')">&uarr;</a>').fadeIn();
+        $('#nav_up').html('<a href="#" onclick="showArtefactRight(' + id + '); future = null;">&uarr;</a>').fadeIn();
     } else
         $('#nav_up').fadeOut().html('');
 }
 
 function showArrowDown(number_of_answer) {
     if (artefactLeft.answers.length - 1 >= number_of_answer)
-        $('#nav_down').html('<a href="#" onclick="showArtefactRight(' + number_of_answer + ')">&darr;</a>').fadeIn();
+        $('#nav_down').html('<a href="#" onclick="showArtefactRight(' + number_of_answer + '); future = null;">&darr;</a>').fadeIn();
     else
         $('#nav_down').fadeOut().html('');
 }
 function showArrowRight(id) {
     if (id != null) {
-        $('#nav_right').html('<a href="#" onclick="showArtefactLeft(' + id + ', 0); ">&rarr;</a>').fadeIn();
+        if(future != null){
+            $('#nav_right').html('<a href="#" onclick="showArtefactLeft(' + id + ', ' + future + '); future = null;">&rarr;</a>').fadeIn();
+        } else {
+            $('#nav_right').html('<a href="#" onclick="showArtefactLeft(' + id + ',0 ); ">&rarr;</a>').fadeIn();
+        }
     } else
         $('#nav_right').fadeOut().html('');
 }
@@ -354,6 +338,16 @@ function configCurrentInstructionPanel(div, data) {
         $("#" + lb + " .data-title").html(data.title);
         $("#" + lb + " .data-added").html(parseDate(data.created_at));
         $("#" + lb + " .data-author").html("<a href=\"#\">" + data.the_author.name + "</a>");
+        // available data-types to icon
+        var answer_types = document.createElement('ul');
+        $(answer_types).addClass('inline slash');
+        var ft = filetypesToIcons(data.available_types);
+
+        $.each(ft, function(key, value){
+            console.log(value);
+            $(answer_types).append("<li>" + value + "</li>\n");
+        });
+        $("#" + lb + " .data-answer-types").html(answer_types);
         if (data.tags) {
             var list = "";
             $.each(data.tags, function (index, value) {
@@ -424,6 +418,43 @@ function parseDate(d) {
     d = d.replace(/-/g, "/");
     d = d.substring(0, d.length - 3);
     return d;
+}
+
+function filetypesToIcons(f){
+    console.log(f);
+    var r = [];
+    $.each(f, function(key, value){
+        var icon = filetypeToIcon(value.id);
+        if($.inArray(icon, r) != 0){
+            r.push(icon);
+        }
+    });
+    return r;
+}
+
+function filetypeToIcon(f){
+    switch(f){
+        case 28: //text
+            return "<i class=\"fa fa-align-justify\"></i>";
+        case 29: //text
+            return "<i class=\"fa fa-camera\"></i>";
+        case 30: //text
+            return "<i class=\"fa fa-camera\"></i>";
+        case 31: //text
+            return "<i class=\"fa fa-video-camera\"></i>";
+        case 32: //text
+            return "<i class=\"fa fa-video-camera\"></i>";
+        case 33: //text
+            return "<i class=\"fa fa-file\"></i>";
+        case 34: //text
+            return "<i class=\"fa fa-file\"></i>";
+        case 37: //text
+            return "<i class=\"fa fa-file\"></i>";
+        case 38: //text
+            return "<i class=\"fa fa-file\"></i>";
+        default:
+            return "";
+    }
 }
 
 //function loadInstruction(id) {

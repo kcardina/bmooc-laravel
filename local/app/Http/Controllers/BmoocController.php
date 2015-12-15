@@ -573,10 +573,10 @@ class BmoocController extends Controller {
             
             // Bijlage verwerken
             if (Input::file('topic_attachment') && Input::file('topic_attachment')->isValid()) {
-                $extension = strtolower(Input::file('topic_upload')->getClientOriginalExtension());
+                $extension = strtolower(Input::file('topic_attachment')->getClientOriginalExtension());
                 if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg', 'pdf'])) {
-                    $destinationPath = 'uploads';
-                    $filename = base64_encode(Input::file('topic_attachment')->getClientOriginalName());
+                    $destinationPath = 'uploads/attachments';
+                    $filename = base64_encode(Input::file('topic_attachment')->getClientOriginalName()).'.'.$extension;
                     Input::file('topic_attachment')->move($destinationPath, $filename);
                     //$topic->url = $filename;
                     $topic->attachment = $filename;

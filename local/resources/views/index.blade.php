@@ -362,11 +362,12 @@
                     $('#li_loader').remove();
                     for(var i = 0; i < data.length; i++){
                         var answer = data[i];
+                        console.log(answer);
                         // voor UX: voeg een loading-spinner toe
                         var url = answer.url;
                         var alt = "afbeelding " + i;
                         // plaats de afbeelding
-                        $(".antwoorden ul", $this).append('<li><a href="' + "{{ URL::to('/topic/') }}/" + answer.id + '">'+ displayAnswer(answer.type.description, answer) +'</a></li>');
+                        $(".antwoorden ul", $this).append('<a href="' + "{{ URL::to('/topic/') }}/" + answer.id + '"><li>'+ displayAnswer(answer.type.description, answer) +'</li></a>');
                     }
                 });
             }
@@ -389,53 +390,6 @@
                 var keyword = $("nav input#zoek").val();
                 window.location = host + '/search/' + author + '/' + tag + (keyword?'/' + keyword:'');
             }
-
-                    /* FILTERS *//*
-                    $("nav select#auteurs").change(function(){
-                            //toon alles
-                            $(".item").removeClass("hide_author");
-                            var s = $("option:selected", this).text();
-                            // if selectie != all
-                            if(s != $("option:first", this).text()){
-                                    // voor ieder item
-                                    $.each($(".item"), function(){
-                                            var item = $(this);
-                                            var show = 0;
-                                            // kijk of de auteur voorkomt in de lijst
-                                            $.each(item.data('authors'), function(index, value){
-                                                    if(value == s){
-                                                            show++;
-                                                    }
-                                            });
-                                            if(show == 0){
-                                                    item.addClass("hide_author");
-                                            }
-                                    });                    
-                            }
-                    });
-
-                    $("nav select#tags").change(function(){
-                            // toon alles
-                            $(".item").removeClass("hide_tag");
-                            var s = $("option:selected", this).text();
-                            // if selectie != all
-                            if(s != $("option:first", this).text()){
-                                    // voor ieder item
-                                    $.each($(".item"), function(){
-                                            var item = $(this);
-                                            var show = 0;
-                                            // kijk of de auteur voorkomt in de lijst
-                                            $.each(item.data('tags'), function(index, value){
-                                                    if(value == s){
-                                                            show++;
-                                                    }
-                                            });
-                                            if(show == 0){
-                                                    item.addClass("hide_tag");
-                                            }
-                                    });                    
-                            }
-                    });*/
         });
 
         function displayAnswer(type, data) {
@@ -444,15 +398,15 @@
                 return '<p style="width: 100px; font-size: 8px; overflow:hidden; display: inline-block">' + data.contents + '</p>';
                 break;
             case 'local_image':
-                return '<img src="'+ host + "/uploads/"+data.url+'">';
+                return '<img src="'+ host + "/uploads/"+data.url+'"/>';
                 break;
             case 'remote_image':
-                return '<img src="'+data.url+'">';
+                return '<img src="'+data.url+'"/>';
                 break;
             case 'video_youtube':
                 //return '<iframe  src="'+data.url+'?autoplay=0" style="width: 100px; height: 100px; vertical-align: middle" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
                 var thumbnail = data.url.replace('www.youtube.com/embed', 'img.youtube.com/vi');
-                return '<img src="'+ thumbnail +'/0.jpg">';
+                return '<img src="'+ thumbnail +'/0.jpg"/>';
                 break;
             case 'video_vimeo':
                 return '<iframe src="'+data.url+'" style="width: 100px; height: 100px; vertical-align: middle" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';

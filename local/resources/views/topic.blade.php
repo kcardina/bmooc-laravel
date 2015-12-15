@@ -69,6 +69,16 @@
                     <div class="nav" id="nav_down">&darr;</div>
                     <div class="nav" id="nav_left">&larr;</div>
                 </nav>
+                <div class="row buttons">
+                    <div class="small-6 columns" id="artefect_left_buttons">
+                        <button class="small information space" data-reveal-id="artefact_lightbox_left">Details</button>
+                        <button class="small plus" data-artefact="left" data-reveal-id="new_artefact">Add (some)thing</button>
+                    </div>
+                    <div class="small-6 columns" id="artefact_right_buttons">
+                        <button class="small information space" data-reveal-id="artefact_lightbox_right">Details</button>
+                        <button class="small plus" data-artefact="right" data-reveal-id="new_artefact">Add (some)thing</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -183,6 +193,10 @@
                         <dd class="data-added">dd/mm/yy hh:mm</dd>
                         <dt>By</dt>
                         <dd class="data-author"><a href="#">Author</a></dd>
+                        @if (isset($user) && $user->role == 'editor')
+                        <dt>Accepted answer types</dt>
+                        <dd class="data-answer-types"></dd>
+                        @endif
                     </dl>
                     <!-- 
                     @if (isset($user) && $user->role == 'editor')
@@ -341,12 +355,12 @@
                         </label>
                         <small class="error">Please enter a title for the topic.</small>
                     </div>
-                    <label>Available types (check to enable):</label>
+                    <label>Accepted answer types (click to disable):</label>
                    <div class="tag-select" id="instruction_types">
-                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="text"><span>Text</span></label></div><!--
-                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="image"><span>Image</span></label></div><!--
-                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="video"><span>Video</span></label></div><!--
-                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" value="file"><span>Document (pdf)</span></label></div>
+                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="text"><span>Text</span></label></div><!--
+                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="image"><span>Image</span></label></div><!--
+                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="video"><span>Video</span></label></div><!--
+                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="file"><span>Document (pdf)</span></label></div>
                         <small class="error" id="error_types">Select at least 1 available option.</small>
                     </div>
                     <h3>Choose one of the following:</h3>

@@ -222,6 +222,10 @@ a:hover{
     margin-top: 1.3rem;
 }
 
+.items iframe, .items object{
+	   pointer-events:none;
+}
+
 .item {
     padding-top: 20px;
     padding-bottom: 20px;
@@ -251,23 +255,22 @@ a:hover{
 } /* min-width 1025px, large screens */
 
 .item .antwoorden {
-    white-space:nowrap;
-    overflow: hidden;
-}
-
-.item .antwoorden li{
-    height: 100px;
+    /*white-space:nowrap;
+    overflow: hidden;*/
 }
 
 .item .antwoorden a{
     border-bottom: none;
 }
 
+.item .antwooren li {
+}
+
 .item .antwoorden li *{
-    height: 100%;
+    height: 100px;
     width: auto;
-    padding: 0;
-    margin: 0 10px;
+    padding: 1rem;
+    vertical-align: top;
 }
 
 .item .antwoorden li p{
@@ -290,10 +293,20 @@ a:hover{
 	overflow-y: auto;
 }
 
+.topic .fullflex{
+    padding-bottom: 2rem;
+}
+
 .topic{
     flex: 1 1 auto;
     position: relative;
     margin: 5rem;
+}
+
+.topic .buttons{
+    position: absolute;
+    /* bottom: -3rem; */
+    bottom: 0;
 }
 
 .artefact{
@@ -344,7 +357,7 @@ a:hover{
 }
 
 .artefact iframe, .artefact object{
-	   pointer-events:none;
+	   /* pointer-events:none; */
 }
 
 @media only screen and (min-width: 64.063em) {
@@ -584,7 +597,13 @@ button.square img{
     margin-bottom: 1rem;
 }
 
-button.big{
+button.small.block{
+    display: block;
+    margin-top: 0.5rem;
+    position: relative;
+}
+
+button.big, button.small{
     border: none;
     margin: 0;
     padding: 0;
