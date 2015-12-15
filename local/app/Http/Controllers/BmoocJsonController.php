@@ -46,17 +46,22 @@ class BmoocJsonController extends Controller
 	}
 	
 	public function answers($id) {
-		$artefact = Artefact::with(['answers', 'type'])->find($id);
-		$responses = array($artefact);
-		while (count($artefact->answers)>0) {
-			$af = Artefact::with('type')->find($artefact->answers[0]->id);
-			$artefact = $artefact->answers[0];
-			$responses[] = $af;
-		}
-		//dd($responses);
-		
-		return response()->json($responses);
+        $parent = Artefact::with(['answers', 'type'])->find($id);
+        $answers = array();
+        array_push($answers, $parent);
+        $answers = array_merge($answers, BmoocJsonController::buildList($parent));
+        return response()->json($answers);
 	}
+
+    private function buildList($parent){
+        $list = array();
+        foreach($parent->answers as $child){
+            $child = Artefact::with(['answers', 'type'])->find($child->id);
+            array_push($list, $child);
+            $list = array_merge($list, BmoocJsonController::buildList($child));
+        }
+        return $list;
+    }
 	
 
 }

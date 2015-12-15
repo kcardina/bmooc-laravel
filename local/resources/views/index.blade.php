@@ -362,6 +362,7 @@
                     $('#li_loader').remove();
                     for(var i = 0; i < data.length; i++){
                         var answer = data[i];
+                        console.log(answer);
                         // voor UX: voeg een loading-spinner toe
                         var url = answer.url;
                         var alt = "afbeelding " + i;
@@ -397,15 +398,15 @@
                 return '<p style="width: 100px; font-size: 8px; overflow:hidden; display: inline-block">' + data.contents + '</p>';
                 break;
             case 'local_image':
-                return '<img src="'+ host + "/uploads/"+data.url+'">';
+                return '<img src="'+ host + "/uploads/"+data.url+'"/>';
                 break;
             case 'remote_image':
-                return '<img src="'+data.url+'">';
+                return '<img src="'+data.url+'"/>';
                 break;
             case 'video_youtube':
                 //return '<iframe  src="'+data.url+'?autoplay=0" style="width: 100px; height: 100px; vertical-align: middle" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
                 var thumbnail = data.url.replace('www.youtube.com/embed', 'img.youtube.com/vi');
-                return '<img src="'+ thumbnail +'/0.jpg">';
+                return '<img src="'+ thumbnail +'/0.jpg"/>';
                 break;
             case 'video_vimeo':
                 return '<iframe src="'+data.url+'" style="width: 100px; height: 100px; vertical-align: middle" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
