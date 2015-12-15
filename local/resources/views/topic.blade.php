@@ -70,11 +70,11 @@
                     <div class="nav" id="nav_left">&larr;</div>
                 </nav>
                 <div class="row buttons">
-                    <div class="small-6 columns">
+                    <div class="small-6 columns" id="artefect_left_buttons">
                         <button class="small information space" data-reveal-id="artefact_lightbox_left">Details</button>
                         <button class="small plus" data-artefact="left" data-reveal-id="new_artefact">Add (some)thing</button>
                     </div>
-                    <div class="small-6 columns">
+                    <div class="small-6 columns" id="artefact_right_buttons">
                         <button class="small information space" data-reveal-id="artefact_lightbox_right">Details</button>
                         <button class="small plus" data-artefact="right" data-reveal-id="new_artefact">Add (some)thing</button>
                     </div>

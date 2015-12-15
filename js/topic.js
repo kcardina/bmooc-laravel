@@ -38,6 +38,7 @@ function showArtefactLeft(id, answer, prev) {
             showArrowRight();
             showArrowUp(-1);
             $('#artefact_right_loader').hide();
+            $('#artefact_right_buttons').hide();
         }
 
         displayDiv(result.artefact.type.description, $('#artefact_left_contents'), result.artefact);
@@ -60,6 +61,9 @@ function showArtefactRight(number_of_answer) {
             displayDiv(result.artefact.type.description, $('#artefact_right_contents'), result.artefact);
         else
             displayDiv('text', $('#artefact_right_contents'), result.artefact);
+
+        $('#artefact_right_buttons').show();
+
 
         if (number_of_answer >= 0)
             showArrowUp(number_of_answer - 1);
