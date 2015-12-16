@@ -26,7 +26,8 @@ return [
     |
     */
 
-    'url' => 'http://bmooc.local',
+    //'url' => 'http://bmooc.local',
+    'url' => 'http://localhost/bmooc-laravel',
 
     /*
     |--------------------------------------------------------------------------

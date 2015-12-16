@@ -107,6 +107,10 @@
                             </dd>
                            </div>
                            <div class="small-6 medium-3 large-12 columns">
+                            <dt>Copyright</dt>
+                            <dd class="data-copyright"></dd>
+                           </div>
+                           <div class="small-6 medium-3 large-12 columns">
                             <dt>Attachment</dt>
                             <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
                            </div>
@@ -156,6 +160,10 @@
                                     <li><a href="#">tag 3</a></li>
                                 </ul>
                             </dd>
+                           </div>
+                           <div class="small-6 medium-3 large-12 columns">
+                            <dt>Copyright</dt>
+                            <dd class="data-copyright"></dd>
                            </div>
                            <div class="small-6 medium-3 large-12 columns">
                             <dt>Attachment</dt>
@@ -316,7 +324,9 @@
                     </div>
 
                     <h3>Extra information</h3>
-                    <div class="form-inline">
+                    <div class="field_input">
+                            <label for="copyright" class="form-left-label">copyright:</label>
+                            <span class="field"><input type="text" name="answer_copyright" id="copyright"/>
                         <label for="attachment">upload an image <small>(jpg, png, gif)</small> or a file <small>(pdf)</small>:</label>
                         <span class="field"><input type="file" id="attachment" name="answer_attachment"/></span>
                     </div>

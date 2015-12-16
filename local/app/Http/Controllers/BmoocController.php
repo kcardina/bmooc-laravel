@@ -223,6 +223,8 @@ class BmoocController extends Controller {
                 if ($request->input('answer_title')) $comment->title = $request->input('answer_title');
                 else $comment->title = 'No title';
 
+                if ($request->input('answer_copyright')) $comment->copyright = $request->input('answer_copyright');
+
                 // De eigenlijke inhoud verwerken en het type bepalen en juist zetten
                 $at = null;
                 switch ($request->input('answer_temp_type')) {
@@ -343,7 +345,8 @@ class BmoocController extends Controller {
                 
             } catch (Exception $e) {
                 DB::rollback();
-                return view('errors.topic', ['error' => $e]);
+                dd($e);
+                //return view('errors.topic', ['error' => $e]);
             }
 
         }
@@ -504,6 +507,8 @@ class BmoocController extends Controller {
 
             if ($request->input('topic_title')) $topic->title = $request->input('topic_title');
             else $topic->title = 'No title';
+
+            if ($request->input('topic_copyright')) $topic->copyright = $request->input('topic_copyright');
 
             // De eigenlijke inhoud verwerken en het type bepalen en juist zetten
             $at = null;

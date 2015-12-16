@@ -119,6 +119,7 @@ function displayDiv(type, div, data) {
         $("#" + lb + " .data-title").html(data.title);
         $("#" + lb + " .data-added").html(parseDate(data.created_at));
         $("#" + lb + " .data-author").html("<a href=\""+host+"/search/"+data.the_author.id+ "\">" + data.the_author.name + "</a>");
+        $("#" + lb + " .data-copyright").html(data.copyright);
         if (data.attachment && data.attachment != null) $("#" + lb + " .data-attachment").html("<a href=\""+ host + "/uploads/attachments/" + data.attachment +"\" target=\"_new\">document</a>");
         else $("#" + lb + " .data-attachment").html("No attachment");
     }
