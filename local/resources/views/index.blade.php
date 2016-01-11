@@ -280,7 +280,9 @@
 
                 
                 <h3>Extra information</h3>
-                <div class="form-inline">
+                <div class="field_input">
+                        <label for="copyright" class="form-left-label">copyright:</label>
+                        <span class="field"><input type="text" name="topic_copyright" id="copyright"/>
                     <label for="attachment">upload an image <small>(jpg, png, gif)</small> or a file <small>(pdf)</small>:</label>
                     <span class="field"><input type="file" id="attachment" name="topic_attachment"/></span>
                     <small class="error topic_input">3 different tags are required.</small>
