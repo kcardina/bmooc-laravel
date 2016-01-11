@@ -46,7 +46,7 @@
                         <button class="big plus pullup" data-help="<p>Use this button to create a topic.</p><p>A topic is a cluster, a collection of online things that join into some form or shape. This can be a conversation, a discussion, a tension or a kind of unspeakable resonance.</p><p>After creating a topic, all users can add (some)thing to the topic. You can specify or modify an instruction by opening the topic and clicking 'add instruction'.</p>" data-reveal-id="new_topic">Start a new topic</button>
                     @endif
 				</div>
-				<div class="large-7 columns" data-help="search">
+				<div class="large-7 columns" data-help="<p>Use these fields to search for contributions by (a combination of) author, tag or keyword.</p>">
                    <nav class="sort">
                      <form class="sort">
                       <div class="row sort">
@@ -308,8 +308,6 @@
             <p>Navigate a topic by moving the images/artefacts/things. Intervene, explore, trouble, clarify or contribute to a topic by adding (some)thing. What you can add, depends on the topic. This could be an audio recording, a piece of text or a mystery. Push "add (some)thing" wherever you want to add/intervene/contribute, and then follow the instructions of the topic.</p>
           <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
-
-    <div class="help-msg">hello</div>
 
     {!! HTML::script('js/vendor/jquery.js') !!}
     {!! HTML::script('js/foundation.min.js') !!}

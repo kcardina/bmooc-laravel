@@ -140,6 +140,9 @@ nav.sort{
     margin-top: 2px;
 }
 
+.logout{
+    font-weight: 400;
+}
 
 /* LISTS */
 
@@ -728,7 +731,6 @@ strong{
     color: #d9d9d9;
 }
 
-
 /** HELP **/
 
 .help{
@@ -777,7 +779,7 @@ strong{
 
 .help-msg{
   position: absolute;
-  padding: 1.2rem 15px 5px 15px;
+  padding: 2rem 15px 5px 15px;
   margin: 1em 0 3em;
   border-radius: 10px;
   background: #031F20;
@@ -805,5 +807,4 @@ strong{
   border-width: 0 15px 15px;
   border-style: solid;
   border-color: #031F20 transparent;
-}
 }
