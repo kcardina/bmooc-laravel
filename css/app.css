@@ -742,7 +742,7 @@ strong{
     cursor: help !important;
 }
 
-.help-close{
+.help-close-x{
     color: #AAAAAA;
     cursor: pointer;
     font-size: 2.5rem;

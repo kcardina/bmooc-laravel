@@ -21,7 +21,7 @@
                     <nav class="main">
                         <ul class="inline slash">
                            <li>
-                                {!! HTML::link('#', 'help', array('help-show' => 'help-show')) !!}
+                                {!! HTML::link('#', 'help', array('help-show' => 'index')) !!}
                             </li>
                             <li>
                                 {!! HTML::link('#', 'about', array('data-reveal-id' => 'help')) !!}
@@ -46,10 +46,10 @@
 				</div>
 				<div class="small-8 medium-9 large-3 columns">
 					@if (isset($user) && $user->role=="editor")
-                        <button class="big plus pullup" data-help="<p>Use this button to create a topic.</p><p>A topic is a cluster, a collection of online things that join into some form or shape. This can be a conversation, a discussion, a tension or a kind of unspeakable resonance.</p><p>After creating a topic, all users can add (some)thing to the topic. You can specify or modify an instruction by opening the topic and clicking 'add instruction'.</p>" data-reveal-id="new_topic">Start a new topic</button>
+                        <button class="big plus pullup" data-help="index" data-help-id="new_topic" data-reveal-id="new_topic">Start a new topic</button>
                     @endif
 				</div>
-				<div class="large-7 columns" data-help="<p>Use these fields to search for contributions by (a combination of) author, tag or keyword.</p>">
+				<div class="large-7 columns" data-help="index" data-help-id="search">
                    <nav class="sort">
                      <form class="sort">
                       <div class="row sort">
@@ -287,7 +287,7 @@
                 
                 <h3>Extra information</h3>
                 <div class="field_input">
-                        <label for="copyright" class="form-left-label">copyright:</label>
+                        <label for="copyright" class="form-left-label">Copyright:</label>
                         <span class="field"><input type="text" name="topic_copyright" id="copyright"/>
                     <label for="attachment">Optional attachment <small>(jpg, png, gif or pdf)</small>:</label>
                     <span class="field"><input type="file" id="attachment" name="topic_attachment"/></span>

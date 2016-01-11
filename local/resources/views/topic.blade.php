@@ -22,7 +22,7 @@
                         <nav class="main">
                             <ul class="inline slash">
                                 <li>
-                                    {!! HTML::link('#', 'help', array('help-show' => 'help-show')) !!}
+                                    {!! HTML::link('#', 'help', array('help-show' => 'topic')) !!}
                                 </li>
                                 <li>
                                     {!! HTML::link('#', 'about', array('data-reveal-id' => 'help')) !!}
@@ -43,9 +43,9 @@
                         <h1>{!! HTML::link('/','bMOOC') !!}</h1>
                     </div>
                     <div class="small-8 medium-9 large-10 columns end">
-                        <button class="big information pullup space" data-reveal-id="instruction" data-help="<p>Click this button to see the active instruction for the current topic.</p>" style="display: none;">Topic instruction</button>
+                        <button class="big information pullup space" data-reveal-id="instruction" data-help="topic" data-help-id="view_current_instruction" style="display: none;">Topic instruction</button>
                         @if (isset($user) && $user->role=="editor")
-                        <button class="big plus pullup" data-reveal-id="new_instruction" data-help="<p>Click this button to add a new instruction, or to modify an existing one.</p>">New instruction</button>
+                        <button class="big plus pullup" data-reveal-id="new_instruction" data-help="topic" data-help-id="new_instruction">New instruction</button>
                         @endif
                     </div>
                 </div>
@@ -74,8 +74,8 @@
                 </nav>
                 <div class="row buttons">
                     <div class="small-6 columns" id="artefect_left_buttons">
-                        <button class="small information space" data-reveal-id="artefact_lightbox_left" data-help="Click this button to get more information about the artefact above.">Details</button>
-                        <button class="small plus" data-artefact="left" data-reveal-id="new_artefact" data-help="Click this button to add (some)thing to the artefact above. Your addition will appear on the right.">Add (some)thing</button>
+                        <button class="small information space" data-reveal-id="artefact_lightbox_left" data-help="topic" data-help-id="details">Details</button>
+                        <button class="small plus" data-artefact="left" data-reveal-id="new_artefact" data-help="topic" data-help-id="new_artefact">Add (some)thing</button>
                     </div>
                     <div class="small-6 columns" id="artefact_right_buttons">
                         <button class="small information space" data-reveal-id="artefact_lightbox_right">Details</button>
@@ -328,7 +328,7 @@
 
                     <h3>Extra information</h3>
                     <div class="field_input">
-                            <label for="copyright" class="form-left-label">copyright:</label>
+                            <label for="copyright" class="form-left-label">Copyright:</label>
                             <span class="field"><input type="text" name="answer_copyright" id="copyright"/>
                         <label for="attachment">Optional attachment <small>(jpg, png, gif or pdf)</small>:</label>
                         <span class="field"><input type="file" id="attachment" name="answer_attachment"/></span>
