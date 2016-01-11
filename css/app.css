@@ -496,12 +496,26 @@ form{
     color: #d9d9d9;
 }
 
-form .form-inline input, form .form-inline input:focus, form textarea, .reveal-modal input, .reveal-modal input:focus, .reveal-modal textarea{
+form .form-inline input, form .form-inline input:focus, form textarea, .reveal-modal input, .reveal-modal input:focus, .reveal-modal textarea, .ql_editor{
     background: none;
     border: 1px solid white;
     color: #fff;
     margin-top: 5px;
     box-shadow: none;
+}
+
+.ql_wrapper{
+    margin-bottom: 1rem;
+}
+
+.ql_editor{
+    margin-top: 0;
+    font-family: 'Muli', sans-serif !important;
+    font-size: 1rem;
+}
+
+.ql_toolbar{
+    background: white;
 }
 
 input[type="file"], input[type="submit"]{

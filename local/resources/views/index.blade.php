@@ -10,6 +10,7 @@
     {!! HTML::style('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css') !!}
     <!-- stylesheets -->
     {!! HTML::style('css/foundation.css') !!}
+    {!! HTML::style('//cdn.quilljs.com/0.20.1/quill.snow.css') !!}
     {!! HTML::style('css/app.css') !!}
     <!-- scripts -->
     {!! HTML::script('js/vendor/modernizr.js') !!}
@@ -246,14 +247,41 @@
                        </button>
                    </div>
                 </div>
-                <div class="row">
-                    <div class="small-12 columns">
-                        <small class="error topic_input">Please choose one of the file types.</small>
-                    </div>
-                </div>
                 <div class="row type_input" id="topic_input_text" style="display: none;"> <!-- Div om text-input mogelijk te maken -->
-                	<div class="small-12 columns">
-                		<textarea required rows="5" cols="50" name="topic_text">Type your topic text here...</textarea>
+                	<div class="small-12 columns ql_wrapper">
+                	    <!-- Create the toolbar container -->
+                        <div class="ql_toolbar" class="toolbar ql-toolbar ql-snow">
+                            <span class="ql-format-group">
+                                <select title="Size" class="ql-size">
+                                    <option value="0.8rem">Small</option>
+                                    <option value="1rem" selected="selected">Normal</option>
+                                    <option value="1.3rem">Large</option>
+                                </select>
+                            </span>
+                            <span class="ql-format-group">
+                                <span title="Bold" class="ql-format-button ql-bold"></span>
+                                <span class="ql-format-separator"></span>
+                                <span title="Italic" class="ql-format-button ql-italic"></span>
+                                <span class="ql-format-separator"></span>
+                                <span title="Underline" class="ql-format-button ql-underline"></span>
+                                <span class="ql-format-separator"></span>
+                                <span title="Strikethrough" class="ql-format-button ql-strike"></span>
+                            </span>
+                            <span class="ql-format-group">
+                                <span title="List" class="ql-format-button ql-list"></span>
+                                <span class="ql-format-separator"></span>
+                                <span title="Bullet" class="ql-format-button ql-bullet"></span>
+                                <span class="ql-format-separator"></span>
+                                <select title="Text Alignment" class="ql-align">
+                                    <option value="left" label="Left" selected=""></option>
+                                    <option value="center" label="Center"></option>
+                                    <option value="right" label="Right"></option>
+                                    <option value="justify" label="Justify"></option>
+                                </select>
+                            </span>
+                        </div>
+                    <div class="ql_editor"></div>
+                    <textarea name="topic_text" style="display:none"></textarea>
                 	</div>
                 </div>
                 <div class="row type_input" id="topic_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
@@ -273,19 +301,21 @@
                 	<div class="small-12 columns form-inline">
                 		<label for="topic_url">url:</label>
                 		<span class="field">
-                                    <input id="topic_url" type="text" name="topic_url"/>
+                                <input id="topic_url" type="text" name="topic_url"/>
                 		</span>
                 	</div>
                 </div>
-
-                
+                <div class="row">
+                    <div class="small-12 columns">
+                        <small class="error topic_input">Please choose one of the file types.</small>
+                    </div>
+                </div>
                 <h3>Extra information</h3>
                 <div class="field_input">
                         <label for="copyright" class="form-left-label">copyright:</label>
                         <span class="field"><input type="text" name="topic_copyright" id="copyright"/>
                     <label for="attachment">upload an image <small>(jpg, png, gif)</small> or a file <small>(pdf)</small>:</label>
                     <span class="field"><input type="file" id="attachment" name="topic_attachment"/></span>
-                    <small class="error topic_input">3 different tags are required.</small>
                 </div>
                 <input type="hidden" name="topic_temp_type" id="topic_temp_type" />
                 <input type="submit" class="full purple" value="Add topic"/>
@@ -308,6 +338,7 @@
 
     {!! HTML::script('js/vendor/jquery.js') !!}
     {!! HTML::script('js/foundation.min.js') !!}
+    {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
     <script>
         var host = "{{ URL::to('/') }}";
         $(document).foundation();
@@ -424,6 +455,14 @@
             }
         }
 
+        // editor
+        var quill = new Quill('.ql_editor', {
+            modules: {
+                'toolbar': { container: '.ql_toolbar' },
+            },
+            theme: 'snow'
+        });
+
         function showAnswerType(e) {
             e.preventDefault();
             var $this = $(this);
@@ -461,9 +500,11 @@
                 msg = "Please choose on of the file types."
             }
             if($('button#type_text').hasClass('active')){
-                if($('#topic_input_text textarea').val().length == 0 || $('#topic_input_text textarea').val() == "Type your topic text here..."){
+                if($('#topic_input_text .ql-editor').text().length <= 0){
                     valid = false;
-                    msg = "Please enter some text."
+                    msg = "Please enter some text.";
+                } else {
+                    $('#topic_input_text textarea').val($('#topic_input_text .ql-editor').html());
                 }
             } else if($('button#type_image').hasClass('active')){
                 if($('#topic_upload').val().length == 0 && $('#topic_url').val().length == 0){

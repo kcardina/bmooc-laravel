@@ -134,7 +134,7 @@ function displayDiv(type, div, data) {
     // load content
     switch (type) {
         case 'text':
-            html = "<div class=\"textContainer\"><div class=\"text\"><h2>" + data.title + "</h2>" + data.contents + "</div></div>";
+            html = "<div class=\"textContainer\"><div class=\"text\">" + data.contents + "</div></div>";
             break;
         case 'local_image':
             html = '<a href="' + host + "/uploads/" + data.url + '" data-lightbox="image-1" data-title="Image"><img src="' + host + "/uploads/" + data.url + '"></a>';
@@ -475,9 +475,11 @@ function validation() {
         msg = "Please choose one of the file types."
     }
     if ($('button#type_text').hasClass('active')) {
-        if ($('#answer_input_text textarea').val().length == 0 || $('#answer_input_text textarea').val() == "Type your topic text here...") {
+        if($('#answer_input_text .ql-editor').text().length <= 0){
             valid = false;
-            msg = "Please enter some text."
+            msg = "Please enter some text.";
+        } else {
+            $('#answer_input_text textarea').val($('#answer_input_text .ql-editor').html());
         }
     } else if ($('button#type_image').hasClass('active')) {
         if ($('#answer_upload').val().length == 0 && $('#answer_url').val().length == 0) {
@@ -545,6 +547,7 @@ function validation() {
     }
     return valid;
 }
+
 function instruction_validation() {
     var valid = true;
     var msg;
@@ -553,10 +556,12 @@ function instruction_validation() {
         msg = "Please choose one of the file types."
     }
     if ($('button#type_text').hasClass('active')) {
-        if ($('#instruction_input_text textarea').val().length == 0 || $('#instruction_input_text textarea').val() == "Type your instruction text here...") {
-            valid = false;
-            msg = "Please enter some text."
-        }
+        if($('#instruction_input_text .ql-editor').text().length <= 0){
+                    valid = false;
+                    msg = "Please enter some text.";
+                } else {
+                    $('#instruction_input_text textarea').val($('#instruction_input_text .ql-editor').html());
+                }
     } else if ($('button#type_image').hasClass('active')) {
         if ($('#instruction_upload').val().length == 0 && $('#instruction_url').val().length == 0) {
             valid = false;
