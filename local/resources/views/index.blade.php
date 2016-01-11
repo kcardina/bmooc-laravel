@@ -316,6 +316,18 @@
         var host = "{{ URL::to('/') }}";
         $(document).foundation();
         $(document).ready(function(){
+
+            <?php
+                // show the 'about' popup on first login
+                if(!isset($_COOKIE['firstlogin'])){
+                    // show popup and set cookie
+                    echo "setTimeout(function(){
+                        $('#help').foundation('reveal', 'open');
+                    }, 2000);";
+                    setcookie("firstlogin", "firstlogin", time() + 3600 * 24 * 356);
+                }
+            ?>
+
             $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 $(document).foundation('equalizer', 'reflow');
