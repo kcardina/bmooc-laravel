@@ -27,6 +27,9 @@
                                 {!! HTML::link('#', 'about', array('data-reveal-id' => 'help')) !!}
                             </li>
                             <li>
+                                {!! HTML::link('#', 'feedback', array('data-reveal-id' => 'feedback')) !!}
+                            </li>
+                            <li>
                                 @if (isset($user))
 						{!! HTML::link('logout','Sign out', array('class'=>'logout')) !!}
 					@else
@@ -306,6 +309,23 @@
             <p>A topic is presented by juxtapositions of images/artefacts/things. In other words, it's the relations, commonalities or positions of these things that matter. What these are is often unclear, ambiguous or polysemic.</p>
         <h3>Navigation</h3>
             <p>Navigate a topic by moving the images/artefacts/things. Intervene, explore, trouble, clarify or contribute to a topic by adding (some)thing. What you can add, depends on the topic. This could be an audio recording, a piece of text or a mystery. Push "add (some)thing" wherever you want to add/intervene/contribute, and then follow the instructions of the topic.</p>
+          <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+    </div>
+
+    <div id="feedback" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+        <h2 id="modalTitle">Feedback</h2>
+            <p>Remarks, problems or suggestions? Please fill in the form below.</p>
+            <form>
+                <label for="fb_name">Name:</label>
+                <input type="text" id="fb_name" name="fb_name"/>
+                <label for="fb_mail">E-mail:</label>
+                <input type="email" id="fb_mail" name="fb_mail"/>
+                <label for="fb_msg">Message:</label>
+                    <textarea rows="5" id="fb_msg"></textarea>
+                <label for="fb_attachment">Attachment:</label>
+                <input type="file" id="fb_attachment" name="fb_attachment"/>
+                <input type="submit" class="purple full" value="Submit"/>
+            </form>
           <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
 
