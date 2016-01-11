@@ -808,3 +808,12 @@ strong{
   border-style: solid;
   border-color: #031F20 transparent;
 }
+
+.help-txt{
+    position: relative;
+    margin: 0 auto;
+    max-width: 500px;
+    text-align: center;
+    margin-top: 50vh;
+    font-weight: 400;
+}

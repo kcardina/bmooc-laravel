@@ -19,7 +19,7 @@ $(document).ready(function(){
         // create bg
         var div_bg = document.createElement("div");
         div_bg.setAttribute('class', 'help-bg');
-        div_bg.innerHTML = "<a class=\"help-close\" aria-label=\"Close\">×</a>";
+        div_bg.innerHTML = "<a class=\"help-close\" aria-label=\"Close\">×</a><div class=\"help-txt\">Click an item to get help.</div>";
         $("body").append(div_bg);
         $(".help-close").on('click', hide);
         $(".help-bg").fadeIn();
