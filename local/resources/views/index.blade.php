@@ -20,8 +20,11 @@
 			    <div class="small-12 columns text-right">
                     <nav class="main">
                         <ul class="inline slash">
+                           <li>
+                                {!! HTML::link('#', 'help', array('help-show' => 'help-show')) !!}
+                            </li>
                             <li>
-                                {!! HTML::link('#', 'help', array('data-reveal-id' => 'help')) !!}
+                                {!! HTML::link('#', 'about', array('data-reveal-id' => 'help')) !!}
                             </li>
                             <li>
                                 @if (isset($user))
@@ -40,10 +43,10 @@
 				</div>
 				<div class="small-8 medium-9 large-3 columns">
 					@if (isset($user) && $user->role=="editor")
-                        <button class="big plus pullup" data-reveal-id="new_topic">Start a new topic</button>
+                        <button class="big plus pullup" data-help="<p>Use this button to create a topic.</p><p>A topic is a cluster, a collection of online things that join into some form or shape. This can be a conversation, a discussion, a tension or a kind of unspeakable resonance.</p><p>After creating a topic, all users can add (some)thing to the topic. You can specify or modify an instruction by opening the topic and clicking 'add instruction'.</p>" data-reveal-id="new_topic">Start a new topic</button>
                     @endif
 				</div>
-				<div class="large-7 columns">
+				<div class="large-7 columns" data-help="search">
                    <nav class="sort">
                      <form class="sort">
                       <div class="row sort">
@@ -306,8 +309,11 @@
           <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
 
+    <div class="help-msg">hello</div>
+
     {!! HTML::script('js/vendor/jquery.js') !!}
     {!! HTML::script('js/foundation.min.js') !!}
+    {!! HTML::script('js/help.js') !!}
     <script>
         var host = "{{ URL::to('/') }}";
         $(document).foundation();
