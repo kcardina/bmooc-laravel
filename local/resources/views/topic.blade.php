@@ -301,11 +301,6 @@
                        </button>
                    </div>
                 </div>
-                    <div class="row">
-                        <div class="small-12 columns">
-                            <small class="error answer_input">Please choose one of the file types.</small>
-                        </div>
-                    </div>
                     <div class="row type_input" id="answer_input_text" style="display: none;">
                             <div class="small-12 columns">
                                     <textarea required rows="5" cols="50" name="answer_text">Type your topic text here...</textarea>
@@ -332,7 +327,11 @@
                                     </span>
                             </div>
                     </div>
-
+                    <div class="row">
+                        <div class="small-12 columns">
+                            <small class="error answer_input">Please choose one of the file types.</small>
+                        </div>
+                    </div>
                     <h3>Extra information</h3>
                     <div class="field_input">
                             <label for="copyright" class="form-left-label">copyright:</label>
@@ -436,7 +435,11 @@
                                     </span>
                             </div>
                     </div>
-
+                    <div class="row">
+                        <div class="small-12 columns">
+                            <small class="error answer_input">Please choose one of the file types.</small>
+                        </div>
+                    </div>
                     <input type="hidden" name="instruction_temp_type" id="instruction_temp_type" />
                     <input type="hidden" name="instruction_parent" id="instruction_parent" />
                     <input type="submit" class="full purple" value="Add instruction"/>

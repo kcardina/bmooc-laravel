@@ -185,7 +185,7 @@
         
     </div>
     
-    <!-- ADD NEW TOPIC -->
+    <!-- ADD NEW TOPIC #new_topic -->
     @if (isset($user) && $user->role == 'editor')
     <div id="new_topic" class="reveal-modal slide screen-right" data-reveal data-options="animation_speed: 0" aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
         <div class="row">  
@@ -197,14 +197,14 @@
                 <h2>Start a new topic</h2>
                 <p>Initiate a topic using a video, text, photo,...</p>
                 <h3>General information</h3>
-                <!-- een gewone input -->
+                <!-- INPUT: topic_title -->
                 <div class="field_title">
                     <label>Title:
                         <input type="text" required name="topic_title"/>
                     </label>
                     <small class="error">Please enter a title for the topic.</small>
                 </div>
-                <!-- een checkbox input -->
+                <!-- CHECKBOX: topic_new_tag -->
                 <label>Tags (enter 3 below):</label>
                 <div class="form-inline">
                     <div class="field_tag">
@@ -229,6 +229,7 @@
                         </span>
                     </div>
                 </div>
+                <!-- BUTTONS: topic_button_xxx -->
                 <h3>Choose one of the following:</h3>
                 <div class="row large" data-equalizer>
                    <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_text">
@@ -256,11 +257,6 @@
                        </button>
                    </div>
                 </div>
-                <div class="row">
-                    <div class="small-12 columns">
-                        <small class="error topic_input">Please choose one of the file types.</small>
-                    </div>
-                </div>
                 <div class="row type_input" id="topic_input_text" style="display: none;"> <!-- Div om text-input mogelijk te maken -->
                 	<div class="small-12 columns">
                 		<textarea required rows="5" cols="50" name="topic_text">Type your topic text here...</textarea>
@@ -287,15 +283,18 @@
                 		</span>
                 	</div>
                 </div>
-
-                
+                <div class="row">
+                    <div class="small-12 columns">
+                        <small class="error topic_input">Please choose one of the file types.</small>
+                    </div>
+                </div>
+                <!-- EXTRA INFO topic_copyright, topic_attachment -->
                 <h3>Extra information</h3>
                 <div class="field_input">
                         <label for="copyright" class="form-left-label">copyright:</label>
                         <span class="field"><input type="text" name="topic_copyright" id="copyright"/>
                     <label for="attachment">upload an image <small>(jpg, png, gif)</small> or a file <small>(pdf)</small>:</label>
                     <span class="field"><input type="file" id="attachment" name="topic_attachment"/></span>
-                    <small class="error topic_input">3 different tags are required.</small>
                 </div>
                 <input type="hidden" name="topic_temp_type" id="topic_temp_type" />
                 <input type="submit" class="full purple" value="Add topic"/>
