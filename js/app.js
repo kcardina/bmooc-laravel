@@ -158,3 +158,28 @@ function validate(id){
 
     return valid;
 }
+
+/* FEEDBACK FORM */
+$(document).ready(function(){
+    $('#feedback input[type=submit]').click(function(e){
+        e.preventDefault();
+        console.log('submitting form');
+
+        var name = $('#feedback #fb_name').val();
+        var email = $('#feedback #fb_mail').val();
+        var message = $('#feedback #fb_msg').val();
+        var token = $('#feedback input[name="_token"]').val();
+
+        $.ajax({
+        type: "POST",
+        url: host+'/feedback',
+        data: {name:name, email:email, message:message, _token: token},
+        success: function( msg ) {
+            alert( msg );
+        },
+        fail: function(msg){
+            alert(msg);
+        }
+    });
+    })
+});

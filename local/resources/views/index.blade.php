@@ -334,7 +334,7 @@
     <div id="feedback" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
         <h2 id="modalTitle">Feedback</h2>
             <p>Remarks, problems or suggestions? Please fill in the form below.</p>
-               {!! Form::open(array('data-abide', 'url'=>'topic/new','method'=>'POST', 'files'=>true)) !!}
+               {!! Form::open(array('data-abide', 'url'=>'feedback','method'=>'POST', 'files'=>true)) !!}
                 <label for="fb_name">Name:
                     <input type="text" id="fb_name" name="fb_name"/>
                 </label>
@@ -344,9 +344,6 @@
                 <label for="fb_msg">Message:
                     <textarea required rows="5" id="fb_msg"></textarea>
                     <small class="error">Please describe your remark, problem or suggestion.</small>
-                </label>
-                <label for="fb_attachment">Attachment:
-                    <input type="file" id="fb_attachment" name="fb_attachment"/>
                 </label>
                 <input type="submit" class="purple full" value="Submit"/>
             </form>

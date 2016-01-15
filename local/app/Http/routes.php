@@ -24,3 +24,5 @@ Route::get('json/topic/{id}', 'BmoocJsonController@discussion');
 
 Route::get('login/{provider?}', ['uses'=>'Auth\AuthController@login', 'as' => 'login']);
 Route::get('logout', 'Auth\AuthController@getLogout');
+
+Route::post('feedback', 'BmoocController@feedback');

@@ -17,6 +17,7 @@ use Auth;
 use DB;
 use Carbon\Carbon;
 use Exception;
+use Mail;
 
 class BmoocController extends Controller {
 
@@ -49,6 +50,34 @@ class BmoocController extends Controller {
 //        else
 //            return view('index_login');
 //    }
+
+    public function feedback(){
+        $data = Input::all();
+
+        if($data['email'] == "") $data['email'] = "unknown@unknown.com";
+        if($data['name'] == "") $data['name'] = "Anonymous";
+
+        $validator = Validator::make($data,
+            array(
+              'name' => 'required',
+              'email' => 'required|email',
+              'message' => 'required',
+            )
+        );
+
+          if ($validator->fails())
+          {
+              print("Oops. Something went wrong. Please try again or send your feedback to <strong>teis.degreve@luca-arts.be</strong>");
+          } else {
+
+            Mail::send('emails.feedback', $data, function($message) {
+                $message->from($data['email'], $data['name']);
+                $message->to('teis.degreve@luca-arts.be')->subject('bMOOC Feedback');
+            });
+
+            print("Thanks for your feedback!");
+          }
+    }
 
     public function showTopic($links, $answer = null) {
         $user = Auth::user();
