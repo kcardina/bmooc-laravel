@@ -15,6 +15,16 @@
         {!! HTML::script('js/vendor/modernizr.js') !!}
     </head>
     <body>
+       <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-71362622-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
         <div id="container" class="full">
             <header>
                 <div class="row large">
@@ -236,101 +246,114 @@
                <div class="large-2 show-for-large-up columns">
                    <img src="{{ asset('img/plus_plain.png') }}" alt="plus"/>
                 </div>
-                <div class="large-8 medium-12 columns end">
-                    {!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return validation()', 'url'=>'comment', 'method'=>'POST', 'files'=>true)) !!}
+                    <div class="large-8 medium-12 columns end">
+                    {!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return validate("newTopicForm")', 'url'=>'comment', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add (some)thing</h2>
                     <p>add (some)thing to this topic using the form below...</p>
-                    <h3 id="instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
-                    <div class="row">
-                        <div class="small-12 columns">
-                            <div class="panel" id="instruction_content"></div>
-                        </div>
-                    </div>
-                    <h3>General information</h3>
-                    <!-- een gewone input -->
-                    <div class="field_title">
-                        <label>Title:
-                            <input type="text" required name="answer_title"/>
-                        </label>
-                        <small class="error">Please enter a title for the topic.</small>
-                    </div>
-                    <label>Tags (select 2 below):</label>
-                    <div class="tag-select" id="answer_tags">
-                    <small class="error" id="error_tags">Select exactly 2 existing tags.</small>
-                    </div>
-                    <div>
-                        <label class="form-left-label" for="new-tag">+ one new tag:
-                            <input id="new-tag" type="text" name="answer_new_tag" required data-abide-validator="tag"/>
-                        </label>
-                        <small class="error">The new tag can not be the same as the existing tags.</small>
-                    </div>
-                    <h3>Choose one of the following:</h3>
-                    <div class="row large" data-equalizer>
-                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_text">
-                       <button class="square purple type_select" id="type_text">
-                           <i class="fa fa-align-justify"></i>
-                           text
-                       </button>
-                   </div>
-                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_image">
-                       <button class="square purple type_select" id="type_image">
-                           <i class="fa fa-camera"></i>
-                           image<br /><small>(jpg, png, gif)</small>
-                       </button>
-                   </div>
-                    <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_video">
-                       <button class="square purple type_select" id="type_video">
-                        <i class="fa fa-video-camera"></i>
-                          video<br /><small>(youtube, vimeo)</small>
-                      </button>
-                   </div>
-                    <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="topic_button_file">
-                       <button class="square purple type_select" id="type_file">
-                       <i class="fa fa-file"></i>
-                       document<br /><small>(pdf)</small>
-                       </button>
-                   </div>
-                </div>
-                    <div class="row">
-                        <div class="small-12 columns">
-                            <small class="error answer_input">Please choose one of the file types.</small>
-                        </div>
-                    </div>
-                    <div class="row type_input" id="answer_input_text" style="display: none;">
+                    <fieldset>
+                        <h3 id="instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
+                        <div class="row">
                             <div class="small-12 columns">
-                                    <textarea required rows="5" cols="50" name="answer_text">Type your topic text here...</textarea>
+                                <div class="panel" id="instruction_content"></div>
                             </div>
-                    </div>
-                    <div class="row type_input" id="answer_input_upload" style="display: none;">
-                            <div class="small-12 columns form-inline">
-                                    <label for="answer_upload">upload a file:</label>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <h3>General information</h3>
+                        <!-- een gewone input -->
+                        <div class="field_title">
+                            <label>Title:
+                                <input type="text" required name="answer_title"/>
+                            </label>
+                            <small class="error">Please enter a title for your addition.</small>
+                        </div>
+                        <label>Select two tags below:</label>
+                        <div class="tag-select" id="answer_tags">
+                        </div>
+                        <small class="error" id="error_tags">Select exactly 2 existing tags.</small>
+                        <div>
+                            <label class="form-left-label" for="new-tag">Add one new tag:
+                                <input id="new-tag" type="text" name="answer_new_tag" required data-abide-validator="tag_existing"/>
+                            </label>
+                            <small class="error">The new tag can not be the same as the existing tags.</small>
+                        </div>
+                    </fieldset>
+                    <fieldset> <!-- BUTTONS: answer_button_xxx -->
+                        <h3>Choose one of the following:</h3>
+                        <div class="filetype">
+                           <!-- buttons -->
+                            <div class="row large" data-equalizer>
+                               <div class="small-6 large-3 columns text-center" data-equalizer-watch id="answer_button_text">
+                                   <button class="square purple type_select" id="type_text">
+                                       <i class="fa fa-align-justify"></i>
+                                       text
+                                   </button>
+                               </div>
+                               <div class="small-6 large-3 columns text-center" data-equalizer-watch id="answer_button_image">
+                                   <button class="square purple type_select" id="type_image">
+                                       <i class="fa fa-camera"></i>
+                                       image<br /><small>(jpg, png, gif)</small>
+                                   </button>
+                               </div>
+                                <div class="small-6 large-3 columns text-center" data-equalizer-watch id="answer_button_video">
+                                   <button class="square purple type_select" id="type_video">
+                                    <i class="fa fa-video-camera"></i>
+                                      video<br /><small>(youtube, vimeo)</small>
+                                  </button>
+                               </div>
+                                <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="answer_button_file">
+                                   <button class="square purple type_select" id="type_file">
+                                   <i class="fa fa-file"></i>
+                                   document<br /><small>(pdf)</small>
+                                   </button>
+                               </div>
+                            </div>
+                            <!-- input fields -->
+                            <div class="row type_input input_textarea" id="answer_input_text" style="display: none;"> <!-- Div om text-input mogelijk te maken -->
+                                <div class="small-12 columns">
+                                    <textarea required rows="5" cols="50" name="answer_text">Type your answer text here...</textarea>
+                                </div>
+                            </div>
+                            <div class="row type_input input_file" id="answer_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
+                                <div class="small-12 columns form-inline">
+                                    <label for="answer_upload">Upload a file:</label>
                                     <span class="field">
-                                        <input type="file" id="answer_upload" name="answer_upload"/>
+                                        <input data-abide-validator="filesize" type="file" id="answer_upload" name="answer_upload"/>
+                                        <small class="error">The document is too large (> 2MB).</small>
                                     </span>
+                                </div>
                             </div>
-                    </div>
-                    <div class="row type_input" id="answer_input_or" style="display: none;">
-                            <div class="small-12 columns">
+                            <div class="row type_input input_separator" id="answer_input_or" style="display: none;"> <!-- Div voor 'or' bij file upload aan te zetten -->
+                                <div class="small-12 columns">
                                     <strong>or</strong>
+                                </div>
                             </div>
-                    </div>
-                    <div class="row type_input" id="answer_input_url" style="display: none;">
-                            <div class="small-12 columns form-inline">
+                            <div class="row type_input input_url" id="answer_input_url" style="display: none;"> <!-- Div voor url mogelijk te maken -->
+                                <div class="small-12 columns form-inline">
                                     <label for="answer_url">url:</label>
                                     <span class="field">
-                               <input id="answer_url" type="text" name="answer_url"/>
+                                                <input id="answer_url" type="text" name="answer_url"/>
                                     </span>
+                                </div>
                             </div>
-                    </div>
-
-                    <h3>Extra information</h3>
-                    <div class="field_input">
-                            <label for="copyright" class="form-left-label">copyright:</label>
-                            <span class="field"><input type="text" name="answer_copyright" id="copyright"/>
-                        <label for="attachment">upload an image <small>(jpg, png, gif)</small> or a file <small>(pdf)</small>:</label>
-                        <span class="field"><input type="file" id="attachment" name="answer_attachment"/></span>
-                    </div>
-                    <input type="hidden" name="answer_temp_type" id="answer_temp_type" />
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <small class="error filetype_error">Please choose one of the file types.</small>
+                                </div>
+                            </div>
+                            <input type="hidden" class="temp_type" name="answer_temp_type" id="answer_temp_type" />
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <h3>Extra information (optional)</h3>
+                        <label>Copyright:
+                            <input type="text" id="copyright" name="answer_copyright"/>
+                        </label>
+                        <label>Attachment <small>(jpg, png, gif or pdf)</small>:
+                            <input type="file" data-abide-validator="filesize" id="attachment" name="answer_attachment"/>
+                        </label>
+                        <small class="error">The attachment is too large (> 2MB).</small>
+                    </fieldset>
                     <input type="hidden" name="answer_parent" id="answer_parent" />
                     <input type="submit" class="full purple" value="Add (some)thing"/>
                     </form>
@@ -348,86 +371,101 @@
                    <img src="{{ asset('img/plus_plain.png') }}" alt="plus"/>
                 </div>
                 <div class="large-8 medium-12 columns end">
-                    {!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return instruction_validation()', 'url'=>'instruction/new', 'method'=>'POST', 'files'=>true)) !!}
+                    {!! Form::open(array('id'=>'newInstructionForm', 'data-abide', 'onsubmit'=>'return validate("newInstructionForm")', 'url'=>'instruction/new', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add instruction</h2>
                     <p>add an instruction to this topic. The current instruction will be disabled.</p>
-                    <h3 id="new_instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
-                    <div class="row">
-                        <div class="small-12 columns">
-                            <div class="panel" id="new_instruction_content"></div>
+                    <fieldset>
+                        <h3 id="new_instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
+                        <div class="row">
+                            <div class="small-12 columns">
+                                <div class="panel" id="new_instruction_content"></div>
+                            </div>
                         </div>
-                    </div>
+                    </fieldset>
+                    <fieldset>
                     <h3>General information</h3>
-                    <!-- een gewone input -->
-                    <div class="field_title">
-                        <label>Title:
-                            <input type="text" required name="instruction_title"/>
-                        </label>
-                        <small class="error">Please enter a title for the topic.</small>
-                    </div>
-                    <label>Accepted answer types (click to disable):</label>
-                   <div class="tag-select" id="instruction_types">
-                        <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="text"><span>Text</span></label></div><!--
-                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="image"><span>Image</span></label></div><!--
-                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="video"><span>Video</span></label></div><!--
-                        --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="file"><span>Document (pdf)</span></label></div>
-                        <small class="error" id="error_types">Select at least 1 available option.</small>
-                    </div>
-                    <h3>Choose one of the following:</h3>
-                    <div class="row large" data-equalizer>
-                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_text">
-                       <button class="square purple type_select" id="type_text">
-                           <i class="fa fa-align-justify"></i>
-                           text
-                       </button>
-                   </div>
-                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_image">
-                       <button class="square purple type_select" id="type_image">
-                           <i class="fa fa-camera"></i>
-                           image<br /><small>(jpg, png, gif)</small>
-                       </button>
-                   </div>
-                    <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_video">
-                       <button class="square purple type_select" id="type_video">
-                        <i class="fa fa-video-camera"></i>
-                          video<br /><small>(youtube, vimeo)</small>
-                      </button>
-                   </div>
-                    <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="instruction_button_file">
-                       <button class="square purple type_select" id="type_file">
-                       <i class="fa fa-file"></i>
-                       document<br /><small>(pdf)</small>
-                       </button>
-                   </div>
-                </div>
-                    <div class="row type_input" id="instruction_input_text" style="display: none;">
-                            <div class="small-12 columns">
+                        <!-- een gewone input -->
+                        <div class="field_title">
+                            <label>Title:
+                                <input type="text" required name="instruction_title"/>
+                            </label>
+                            <small class="error">Please enter a title for the topic.</small>
+                        </div>
+                        <label>Accepted answer types (click to disable):</label>
+                       <div class="tag-select" id="instruction_types">
+                            <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="text"><span>Text</span></label></div><!--
+                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="image"><span>Image</span></label></div><!--
+                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="video"><span>Video</span></label></div><!--
+                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="file"><span>Document (pdf)</span></label></div>
+                            <small class="error" id="error_types">Select at least 1 available option.</small>
+                        </div>
+                    </fieldset>
+                    <fieldset> <!-- BUTTONS: instruction_button_xxx -->
+                        <h3>Choose one of the following:</h3>
+                        <div class="filetype">
+                           <!-- buttons -->
+                            <div class="row large" data-equalizer>
+                               <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_text">
+                                   <button class="square purple type_select" id="type_text">
+                                       <i class="fa fa-align-justify"></i>
+                                       text
+                                   </button>
+                               </div>
+                               <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_image">
+                                   <button class="square purple type_select" id="type_image">
+                                       <i class="fa fa-camera"></i>
+                                       image<br /><small>(jpg, png, gif)</small>
+                                   </button>
+                               </div>
+                                <div class="small-6 large-3 columns text-center" data-equalizer-watch id="instruction_button_video">
+                                   <button class="square purple type_select" id="type_video">
+                                    <i class="fa fa-video-camera"></i>
+                                      video<br /><small>(youtube, vimeo)</small>
+                                  </button>
+                               </div>
+                                <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="instruction_button_file">
+                                   <button class="square purple type_select" id="type_file">
+                                   <i class="fa fa-file"></i>
+                                   document<br /><small>(pdf)</small>
+                                   </button>
+                               </div>
+                            </div>
+                            <!-- input fields -->
+                            <div class="row type_input input_textarea" id="instruction_input_text" style="display: none;"> <!-- Div om text-input mogelijk te maken -->
+                                <div class="small-12 columns">
                                     <textarea required rows="5" cols="50" name="instruction_text">Type your instruction text here...</textarea>
+                                </div>
                             </div>
-                    </div>
-                    <div class="row type_input" id="instruction_input_upload" style="display: none;">
-                            <div class="small-12 columns form-inline">
-                                    <label for="instruction_upload">upload a file:</label>
+                            <div class="row type_input input_file" id="instruction_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
+                                <div class="small-12 columns form-inline">
+                                    <label for="instruction_upload">Upload a file:</label>
                                     <span class="field">
-                                        <input type="file" id="instruction_upload" name="instruction_upload"/>
+                                        <input data-abide-validator="filesize" type="file" id="instruction_upload" name="instruction_upload"/>
+                                        <small class="error">The document is too large (> 2MB).</small>
                                     </span>
+                                </div>
                             </div>
-                    </div>
-                    <div class="row type_input" id="instruction_input_or" style="display: none;">
-                            <div class="small-12 columns">
+                            <div class="row type_input input_separator" id="instruction_input_or" style="display: none;"> <!-- Div voor 'or' bij file upload aan te zetten -->
+                                <div class="small-12 columns">
                                     <strong>or</strong>
+                                </div>
                             </div>
-                    </div>
-                    <div class="row type_input" id="instruction_input_url" style="display: none;">
-                            <div class="small-12 columns form-inline">
+                            <div class="row type_input input_url" id="instruction_input_url" style="display: none;"> <!-- Div voor url mogelijk te maken -->
+                                <div class="small-12 columns form-inline">
                                     <label for="instruction_url">url:</label>
                                     <span class="field">
-                               <input id="instruction_url" type="text" name="instruction_url"/>
+                                                <input id="instruction_url" type="text" name="instruction_url"/>
                                     </span>
+                                </div>
                             </div>
-                    </div>
-
-                    <input type="hidden" name="instruction_temp_type" id="instruction_temp_type" />
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <small class="error filetype_error">Please choose one of the file types.</small>
+                                </div>
+                            </div>
+                            <input type="hidden" class="temp_type" name="instruction_temp_type" id="instruction_temp_type" />
+                        </div>
+                    </fieldset>
                     <input type="hidden" name="instruction_parent" id="instruction_parent" />
                     <input type="submit" class="full purple" value="Add instruction"/>
                     </form>
@@ -444,6 +482,7 @@
         {!! HTML::script('js/imagesloaded.min.js') !!}
         {!! HTML::script('js/pointer-events-polyfill.js') !!}
         {!! HTML::script('https://www.youtube.com/iframe_api') !!}
+        {!! HTML::script('js/app.js') !!}
         <script>
             var host = "{{ URL::to('/') }}";
             var newTopic;
@@ -496,52 +535,13 @@
                     }
                 });
 
-                $('#new_artefact button.purple').click(showAnswerType); // Click on button in modal window to toggle the answer options
-                $('#new_instruction button.purple').click(showInstructionType); // Click on button in modal window for new instruction
+                $('.type_select').click(showAnswerType);
+
                 $('#artefact_left_contents').hide();
                 $('#artefact_right_contents').hide();
                 showArtefactLeft({{ $artefactLeft }}, {{ isset($answerRight)? $answerRight : 0 }});
 
-                /* ANSWER TOEVOEGEN */
-                /* Deze mogen weg? */
-                /*
-                newTopic = {
-                    open: function(){ console.log('New topic open');
-                        $("#new_answer").show();
-                        $("#new_answer").animate({right:'0'}, 500);
-                    },
-                    close: function(){
-                        $("#new_answer").animate({right:'-50%'}, 500, function(){
-                            $("#new_answer").hide();
-                        });
-                    }
-                }
-                $("#open_new_answer").click(function(){
-                    newInstruction.close();
-                    newTopic.open();
-                });
-                $("#close_new_answer").click(function(){
-                    newTopic.close();
-                }); */
-                /* INSTRUCTION TOEVOEGEN */
-                //newInstruction = {
-                //    open: function(){
-                //        $("#new_instruction").show();
-                //        $("#new_instruction").animate({right:'0'}, 500);
-                //    },
-                //    close: function(){
-                //        $("#new_instruction").animate({right:'-50%'}, 500, function(){
-                //            $("#new_instruction").hide();
-                //        });
-                //    }
-                //}
-                //$("#open_new_instruction").click(function(){
-                //    newTopic.close();
-                //    newInstruction.open();
-                //});
-                //$("#close_new_instruction").click(function(){
-                //    newInstruction.close();
-                //});
+
                 document.onkeydown = function(evt) {
                     evt = evt || window.event;
                     switch (evt.keyCode) {
@@ -565,30 +565,6 @@
                 };
 
             });
-
-        $(document).foundation({
-            abide : {
-                validators: {
-                    tag: function(el, required, parent){
-                        var tags = [];
-                        var valid = true;
-                        $('#answer_tags input:checked').each(function() {
-                            if ($.inArray($(this).next().text(), tags) > -1) {
-                                valid = false;
-                            }
-                            tags.push($(this).next().text());
-                        })
-                        $('[data-abide-validator="tag"]').each(function(){
-                            if($.inArray($(this).val(), tags) > -1){
-                                valid = false;
-                            }
-                            tags.push($(this).val());
-                        });
-                        return valid;
-                    },
-                }
-            }
-        });
         </script>
     </body>
 </html>
