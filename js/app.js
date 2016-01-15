@@ -163,7 +163,6 @@ function validate(id){
 $(document).ready(function(){
     $('#feedback').on('submit', function(e){
         e.preventDefault();
-        console.log('submitting form');
 
         var name = $('#feedback #fb_name').val();
         var email = $('#feedback #fb_mail').val();
@@ -178,10 +177,16 @@ $(document).ready(function(){
             $('#feedback .mailstatus').addClass('success');
             $('#feedback .mailstatus').html(msg);
             $('#feedback .mailstatus').css('display', 'block');
+            setTimeout(function() {
+                $('#feedback .mailstatus').slideUp()
+            }, 5000);
         },
         fail: function(msg){
             $('#feedback .mailstatus').html(msg);
             $('#feedback .mailstatus').css('display', 'block');
+            setTimeout(function() {
+                $('#feedback .mailstatus').slideUp()
+            }, 5000);
         }
     });
     })
