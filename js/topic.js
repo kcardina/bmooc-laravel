@@ -119,7 +119,6 @@ function displayDiv(type, div, data) {
         $("#" + lb + " .data-title").html(data.title);
         $("#" + lb + " .data-added").html(parseDate(data.created_at));
         $("#" + lb + " .data-author").html("<a href=\""+host+"/search/"+data.the_author.id+ "\">" + data.the_author.name + "</a>");
-        console.log(data.copyright);
         if (typeof data.copyright !== 'undefined') $("#" + lb + " .data-copyright").html(data.copyright);
         else $("#" + lb + " .data-copyright").html("/");
         if (typeof data.attachment !== 'undefined' && data.attachment && data.attachment != null) $("#" + lb + " .data-attachment").html("<a href=\""+ host + "/uploads/attachments/" + data.attachment +"\" target=\"_new\">document</a>");
@@ -213,7 +212,7 @@ function configAnswer(artefact) {
     // Tags klaarzetten
     $('#answer_tags div').remove();
     $.each(artefact.tags, function (k, tag) {
-        $('#answer_tags').append('<div class="tag-button purple"><label><input type="checkbox" name="answer_tags[]" value="' + tag.id + '"><span>' + tag.tag + '</span></label></div>');
+        $('#answer_tags').append('<div class="tag-button purple"><label><input  type="checkbox" name="answer_tags[]" value="' + tag.id + '"><span>' + tag.tag + '</span></label></div>');
     });
 
     // Beschikbare antwoordtypes klaarmaken
@@ -223,9 +222,6 @@ function configAnswer(artefact) {
     $('#topic_button_file').hide();
     if (artefact.instruction.length > 0) {
         $.each(artefact.instruction[0].available_types, function (k, atype) {
-            console.log('****');
-            console.log(k);
-            console.log(atype);
             if (atype.description == 'video_vimeo' || atype.description == 'video_youtube')
                 $('#topic_button_video').show();
             if (atype.description == 'local_image' || atype.description == 'remote_image')
@@ -236,73 +232,15 @@ function configAnswer(artefact) {
                 $('#topic_button_text').show();
         });
     } else {
-        console.log('!!!!!!');
         $('#topic_button_video').show();
         $('#topic_button_image').show();
         $('#topic_button_file').show();
         $('#topic_button_text').show();
     }
-    console.log(artefact);
     $('#answer_parent').val(artefact.artefact.id);
     showInstruction(artefact.instruction[0], true);
 }
 
-function showAnswerType(e) {
-    e.preventDefault();
-    var $this = $(this);
-    $('.error.answer_input').hide();
-    if ($this.hasClass('active')) {
-        return false;
-    }
-    $('.type_select').removeClass('active');
-    $this.addClass('active');
-    $('.type_input').hide();
-    if ($this.attr('id') == 'type_text') {
-        $('#answer_input_text').slideDown();
-        $('#answer_temp_type').val('text');
-    } else if ($this.attr('id') == 'type_image') {
-        $('#answer_input_upload').show();
-        $('#answer_input_or').slideDown();
-        $('#answer_input_url').slideDown();
-        $('#answer_temp_type').val('image');
-    } else if ($this.attr('id') == 'type_video') {
-        $('#answer_input_url').slideDown();
-        $('#answer_temp_type').val('video');
-    } else if ($this.attr('id') == 'type_file') {
-        $('#answer_input_upload').show();
-        $('#answer_input_or').slideDown();
-        $('#answer_input_url').slideDown();
-        $('#answer_temp_type').val('file');
-    }
-}
-function showInstructionType(e) {
-    e.preventDefault();
-    var $this = $(this);
-    $('.error.instruction_input').hide();
-    if ($this.hasClass('active')) {
-        return false;
-    }
-    $('.type_select').removeClass('active');
-    $this.addClass('active');
-    $('.type_input').hide();
-    if ($this.attr('id') == 'type_text') {
-        $('#instruction_input_text').slideDown();
-        $('#instruction_temp_type').val('text');
-    } else if ($this.attr('id') == 'type_image') {
-        $('#instruction_input_upload').show();
-        $('#instruction_input_or').slideDown();
-        $('#instruction_input_url').slideDown();
-        $('#instruction_temp_type').val('image');
-    } else if ($this.attr('id') == 'type_video') {
-        $('#instruction_input_url').slideDown();
-        $('#instruction_temp_type').val('video');
-    } else if ($this.attr('id') == 'type_file') {
-        $('#instruction_input_upload').show();
-        $('#instruction_input_or').slideDown();
-        $('#instruction_input_url').slideDown();
-        $('#instruction_temp_type').val('file');
-    }
-}
 function showInstruction(instruct, current) {
     //console.log('*********************************');
     //console.log(instruct);
@@ -347,7 +285,6 @@ function configCurrentInstructionPanel(div, data) {
         var ft = filetypesToIcons(data.available_types);
 
         $.each(ft, function(key, value){
-            console.log(value);
             $(answer_types).append("<li>" + value + "</li>\n");
         });
         $("#" + lb + " .data-answer-types").html(answer_types);
@@ -424,7 +361,6 @@ function parseDate(d) {
 }
 
 function filetypesToIcons(f){
-    console.log(f);
     var r = [];
     $.each(f, function(key, value){
         var icon = filetypeToIcon(value.id);
@@ -468,151 +404,3 @@ function filetypeToIcon(f){
 //        console.log(result);
 //    });
 //}
-
-function validation() {
-    var valid = true;
-    var msg;
-    if (!$('.type_select').hasClass('active')) {
-        valid = false;
-        msg = "Please choose one of the file types."
-    }
-    if ($('button#type_text').hasClass('active')) {
-        if ($('#answer_input_text textarea').val().length == 0 || $('#answer_input_text textarea').val() == "Type your topic text here...") {
-            valid = false;
-            msg = "Please enter some text."
-        }
-    } else if ($('button#type_image').hasClass('active')) {
-        if ($('#answer_upload').val().length == 0 && $('#answer_url').val().length == 0) {
-            valid = false;
-            msg = "Please enter a link or select a file."
-        }
-        if ($('#answer_upload').val().length != 0 && $('#answer_url').val().length != 0) {
-            valid = false;
-            msg = "Only one of the options can be chosen."
-        }
-        if ($('#answer_upload').val().length != 0) {
-            var f = $('#answer_upload')[0].files[0];
-            if (f.size > 2000000) {
-                msg = "The document is too large (> 2MB)";
-                valid = false;
-            }
-        }
-    } else if ($('button#type_video').hasClass('active')) {
-        if ($('#answer_url').val().length == 0) {
-            valid = false;
-            msg = "Please enter a link to a video on YouTube or Vimeo."
-        }
-    } else if ($('button#type_file').hasClass('active')) {
-        if ($('#answer_upload').val().length == 0 && $('#answer_url').val().length == 0) {
-            valid = false;
-            msg = "Please enter a link or select a pdf document."
-        }
-        if ($('#answer_upload').val().length != 0 && $('#answer_url').val().length != 0) {
-            valid = false;
-            msg = "Only one of the options can be chosen."
-        }
-        if ($('#answer_upload').val().length != 0) {
-            var f = $('#answer_upload')[0].files[0];
-            if (f.size > 2000000) {
-                msg = "The document is too large (> 2MB)";
-                var fo = $('#answer_upload')
-                fo.replaceWith(fo = fo.clone(true));
-                valid = false;
-            }
-        }
-    }
-    if ($('#attachment').val().length != 0) {
-        var f = $('#attachment')[0].files[0];
-        if (f.size > 2000000) {
-            msg = "The attached document is too large (> 2MB)";
-            valid = false;
-            var fo = $('#attachment')
-            fo.replaceWith(fo = fo.clone(true));
-        }
-    }
-
-    if ($('#answer_tags input:checked').length != 2) {
-        valid = false;
-        $('#error_tags').html("Select exactly 2 existing tags.");
-        $('#error_tags').css('display', 'block');
-    } else {
-        $('#error_tags').css('display', 'none');
-    }
-
-    if (!valid) {
-        $('.error.answer_input').html(msg);
-        $('.error.answer_input').css('display', 'block');
-    } else {
-        $('.error.answer_input').css('display', 'none');
-    }
-    return valid;
-}
-function instruction_validation() {
-    var valid = true;
-    var msg;
-    if (!$('.type_select').hasClass('active')) {
-        valid = false;
-        msg = "Please choose one of the file types."
-    }
-    if ($('button#type_text').hasClass('active')) {
-        if ($('#instruction_input_text textarea').val().length == 0 || $('#instruction_input_text textarea').val() == "Type your instruction text here...") {
-            valid = false;
-            msg = "Please enter some text."
-        }
-    } else if ($('button#type_image').hasClass('active')) {
-        if ($('#instruction_upload').val().length == 0 && $('#instruction_url').val().length == 0) {
-            valid = false;
-            msg = "Please enter a link or select a file."
-        }
-        if ($('#instruction_upload').val().length != 0 && $('#instruction_url').val().length != 0) {
-            valid = false;
-            msg = "Only one of the options can be chosen."
-        }
-        if ($('#instruction_upload').val().length != 0) {
-            var f = $('#instruction_upload')[0].files[0];
-            if (f.size > 2000000) {
-                msg = "The document is too large (> 2MB)";
-                valid = false;
-            }
-        }
-    } else if ($('button#type_video').hasClass('active')) {
-        if ($('#instruction_url').val().length == 0) {
-            valid = false;
-            msg = "Please enter a link to a video on YouTube or Vimeo."
-        }
-    } else if ($('button#type_file').hasClass('active')) {
-        if ($('#instruction_upload').val().length == 0 && $('#instruction_url').val().length == 0) {
-            valid = false;
-            msg = "Please enter a link or select a pdf document."
-        }
-        if ($('#instruction_upload').val().length != 0 && $('#instruction_url').val().length != 0) {
-            valid = false;
-            msg = "Only one of the options can be chosen."
-        }
-        if ($('#instruction_upload').val().length != 0) {
-            var f = $('#instruction_upload')[0].files[0];
-            if (f.size > 2000000) {
-                msg = "The document is too large (> 2MB)";
-                var fo = $('#instruction_upload')
-                fo.replaceWith(fo = fo.clone(true));
-                valid = false;
-            }
-        }
-    }
-
-    if ($('#instruction_types input:checked').length < 1) {
-        valid = false;
-        //$('#error_types').html("Select at least 1 of these types.");
-        $('#error_types').css('display', 'block');
-    } else {
-        $('#error_types').css('display', 'none');
-    }
-
-    if (!valid) {
-        $('.error.instruction_input').html(msg);
-        $('.error.instruction_input').css('display', 'block');
-    } else {
-        $('.error.instruction_input').css('display', 'none');
-    }
-    return valid;
-}
