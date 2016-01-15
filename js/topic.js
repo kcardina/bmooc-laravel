@@ -216,26 +216,26 @@ function configAnswer(artefact) {
     });
 
     // Beschikbare antwoordtypes klaarmaken
-    $('#topic_button_text').hide();
-    $('#topic_button_image').hide();
-    $('#topic_button_video').hide();
-    $('#topic_button_file').hide();
+    $('#answer_button_text').hide();
+    $('#answer_button_image').hide();
+    $('#answer_button_video').hide();
+    $('#answer_button_file').hide();
     if (artefact.instruction.length > 0) {
         $.each(artefact.instruction[0].available_types, function (k, atype) {
             if (atype.description == 'video_vimeo' || atype.description == 'video_youtube')
-                $('#topic_button_video').show();
+                $('#answer_button_video').show();
             if (atype.description == 'local_image' || atype.description == 'remote_image')
-                $('#topic_button_image').show();
+                $('#answer_button_image').show();
             if (atype.description == 'local_pdf' || atype.description == 'remote_pdf')
-                $('#topic_button_file').show();
+                $('#answer_button_file').show();
             if (atype.description == 'text')
-                $('#topic_button_text').show();
+                $('#answer_button_text').show();
         });
     } else {
-        $('#topic_button_video').show();
-        $('#topic_button_image').show();
-        $('#topic_button_file').show();
-        $('#topic_button_text').show();
+        $('#answer_button_video').show();
+        $('#answer_button_image').show();
+        $('#answer_button_file').show();
+        $('#answer_button_text').show();
     }
     $('#answer_parent').val(artefact.artefact.id);
     showInstruction(artefact.instruction[0], true);
@@ -362,8 +362,9 @@ function parseDate(d) {
 
 function filetypesToIcons(f){
     var r = [];
+    // get icons
     $.each(f, function(key, value){
-        var icon = filetypeToIcon(value.id);
+        var icon = filetypeToIcon(parseInt(value.id), value.description);
         if($.inArray(icon, r) != 0){
             r.push(icon);
         }
@@ -371,26 +372,26 @@ function filetypesToIcons(f){
     return r;
 }
 
-function filetypeToIcon(f){
+function filetypeToIcon(f, msg){
     switch(f){
         case 28: //text
-            return "<i class=\"fa fa-align-justify\"></i>";
+            return "<i title=\""+msg+"\" class=\"fa fa-align-justify\"></i>";
         case 29: //text
-            return "<i class=\"fa fa-camera\"></i>";
+            return "<i title=\""+msg+"\" class=\"fa fa-camera\"></i>";
         case 30: //text
-            return "<i class=\"fa fa-camera\"></i>";
+            return "<i title=\""+msg+"\" class=\"fa fa-camera\"></i>";
         case 31: //text
-            return "<i class=\"fa fa-video-camera\"></i>";
+            return "<i title=\""+msg+"\" class=\"fa fa-video-camera\"></i>";
         case 32: //text
-            return "<i class=\"fa fa-video-camera\"></i>";
+            return "<i title=\""+msg+"\" class=\"fa fa-video-camera\"></i>";
         case 33: //text
-            return "<i class=\"fa fa-file\"></i>";
+            return "<i title=\""+msg+"\" class=\"fa fa-file\"></i>";
         case 34: //text
-            return "<i class=\"fa fa-file\"></i>";
+            return "<i title=\""+msg+"\" class=\"fa fa-file\"></i>";
         case 37: //text
-            return "<i class=\"fa fa-file\"></i>";
+            return "<i title=\""+msg+"\" class=\"fa fa-file\"></i>";
         case 38: //text
-            return "<i class=\"fa fa-file\"></i>";
+            return "<i title=\""+msg+"\" class=\"fa fa-file\"></i>";
         default:
             return "";
     }
