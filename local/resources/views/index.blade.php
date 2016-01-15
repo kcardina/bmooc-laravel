@@ -315,15 +315,20 @@
     <div id="feedback" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
         <h2 id="modalTitle">Feedback</h2>
             <p>Remarks, problems or suggestions? Please fill in the form below.</p>
-            <form>
-                <label for="fb_name">Name:</label>
-                <input type="text" id="fb_name" name="fb_name"/>
-                <label for="fb_mail">E-mail:</label>
-                <input type="email" id="fb_mail" name="fb_mail"/>
-                <label for="fb_msg">Message:</label>
-                    <textarea rows="5" id="fb_msg"></textarea>
-                <label for="fb_attachment">Attachment:</label>
-                <input type="file" id="fb_attachment" name="fb_attachment"/>
+               {!! Form::open(array('data-abide', 'url'=>'topic/new','method'=>'POST', 'files'=>true)) !!}
+                <label for="fb_name">Name:
+                    <input type="text" id="fb_name" name="fb_name"/>
+                </label>
+                <label for="fb_mail">E-mail:
+                    <input type="email" id="fb_mail" name="fb_mail"/>
+                </label>
+                <label for="fb_msg">Message:
+                    <textarea required rows="5" id="fb_msg"></textarea>
+                    <small class="error">Please describe your remark, problem or suggestion.</small>
+                </label>
+                <label for="fb_attachment">Attachment:
+                    <input type="file" id="fb_attachment" name="fb_attachment"/>
+                </label>
                 <input type="submit" class="purple full" value="Submit"/>
             </form>
           <a class="close-reveal-modal" aria-label="Close">&#215;</a>
