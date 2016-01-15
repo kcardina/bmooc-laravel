@@ -54,28 +54,29 @@ class BmoocController extends Controller {
     public function feedback(){
         $data = Input::all();
 
-        if($data['email'] == "") $data['email'] = "unknown@unknown.com";
-        if($data['name'] == "") $data['name'] = "Anonymous";
+        if($data['email'] == "") $data['email'] = "teis.degreve@luca-arts.be";
+        if($data['name'] == "") $data['name'] = "Teis De Greve";
 
         $validator = Validator::make($data,
             array(
               'name' => 'required',
               'email' => 'required|email',
-              'message' => 'required',
+              'body' => 'required',
             )
         );
 
           if ($validator->fails())
           {
-              print("Oops. Something went wrong. Please try again or send your feedback to <strong>teis.degreve@luca-arts.be</strong>");
+              print("Oops. Something went wrong. Please try again or send your feedback to <a href=\"mailto:teis.degreve@luca-arts.be\">teis.degreve@luca-arts.be</a>");
           } else {
 
-            Mail::send('emails.feedback', $data, function($message) {
-                $message->from($data['email'], $data['name']);
-                $message->to('teis.degreve@luca-arts.be')->subject('bMOOC Feedback');
+            Mail::send('email.feedback', $data, function($m) use ($data) {
+                $m->from($data['email'], $data['name'])
+                    ->to('teis.degreve@luca-arts.be')
+                    ->subject('bMOOC Feedback');
             });
 
-            print("Thanks for your feedback!");
+            print("Thank you for your feedback!");
           }
     }
 

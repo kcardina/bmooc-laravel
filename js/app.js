@@ -161,7 +161,7 @@ function validate(id){
 
 /* FEEDBACK FORM */
 $(document).ready(function(){
-    $('#feedback input[type=submit]').click(function(e){
+    $('#feedback').on('submit', function(e){
         e.preventDefault();
         console.log('submitting form');
 
@@ -173,12 +173,15 @@ $(document).ready(function(){
         $.ajax({
         type: "POST",
         url: host+'/feedback',
-        data: {name:name, email:email, message:message, _token: token},
+        data: {name:name, email:email, body:message, _token: token},
         success: function( msg ) {
-            alert( msg );
+            $('#feedback .mailstatus').addClass('success');
+            $('#feedback .mailstatus').html(msg);
+            $('#feedback .mailstatus').css('display', 'block');
         },
         fail: function(msg){
-            alert(msg);
+            $('#feedback .mailstatus').html(msg);
+            $('#feedback .mailstatus').css('display', 'block');
         }
     });
     })

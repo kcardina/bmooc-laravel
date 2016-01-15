@@ -672,6 +672,14 @@ small.error{
     width: 100%;
 }
 
+small.error.full{
+    width: 100%;
+}
+
+small.error.success{
+    background-color: #165d6c;
+}
+
 label small{
     text-transform: none;
     color: inherit;
