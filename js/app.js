@@ -158,3 +158,36 @@ function validate(id){
 
     return valid;
 }
+
+/* FEEDBACK FORM */
+$(document).ready(function(){
+    $('#feedback').on('submit', function(e){
+        e.preventDefault();
+
+        var name = $('#feedback #fb_name').val();
+        var email = $('#feedback #fb_mail').val();
+        var message = $('#feedback #fb_msg').val();
+        var token = $('#feedback input[name="_token"]').val();
+
+        $.ajax({
+        type: "POST",
+        url: host+'/feedback',
+        data: {name:name, email:email, body:message, _token: token},
+        success: function( msg ) {
+            $('#feedback .mailstatus').addClass('success');
+            $('#feedback .mailstatus').html(msg);
+            $('#feedback .mailstatus').css('display', 'block');
+            setTimeout(function() {
+                $('#feedback .mailstatus').slideUp()
+            }, 5000);
+        },
+        fail: function(msg){
+            $('#feedback .mailstatus').html(msg);
+            $('#feedback .mailstatus').css('display', 'block');
+            setTimeout(function() {
+                $('#feedback .mailstatus').slideUp()
+            }, 5000);
+        }
+    });
+    })
+});

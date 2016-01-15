@@ -32,7 +32,10 @@
                         <nav class="main">
                             <ul class="inline slash">
                                 <li>
-                                    {!! HTML::link('#', 'help', array('data-reveal-id' => 'help')) !!}
+                                    {!! HTML::link('#', 'help', array('help-show' => 'topic')) !!}
+                                </li>
+                                <li>
+                                    {!! HTML::link('#', 'about', array('data-reveal-id' => 'help')) !!}
                                 </li>
                                 <li>
                                     @if (isset($user))
@@ -50,9 +53,9 @@
                         <h1>{!! HTML::link('/','bMOOC') !!}</h1>
                     </div>
                     <div class="small-8 medium-9 large-10 columns end">
-                        <button class="big information pullup space" data-reveal-id="instruction" style="display: none;">Topic instruction</button>
+                        <button class="big information pullup space" data-reveal-id="instruction" data-help="topic" data-help-id="view_current_instruction" style="display: none;">Topic instruction</button>
                         @if (isset($user) && $user->role=="editor")
-                        <button class="big plus pullup" data-reveal-id="new_instruction">New instruction</button>
+                        <button class="big plus pullup" data-reveal-id="new_instruction" data-help="topic" data-help-id="new_instruction">New instruction</button>
                         @endif
                     </div>
                 </div>
@@ -81,8 +84,8 @@
                 </nav>
                 <div class="row buttons">
                     <div class="small-6 columns" id="artefect_left_buttons">
-                        <button class="small information space" data-reveal-id="artefact_lightbox_left">Details</button>
-                        <button class="small plus" data-artefact="left" data-reveal-id="new_artefact">Add (some)thing</button>
+                        <button class="small information space" data-reveal-id="artefact_lightbox_left" data-help="topic" data-help-id="details">Details</button>
+                        <button class="small plus" data-artefact="left" data-reveal-id="new_artefact" data-help="topic" data-help-id="new_artefact">Add (some)thing</button>
                     </div>
                     <div class="small-6 columns" id="artefact_right_buttons">
                         <button class="small information space" data-reveal-id="artefact_lightbox_right">Details</button>
@@ -482,6 +485,7 @@
         {!! HTML::script('js/imagesloaded.min.js') !!}
         {!! HTML::script('js/pointer-events-polyfill.js') !!}
         {!! HTML::script('https://www.youtube.com/iframe_api') !!}
+        {!! HTML::script('js/help.js') !!}
         {!! HTML::script('js/app.js') !!}
         <script>
             var host = "{{ URL::to('/') }}";

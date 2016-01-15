@@ -7,6 +7,7 @@
  * middelgrijs: #878787
  * lichtgrijs: #d9d9d9
  * paars: #751e82
+ * overlay: #031F20
 */
 
 input, select, img, button {
@@ -139,6 +140,9 @@ nav.sort{
     margin-top: 2px;
 }
 
+.logout{
+    font-weight: 400;
+}
 
 /* LISTS */
 
@@ -668,6 +672,14 @@ small.error{
     width: 100%;
 }
 
+small.error.full{
+    width: 100%;
+}
+
+small.error.success{
+    background-color: #165d6c;
+}
+
 label small{
     text-transform: none;
     color: inherit;
@@ -732,4 +744,91 @@ strong{
 
 .lightgrey{
     color: #d9d9d9;
+}
+
+/** HELP **/
+
+.help{
+    cursor: help !important;
+    z-index: 9999;
+}
+
+.help a, .help label, .help input{
+    cursor: help !important;
+}
+
+.help-close-x{
+    color: #AAAAAA;
+    cursor: pointer;
+    font-size: 2.5rem;
+    font-weight: bold;
+    line-height: 1;
+    position: absolute;
+    top: 0.625rem;
+    right: 1.375rem;
+}
+
+.help-bg{
+    background: #000000;
+    background: rgba(0, 0, 0, 0.75);
+    bottom: 0;
+    display: none;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1004;
+    left: 0;
+}
+
+.help-msg-close{
+    color: #AAAAAA;
+    cursor: pointer;
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+    position: absolute;
+    top: 0.4rem;
+    right: 0.8rem;
+}
+
+.help-msg{
+  position: absolute;
+  padding: 2rem 15px 5px 15px;
+  margin: 1em 0 3em;
+  border-radius: 10px;
+  background: #031F20;
+    min-width: 100px;
+    max-width: 500px;
+    font-size: 0.8rem;
+    z-index: 9999;
+    display: none;
+
+}
+
+.help-msg p{
+    font-size: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+/* creates triangle */
+.help-msg:after {
+  content: "";
+  display: block; /* reduce the damage in FF3.0 */
+  position: absolute;
+  top: -15px;
+  left: 15px;
+  width: 0;
+  border-width: 0 15px 15px;
+  border-style: solid;
+  border-color: #031F20 transparent;
+}
+
+.help-txt{
+    position: relative;
+    margin: 0 auto;
+    max-width: 500px;
+    text-align: center;
+    margin-top: 50vh;
+    font-weight: 400;
 }
