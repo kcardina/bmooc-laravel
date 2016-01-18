@@ -363,6 +363,7 @@
     {!! HTML::script('js/foundation.min.js') !!}
     {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
     {!! HTML::script('js/app.js') !!}
+    {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
     <script>
         var host = "{{ URL::to('/') }}";
         $(document).foundation();

@@ -504,7 +504,6 @@
                             <div class="row type_input input_file" id="instruction_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
                                     <label for="instruction_upload">Upload a file:</label>
->>>>>>> master
                                     <span class="field">
                                         <input data-abide-validator="filesize" type="file" id="instruction_upload" name="instruction_upload"/>
                                         <small class="error">The document is too large (> 2MB).</small>
@@ -548,8 +547,8 @@
         {!! HTML::script('js/imagesloaded.min.js') !!}
         {!! HTML::script('js/pointer-events-polyfill.js') !!}
         {!! HTML::script('https://www.youtube.com/iframe_api') !!}
-        {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
         {!! HTML::script('js/app.js') !!}
+        {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
         <script>
             var host = "{{ URL::to('/') }}";
             var newTopic;
