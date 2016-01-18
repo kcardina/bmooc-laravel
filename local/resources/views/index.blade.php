@@ -16,6 +16,16 @@
     {!! HTML::script('js/vendor/modernizr.js') !!}
   </head>
 	<body>
+	    <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-71362622-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
 		<header class="green">
 			<div class="row large">
 			    <div class="small-12 columns text-right">
@@ -120,14 +130,14 @@
                    initiated
                    <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->created_at)) }} {{ date('H:i', strtotime($topic->created_at)) }}</span>
                    by
-                    <span class="lightgrey"><a href="/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span><br />
+                    <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span><br />
                 </div>
                 @if (isset($topic->last_modified))
                     <div class="extra laatste_wijziging">
                         last addition
                         <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }} {{ date('H:i', strtotime($topic->last_modified)) }}</span>
                         by
-                        <span class="lightgrey"><a href="/search/{{ isset($topic->last_modifier) ? $topic->last_modifier->id : $topic->the_author->id}}">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</a></span>
+                        <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ isset($topic->last_modifier) ? $topic->last_modifier->id : $topic->the_author->id}}">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</a></span>
                     </div>
                 @endif
             </div>
@@ -137,11 +147,11 @@
                    @if (isset($topic->last_modified))
                         <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }}</span>
                         by
-                    <span class="lightgrey"><a href="/search/{{ isset($topic->last_modifier) ? $topic->last_modifier->id : $topic->the_author->id}}">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</a></span>
+                    <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ isset($topic->last_modifier) ? $topic->last_modifier->id : $topic->the_author->id}}">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</a></span>
                     @else
                         <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->created_at)) }}</span>
                         by
-                    <span class="lightgrey"><a href="/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span>
+                    <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span>
                     @endif
                 </div>
                 <div class="large-2 columns antwoorden">
@@ -160,7 +170,7 @@
                     tags:
                     <ul class="inline slash">
                     @foreach ($topic->tags as $tag)
-                        <li><a href="/search/all/{{$tag->id}}">{{$tag->tag}}</a></li>
+                        <li><a href="{{ URL::to('/') }}/search/all/{{$tag->id}}">{{$tag->tag}}</a></li>
                     @endforeach
                     </ul>
                 </div>
@@ -170,13 +180,13 @@
                 <ul class="inline arrow"></ul>
             </div>
             </div>
-        </div></a>
+        </div>
         <!-- END item -->
 	@endforeach
         
     </div>
     
-    <!-- ADD NEW TOPIC -->
+    <!-- ADD NEW TOPIC #new_topic -->
     @if (isset($user) && $user->role == 'editor')
     <div id="new_topic" class="reveal-modal slide screen-right" data-reveal data-options="animation_speed: 0" aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
         <div class="row">  
@@ -184,71 +194,77 @@
                <img src="{{ asset('img/plus_plain.png') }}" alt="plus"/>
             </div>
             <div class="large-8 medium-12 columns end">
-            	{!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return validation()', 'url'=>'topic/new','method'=>'POST', 'files'=>true)) !!}
+            	{!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return validate("newTopicForm")', 'url'=>'topic/new','method'=>'POST', 'files'=>true)) !!}
                 <h2>Start a new topic</h2>
                 <p>Initiate a topic using a video, text, photo,...</p>
-                <h3>General information</h3>
-                <!-- een gewone input -->
-                <div class="field_title">
-                    <label>Title:
-                        <input type="text" required name="topic_title"/>
-                    </label>
-                    <small class="error">Please enter a title for the topic.</small>
-                </div>
-                <!-- een checkbox input -->
-                <label>Tags (enter 3 below):</label>
-                <div class="form-inline">
-                    <div class="field_tag">
-                        <label for="new-tag-1">Tag 1</label>
-                        <span class="field">
-                            <input required data-abide-validator="tag" class="new-tag" id="new-tag-1" type="text" name="topic_new_tag[]"/>
-                            <small class="error">3 different tags are required.</small>
-                        </span>
+                <fieldset>
+                    <h3>General information</h3>
+                    <!-- INPUT: topic_title -->
+                    <div class="field_title">
+                        <label>Title:
+                            <input type="text" required name="topic_title"/>
+                        </label>
+                        <small class="error">Please enter a title for the topic.</small>
                     </div>
-                    <div class="field_tag">
-                        <label for="new-tag-2">Tag 2</label>
-                        <span class="field">
-                           <input required data-abide-validator="tag" class="new-tag" id="new-tag-2" type="text" name="topic_new_tag[]"/>
-                            <small class="error">3 different tags are required.</small>
-                        </span>
+                    <!-- CHECKBOX: topic_new_tag -->
+                    <label>Tags (enter 3 below):</label>
+                    <div class="form-inline">
+                        <div class="field_tag">
+                            <label for="new-tag-1">Tag 1</label>
+                            <span class="field">
+                                <input required data-abide-validator="tag_new" class="new-tag" id="new-tag-1" type="text" name="topic_new_tag[]"/>
+                                <small class="error">3 different tags are required.</small>
+                            </span>
+                        </div>
+                        <div class="field_tag">
+                            <label for="new-tag-2">Tag 2</label>
+                            <span class="field">
+                               <input required data-abide-validator="tag_new" class="new-tag" id="new-tag-2" type="text" name="topic_new_tag[]"/>
+                                <small class="error">3 different tags are required.</small>
+                            </span>
+                        </div>
+                        <div class="field_tag">
+                            <label for="new-tag-3">Tag 3</label>
+                            <span class="field">
+                                <input required data-abide-validator="tag_new" class="new-tag" id="new-tag-3" type="text" name="topic_new_tag[]"/>
+                                <small class="error">3 different tags are required.</small>
+                            </span>
+                        </div>
                     </div>
-                    <div class="field_tag">
-                        <label for="new-tag-3">Tag 3</label>
-                        <span class="field">
-                            <input required data-abide-validator="tag" class="new-tag" id="new-tag-3" type="text" name="topic_new_tag[]"/>
-                            <small class="error">3 different tags are required.</small>
-                        </span>
-                    </div>
-                </div>
-                <h3>Choose one of the following:</h3>
-                <div class="row large" data-equalizer>
-                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_text">
-                       <button class="square purple type_select" id="type_text">
-                           <i class="fa fa-align-justify"></i>
-                           text
-                       </button>
-                   </div>
-                   <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_image">
-                       <button class="square purple type_select" id="type_image">
-                           <i class="fa fa-camera"></i>
-                           image<br /><small>(jpg, png, gif)</small>
-                       </button>
-                   </div>
-                    <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_video">
-                       <button class="square purple type_select" id="type_video">
-                        <i class="fa fa-video-camera"></i>
-                          video<br /><small>(youtube, vimeo)</small>
-                      </button>
-                   </div>
-                    <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="topic_button_file">
-                       <button class="square purple type_select" id="type_file">
-                       <i class="fa fa-file"></i>
-                       document<br /><small>(pdf)</small>
-                       </button>
-                   </div>
-                </div>
-                <div class="row type_input" id="topic_input_text" style="display: none;"> <!-- Div om text-input mogelijk te maken -->
-                	<div class="small-12 columns ql_wrapper">
+                </fieldset>
+                <fieldset> <!-- BUTTONS: topic_button_xxx -->
+                    <h3>Choose one of the following:</h3>
+                    <div class="filetype">
+                       <!-- buttons -->
+                        <div class="row large" data-equalizer>
+                           <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_text">
+                               <button class="square purple type_select" id="type_text">
+                                   <i class="fa fa-align-justify"></i>
+                                   text
+                               </button>
+                           </div>
+                           <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_image">
+                               <button class="square purple type_select" id="type_image">
+                                   <i class="fa fa-camera"></i>
+                                   image<br /><small>(jpg, png, gif)</small>
+                               </button>
+                           </div>
+                            <div class="small-6 large-3 columns text-center" data-equalizer-watch id="topic_button_video">
+                               <button class="square purple type_select" id="type_video">
+                                <i class="fa fa-video-camera"></i>
+                                  video<br /><small>(youtube, vimeo)</small>
+                              </button>
+                           </div>
+                            <div class="small-6 large-3 columns text-center end" data-equalizer-watch id="topic_button_file">
+                               <button class="square purple type_select" id="type_file">
+                               <i class="fa fa-file"></i>
+                               document<br /><small>(pdf)</small>
+                               </button>
+                           </div>
+                        </div>
+                        <!-- input fields -->
+                        <div class="row type_input input_textarea" id="topic_input_text" style="display: none;">
+                           <div class="small-12 columns ql_wrapper">
                 	    <!-- Create the toolbar container -->
                         <div class="ql_toolbar" class="toolbar ql-toolbar ql-snow">
                             <span class="ql-format-group">
@@ -283,41 +299,48 @@
                     <div class="ql_editor"></div>
                     <textarea name="topic_text" style="display:none"></textarea>
                 	</div>
-                </div>
-                <div class="row type_input" id="topic_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
-                	<div class="small-12 columns form-inline">
-                		<label for="topic_upload">upload a file:</label>
-                		<span class="field">
-                		    <input type="file" id="topic_upload" name="topic_upload"/>
-                		</span>
-                	</div>
-                </div>
-                <div class="row type_input" id="topic_input_or" style="display: none;"> <!-- Div voor 'or' bij file upload aan te zetten -->
-                	<div class="small-12 columns">
-                		<strong>or</strong>
-                	</div>
-                </div>
-                <div class="row type_input" id="topic_input_url" style="display: none;"> <!-- Div voor url mogelijk te maken -->
-                	<div class="small-12 columns form-inline">
-                		<label for="topic_url">url:</label>
-                		<span class="field">
-                                <input id="topic_url" type="text" name="topic_url"/>
-                		</span>
-                	</div>
-                </div>
-                <div class="row">
-                    <div class="small-12 columns">
-                        <small class="error topic_input">Please choose one of the file types.</small>
+                        </div>
+                        <div class="row type_input input_file" id="topic_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
+                            <div class="small-12 columns form-inline">
+                                <label for="topic_upload">Upload a file:</label>
+                                <span class="field">
+                                    <input data-abide-validator="filesize" type="file" id="topic_upload" name="topic_upload"/>
+                                    <small class="error">The document is too large (> 2MB).</small>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row type_input input_separator" id="topic_input_or" style="display: none;"> <!-- Div voor 'or' bij file upload aan te zetten -->
+                            <div class="small-12 columns">
+                                <strong>or</strong>
+                            </div>
+                        </div>
+                        <div class="row type_input input_url" id="topic_input_url" style="display: none;"> <!-- Div voor url mogelijk te maken -->
+                            <div class="small-12 columns form-inline">
+                                <label for="topic_url">url:</label>
+                                <span class="field">
+                                            <input id="topic_url" type="text" name="topic_url"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 columns">
+                                <small class="error filetype_error">Please choose one of the file types.</small>
+                            </div>
+                        </div>
+                        <input type="hidden" class="temp_type" name="topic_temp_type" id="topic_temp_type" />
                     </div>
-                </div>
-                <h3>Extra information</h3>
-                <div class="field_input">
-                        <label for="copyright" class="form-left-label">copyright:</label>
-                        <span class="field"><input type="text" name="topic_copyright" id="copyright"/>
-                    <label for="attachment">upload an image <small>(jpg, png, gif)</small> or a file <small>(pdf)</small>:</label>
-                    <span class="field"><input type="file" id="attachment" name="topic_attachment"/></span>
-                </div>
-                <input type="hidden" name="topic_temp_type" id="topic_temp_type" />
+                </fieldset>
+                <fieldset><!-- EXTRA INFO topic_copyright, topic_attachment -->
+                    <h3>Extra information (optional)</h3>
+                    <label>Copyright:
+                        <input type="text" id="copyright" name="topic_copyright"/>
+                    </label>
+                    <label>Attachment <small>(jpg, png, gif or pdf)</small>:
+                        <input type="file" data-abide-validator="filesize" id="attachment" name="topic_attachment"/>
+                    </label>
+                    <small class="error">The attachment is too large (> 2MB).</small>
+                </fieldset>
+                <input type="submit" class="full purple" value="Add topic"/>
                 <input type="submit" class="full purple" value="Add topic"/>
                 </form>
            </div>
@@ -339,6 +362,7 @@
     {!! HTML::script('js/vendor/jquery.js') !!}
     {!! HTML::script('js/foundation.min.js') !!}
     {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
+    {!! HTML::script('js/app.js') !!}
     <script>
         var host = "{{ URL::to('/') }}";
         $(document).foundation();
@@ -461,122 +485,6 @@
                 'toolbar': { container: '.ql_toolbar' },
             },
             theme: 'snow'
-        });
-
-        function showAnswerType(e) {
-            e.preventDefault();
-            var $this = $(this);
-            $('.error.topic_input').hide();
-            if($this.hasClass('active')){
-                return false;
-            }
-            $('.type_select').removeClass('active');
-            $this.addClass('active');
-            $('.type_input').hide();
-            if ($this.attr('id') == 'type_text') {
-                $('#topic_input_text').slideDown();
-                $('#topic_temp_type').val('text');
-            } else if ($this.attr('id') == 'type_image') {
-                $('#topic_input_upload').show();
-                $('#topic_input_or').slideDown();
-                $('#topic_input_url').slideDown();
-                $('#topic_temp_type').val('image');
-            } else if ($this.attr('id') == 'type_video') {
-                $('#topic_input_url').slideDown();
-                $('#topic_temp_type').val('video');
-            } else if ($this.attr('id') == 'type_file') {
-                $('#topic_input_upload').show();
-                $('#topic_input_or').slideDown();
-                $('#topic_input_url').slideDown();
-                $('#topic_temp_type').val('file');
-            }
-        }
-
-        function validation(){
-            var valid = true;
-            var msg;
-            if(!$('.type_select').hasClass('active')){
-                valid = false;
-                msg = "Please choose on of the file types."
-            }
-            if($('button#type_text').hasClass('active')){
-                if($('#topic_input_text .ql-editor').text().length <= 0){
-                    valid = false;
-                    msg = "Please enter some text.";
-                } else {
-                    $('#topic_input_text textarea').val($('#topic_input_text .ql-editor').html());
-                }
-            } else if($('button#type_image').hasClass('active')){
-                if($('#topic_upload').val().length == 0 && $('#topic_url').val().length == 0){
-                    valid = false;
-                    msg = "Please enter a link or select a file."
-                }
-                if($('#topic_upload').val().length != 0 && $('#topic_url').val().length != 0){
-                    valid = false;
-                    msg = "Only one of the options can be chosen."
-                }
-                if($('#topic_upload').val().length != 0) {
-                    var f = $('#topic_upload')[0].files[0];
-                    if (f.size > 2000000) {
-                        msg = "The document is too large (> 2MB)";
-                        valid = false;
-                    }
-                }
-            } else if($('button#type_video').hasClass('active')){
-                if($('#topic_url').val().length == 0){
-                    valid = false;
-                    msg = "Please enter a link to a video on YouTube or Vimeo."
-                }
-            } else if($('button#type_file').hasClass('active')){
-                if($('#topic_upload').val().length == 0 && $('#topic_url').val().length == 0){
-                    valid = false;
-                    msg = "Please enter a link or select a pdf document."
-                }
-                if($('#topic_upload').val().length != 0 && $('#topic_url').val().length != 0){
-                    valid = false;
-                    msg = "Only one of the options can be chosen."
-                }
-                if($('#topic_upload').val().length != 0) {
-                    var f = $('#topic_upload')[0].files[0];
-                    if (f.size > 2000000) {
-                        msg = "The document is too large (> 2MB)";
-                        valid = false;
-                    }
-                }
-            }
-            if($('#attachment').val().length != 0) {
-                var f = $('#attachment')[0].files[0];
-                if (f.size > 2000000) {
-                    msg = "The attached document is too large (> 2MB)";
-                    valid = false;
-                }
-            }
-            
-            if(!valid){
-                $('.error.topic_input').html(msg);
-                $('.error.topic_input').css('display', 'block');
-            } else{
-                $('.error.topic_input').css('display', 'none');
-            }
-            return valid;
-        }
-
-        $(document).foundation({
-            abide : {
-                validators: {
-                    tag: function(el, required, parent){
-                        var tags = [];
-                        var valid = true;
-                        $('[data-abide-validator="tag"]').each(function(){
-                            if($.inArray($(this).val(), tags) > -1){
-                                valid = false;
-                            }
-                            tags.push($(this).val());
-                        });
-                        return valid;
-                    },
-                }
-            }
         });
     </script>
   </body>

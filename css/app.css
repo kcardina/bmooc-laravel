@@ -442,6 +442,17 @@ nav #nav_left{
 
 /* FORMS */
 
+fieldset{
+    margin: 0;
+    padding: 0;
+    border: none;
+    margin-bottom: 1rem;
+}
+
+fieldset.error input{
+    margin-bottom: 1rem;
+}
+
 .form-inline label{
     float: left;
     margin-top: 2px;
@@ -479,10 +490,6 @@ nav #nav_left{
 .sort label{
     font-weight: inherit;
     color: inherit;
-}
-
-form.sort{
-
 }
 
 @media only screen and (min-width: 40.063em) {
@@ -657,7 +664,7 @@ button.information{
     background-size: contain;
 }
 
-.error label, label.error{
+.error label, label.error, .error label.error{
     color: inherit;
 }
 
@@ -671,7 +678,7 @@ button.information{
     margin-bottom: 0;
 }
 
-small.error.topic_input{
+small.error{
     width: 100%;
 }
 
