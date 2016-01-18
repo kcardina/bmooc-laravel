@@ -756,6 +756,10 @@ strong{
     color: #ffffff;
 }
 
+b{
+    font-weight: 400;
+}
+
 .lightgrey{
     color: #d9d9d9;
 }
