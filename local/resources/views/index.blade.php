@@ -31,8 +31,14 @@
 			    <div class="small-12 columns text-right">
                     <nav class="main">
                         <ul class="inline slash">
+                           <li>
+                                {!! HTML::link('#', 'help', array('help-show' => 'index')) !!}
+                            </li>
                             <li>
-                                {!! HTML::link('#', 'help', array('data-reveal-id' => 'help')) !!}
+                                {!! HTML::link('#', 'about', array('data-reveal-id' => 'help')) !!}
+                            </li>
+                            <li>
+                                {!! HTML::link('#', 'feedback', array('data-reveal-id' => 'feedback')) !!}
                             </li>
                             <li>
                                 @if (isset($user))
@@ -51,10 +57,10 @@
 				</div>
 				<div class="small-8 medium-9 large-3 columns">
 					@if (isset($user) && $user->role=="editor")
-                        <button class="big plus pullup" data-reveal-id="new_topic">Start a new topic</button>
+                        <button class="big plus pullup" data-help="index" data-help-id="new_topic" data-reveal-id="new_topic">Start a new topic</button>
                     @endif
 				</div>
-				<div class="large-7 columns">
+				<div class="large-7 columns" data-help="index" data-help-id="search">
                    <nav class="sort">
                      <form class="sort">
                       <div class="row sort">
@@ -359,15 +365,48 @@
           <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
 
+    <div id="feedback" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+        <h2 id="modalTitle">Feedback</h2>
+            <p>Remarks, problems or suggestions? Please fill in the form below.</p>
+               {!! Form::open(array('data-abide', 'url'=>'feedback','method'=>'POST', 'files'=>true)) !!}
+               <small class="mailstatus error full"></small>
+                <label for="fb_name">Name:
+                    <input type="text" id="fb_name" name="fb_name"/>
+                </label>
+                <label for="fb_mail">E-mail:
+                    <input type="email" id="fb_mail" name="fb_mail"/>
+                    <small class="error">Please enter a valid e-mail address.</small>
+                </label>
+                <label for="fb_msg">Message:
+                    <textarea required rows="5" id="fb_msg"></textarea>
+                    <small class="error">Please describe your remark, problem or suggestion.</small>
+                </label>
+                <input type="submit" class="purple full" value="Submit"/>
+            </form>
+          <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+    </div>
+
     {!! HTML::script('js/vendor/jquery.js') !!}
     {!! HTML::script('js/foundation.min.js') !!}
-    {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
+    {!! HTML::script('js/help.js') !!}
     {!! HTML::script('js/app.js') !!}
     {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
     <script>
         var host = "{{ URL::to('/') }}";
         $(document).foundation();
         $(document).ready(function(){
+
+            <?php
+                // show the 'about' popup on first login
+                if(!isset($_COOKIE['firstlogin'])){
+                    // show popup and set cookie
+                    echo "setTimeout(function(){
+                        $('#help').foundation('reveal', 'open');
+                    }, 2000);";
+                    setcookie("firstlogin", "firstlogin", time() + 3600 * 24 * 356);
+                }
+            ?>
+
             $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 $(document).foundation('equalizer', 'reflow');
