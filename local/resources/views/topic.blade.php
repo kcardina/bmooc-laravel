@@ -10,6 +10,7 @@
         {!! HTML::style('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css') !!}
         <!-- stylesheets -->
         {!! HTML::style('css/foundation.css') !!}
+        {!! HTML::style('//cdn.quilljs.com/0.20.1/quill.snow.css') !!}
         {!! HTML::style('css/app.css') !!}
         <!-- scripts -->
         {!! HTML::script('js/vendor/modernizr.js') !!}
@@ -281,7 +282,7 @@
                             <label class="form-left-label" for="new-tag">Add one new tag:
                                 <input id="new-tag" type="text" name="answer_new_tag" required data-abide-validator="tag_existing"/>
                             </label>
-                            <small class="error">The new tag can not be the same as the existing tags.</small>
+                            <small class="error">The new tag can not be empty and can not be the same as the selected tags.</small>
                         </div>
                     </fieldset>
                     <fieldset> <!-- BUTTONS: answer_button_xxx -->
@@ -316,9 +317,41 @@
                             </div>
                             <!-- input fields -->
                             <div class="row type_input input_textarea" id="answer_input_text" style="display: none;"> <!-- Div om text-input mogelijk te maken -->
-                                <div class="small-12 columns">
-                                    <textarea required rows="5" cols="50" name="answer_text">Type your answer text here...</textarea>
-                                </div>
+                                                        <div class="small-12 columns ql_wrapper">
+                            <!-- Create the toolbar container -->
+                            <div class="ql_toolbar" class="toolbar ql-toolbar ql-snow">
+                                <span class="ql-format-group">
+                                    <select title="Size" class="ql-size">
+                                        <option value="0.8rem">Small</option>
+                                        <option value="1rem" selected="selected">Normal</option>
+                                        <option value="1.3rem">Large</option>
+                                    </select>
+                                </span>
+                                <span class="ql-format-group">
+                                    <span title="Bold" class="ql-format-button ql-bold"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <span title="Italic" class="ql-format-button ql-italic"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <span title="Underline" class="ql-format-button ql-underline"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <span title="Strikethrough" class="ql-format-button ql-strike"></span>
+                                </span>
+                                <span class="ql-format-group">
+                                    <span title="List" class="ql-format-button ql-list"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <span title="Bullet" class="ql-format-button ql-bullet"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <select title="Text Alignment" class="ql-align">
+                                        <option value="left" label="Left" selected=""></option>
+                                        <option value="center" label="Center"></option>
+                                        <option value="right" label="Right"></option>
+                                        <option value="justify" label="Justify"></option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="ql_editor"></div>
+                            <textarea name="answer_text" style="display:none"></textarea>
+                	    </div>
                             </div>
                             <div class="row type_input input_file" id="answer_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
@@ -438,9 +471,41 @@
                             </div>
                             <!-- input fields -->
                             <div class="row type_input input_textarea" id="instruction_input_text" style="display: none;"> <!-- Div om text-input mogelijk te maken -->
-                                <div class="small-12 columns">
-                                    <textarea required rows="5" cols="50" name="instruction_text">Type your instruction text here...</textarea>
-                                </div>
+                                                            <div class="small-12 columns ql_wrapper">
+                	    <!-- Create the toolbar container -->
+                        <div class="ql_toolbar" class="toolbar ql-toolbar ql-snow">
+                            <span class="ql-format-group">
+                                <select title="Size" class="ql-size">
+                                    <option value="0.8rem">Small</option>
+                                    <option value="1rem" selected="selected">Normal</option>
+                                    <option value="1.3rem">Large</option>
+                                </select>
+                            </span>
+                            <span class="ql-format-group">
+                                <span title="Bold" class="ql-format-button ql-bold"></span>
+                                <span class="ql-format-separator"></span>
+                                <span title="Italic" class="ql-format-button ql-italic"></span>
+                                <span class="ql-format-separator"></span>
+                                <span title="Underline" class="ql-format-button ql-underline"></span>
+                                <span class="ql-format-separator"></span>
+                                <span title="Strikethrough" class="ql-format-button ql-strike"></span>
+                            </span>
+                            <span class="ql-format-group">
+                                <span title="List" class="ql-format-button ql-list"></span>
+                                <span class="ql-format-separator"></span>
+                                <span title="Bullet" class="ql-format-button ql-bullet"></span>
+                                <span class="ql-format-separator"></span>
+                                <select title="Text Alignment" class="ql-align">
+                                    <option value="left" label="Left" selected=""></option>
+                                    <option value="center" label="Center"></option>
+                                    <option value="right" label="Right"></option>
+                                    <option value="justify" label="Justify"></option>
+                                </select>
+                            </span>
+                        </div>
+                    <div class="ql_editor"></div>
+                    <textarea name="instruction_text" style="display:none"></textarea>
+                	</div>
                             </div>
                             <div class="row type_input input_file" id="instruction_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
@@ -511,6 +576,7 @@
         {!! HTML::script('https://www.youtube.com/iframe_api') !!}
         {!! HTML::script('js/help.js') !!}
         {!! HTML::script('js/app.js') !!}
+        {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
         <script>
             var host = "{{ URL::to('/') }}";
             var newTopic;
@@ -569,6 +635,20 @@
                 $('#artefact_right_contents').hide();
                 showArtefactLeft({{ $artefactLeft }}, {{ isset($answerRight)? $answerRight : 0 }});
 
+                // editor
+                var quill_answer = new Quill('#answer_input_text .ql_editor', {
+                    modules: {
+                        'toolbar': { container: '#answer_input_text .ql_toolbar' },
+                    },
+                    theme: 'snow'
+                });
+
+                var quill_instruction = new Quill('#instruction_input_text .ql_editor', {
+                    modules: {
+                        'toolbar': { container: '#instruction_input_text .ql_toolbar' },
+                    },
+                    theme: 'snow'
+                });
 
                 document.onkeydown = function(evt) {
                     evt = evt || window.event;

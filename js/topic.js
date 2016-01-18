@@ -135,7 +135,7 @@ function displayDiv(type, div, data) {
     // load content
     switch (type) {
         case 'text':
-            html = "<div class=\"textContainer\"><div class=\"text\"><h2>" + data.title + "</h2>" + data.contents + "</div></div>";
+            html = "<div class=\"textContainer\"><div class=\"text\">" + data.contents + "</div></div>";
             break;
         case 'local_image':
             html = '<a href="' + host + "/uploads/" + data.url + '" data-lightbox="image-1" data-title="Image"><img src="' + host + "/uploads/" + data.url + '"></a>';

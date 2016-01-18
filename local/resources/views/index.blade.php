@@ -10,6 +10,7 @@
     {!! HTML::style('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css') !!}
     <!-- stylesheets -->
     {!! HTML::style('css/foundation.css') !!}
+    {!! HTML::style('//cdn.quilljs.com/0.20.1/quill.snow.css') !!}
     {!! HTML::style('css/app.css') !!}
     <!-- scripts -->
     {!! HTML::script('js/vendor/modernizr.js') !!}
@@ -268,10 +269,42 @@
                            </div>
                         </div>
                         <!-- input fields -->
-                        <div class="row type_input input_textarea" id="topic_input_text" style="display: none;"> <!-- Div om text-input mogelijk te maken -->
-                            <div class="small-12 columns">
-                                <textarea required rows="5" cols="50" name="topic_text">Type your topic text here...</textarea>
-                            </div>
+                        <div class="row type_input input_textarea" id="topic_input_text" style="display: none;">
+                           <div class="small-12 columns ql_wrapper">
+                	    <!-- Create the toolbar container -->
+                        <div class="ql_toolbar" class="toolbar ql-toolbar ql-snow">
+                            <span class="ql-format-group">
+                                <select title="Size" class="ql-size">
+                                    <option value="0.8rem">Small</option>
+                                    <option value="1rem" selected="selected">Normal</option>
+                                    <option value="1.3rem">Large</option>
+                                </select>
+                            </span>
+                            <span class="ql-format-group">
+                                <span title="Bold" class="ql-format-button ql-bold"></span>
+                                <span class="ql-format-separator"></span>
+                                <span title="Italic" class="ql-format-button ql-italic"></span>
+                                <span class="ql-format-separator"></span>
+                                <span title="Underline" class="ql-format-button ql-underline"></span>
+                                <span class="ql-format-separator"></span>
+                                <span title="Strikethrough" class="ql-format-button ql-strike"></span>
+                            </span>
+                            <span class="ql-format-group">
+                                <span title="List" class="ql-format-button ql-list"></span>
+                                <span class="ql-format-separator"></span>
+                                <span title="Bullet" class="ql-format-button ql-bullet"></span>
+                                <span class="ql-format-separator"></span>
+                                <select title="Text Alignment" class="ql-align">
+                                    <option value="left" label="Left" selected=""></option>
+                                    <option value="center" label="Center"></option>
+                                    <option value="right" label="Right"></option>
+                                    <option value="justify" label="Justify"></option>
+                                </select>
+                            </span>
+                        </div>
+                    <div class="ql_editor"></div>
+                    <textarea name="topic_text" style="display:none"></textarea>
+                	</div>
                         </div>
                         <div class="row type_input input_file" id="topic_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                             <div class="small-12 columns form-inline">
@@ -356,6 +389,7 @@
     {!! HTML::script('js/foundation.min.js') !!}
     {!! HTML::script('js/help.js') !!}
     {!! HTML::script('js/app.js') !!}
+    {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
     <script>
         var host = "{{ URL::to('/') }}";
         $(document).foundation();
@@ -483,6 +517,14 @@
                 break;
             }
         }
+
+        // editor
+        var quill = new Quill('.ql_editor', {
+            modules: {
+                'toolbar': { container: '.ql_toolbar' },
+            },
+            theme: 'snow'
+        });
     </script>
   </body>
 </html>
