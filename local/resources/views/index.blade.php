@@ -347,7 +347,6 @@
                     <small class="error">The attachment is too large (> 2MB).</small>
                 </fieldset>
                 <input type="submit" class="full purple" value="Add topic"/>
-                <input type="submit" class="full purple" value="Add topic"/>
                 </form>
            </div>
         </div>

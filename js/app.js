@@ -16,10 +16,9 @@ $(document).foundation({
                 return valid;
             },
             tag_existing: function(el, required, parent){
-                console.log('cheking tags');
                 var tags = [];
                 var valid = true;
-                $('#answer_tags input[type=checkbox]').each(function() {
+                $('#answer_tags input[type=checkbox]:checked').each(function() {
                     if ($.inArray($(this).next().text(), tags) > -1) {
                         valid = false;
                     }
@@ -31,6 +30,7 @@ $(document).foundation({
                     }
                     tags.push($(this).val());
                 });
+                if(el.value == "" || el.value == null) valid = false;
                 return valid;
             },
             filesize: function(el, required, parent){
@@ -146,7 +146,6 @@ function validate(id){
     }
 
     /* messy way of checking for tags too */
-    console.log("checking tag list");
     if (div.find('#answer_tags').length){
         if ($('#answer_tags input:checked').length != 2) {
             valid = false;

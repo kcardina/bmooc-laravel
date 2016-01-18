@@ -282,7 +282,7 @@
                             <label class="form-left-label" for="new-tag">Add one new tag:
                                 <input id="new-tag" type="text" name="answer_new_tag" required data-abide-validator="tag_existing"/>
                             </label>
-                            <small class="error">The new tag can not be the same as the existing tags.</small>
+                            <small class="error">The new tag can not be empty and can not be the same as the selected tags.</small>
                         </div>
                     </fieldset>
                     <fieldset> <!-- BUTTONS: answer_button_xxx -->
