@@ -192,3 +192,47 @@ $(function(){
     });
     })
 });
+
+/* NEW TOPIC */
+$(function(){
+    $('#newTopicForm').on('valid.fndtn.abide', function(e) {
+        console.log('submit');
+
+        // reset & show loading screen
+        $('#progress .message').html('Uploading...');
+        $('#progress .meter').css('width', '0')
+        $('#progress').foundation('reveal', 'open');
+
+        // upload file while
+         $.ajax({
+             xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+
+                 xhr.upload.addEventListener("progress", function(evt) {
+                  if (evt.lengthComputable) {
+                    var percentComplete = evt.loaded / evt.total;
+                    percentComplete = parseInt(percentComplete * 100);
+
+                    console.log(percentComplete);
+                    $('#progress .meter').css('width', percentComplete + '%')
+
+                    if (percentComplete === 100) {
+                        console.log('done');
+                    }
+                  }
+                }, false);
+                return xhr;
+             },
+             type: "POST",
+             url: '/topic/new',
+             data: $('#newTopicForm').serialize(),
+             success: function(result) {
+                console.log(result);
+             }
+         });
+
+        // generate thumbnail on hidden canvas
+
+        // upload thumbnail
+    });
+});
