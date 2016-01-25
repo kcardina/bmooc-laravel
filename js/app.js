@@ -1,3 +1,7 @@
+/************
+* VALIDATIE *
+************/
+
 /**
  * Main validation (abide)
  */
@@ -7,7 +11,7 @@ $(document).foundation({
             tag_new: function(el, required, parent){
                 var tags = [];
                 var valid = true;
-                $('[data-abide-validator="tag"]').each(function(){
+                $('[data-abide-validator="tag_new"]').each(function(){
                     if($.inArray($(this).val(), tags) > -1){
                         valid = false;
                     }
@@ -33,6 +37,18 @@ $(document).foundation({
                 if(el.value == "" || el.value == null) valid = false;
                 return valid;
             },
+            tag_select: function(el, required, parent){
+                var valid = true;
+                if (parent.parent().find('input').length){
+                    if (parent.parent().find('input:checked').length != 2) {
+                        valid = false;
+                        parent.parent().find('small.error').css('display', 'block');
+                    } else {
+                        parent.parent().find('small.error').css('display', 'none');
+                    }
+                }
+                return valid;
+            },
             filesize: function(el, required, parent){
                 var valid = true;
                 if(el.files.length > 0){
@@ -40,6 +56,61 @@ $(document).foundation({
                     if (f.size > 2000000) {
                         valid = false;
                     }
+                }
+                return valid;
+            },
+            filetype: function(el, required, parent){
+                var div = parent;
+                var valid = true;
+                var msg;
+
+                // check if anything is selected
+                if(!div.find('.type_select').hasClass('active')){
+                    valid = false;
+                    msg = "Please choose on of the file types."
+                }
+
+                // text
+                if(div.find('button#type_text').hasClass('active')){
+                    if(div.find('.ql-editor').text().length <= 0){
+                        valid = false;
+                        msg = "Please enter some text.";
+                    } else {
+                        div.find('textarea').val(div.find('.ql-editor').html());
+                    }
+                // image
+                } else if(div.find('button#type_image').hasClass('active')){
+                    if(div.find('input[type=file]').val().length == 0 && div.find('input[type=text]').val().length == 0){
+                        valid = false;
+                        msg = "Please enter a link or upload an image."
+                    }
+                    if($('input[type=file]').val().length != 0 && div.find('input[type=text]').val().length != 0){
+                        valid = false;
+                        msg = "Only one of the options can be chosen."
+                    }
+                // video
+                } else if(div.find('button#type_video').hasClass('active')){
+                    if(div.find('input[type=text]').val().length == 0){
+                        valid = false;
+                        msg = "Please enter a link to a video on YouTube or Vimeo."
+                    }
+                // file
+                } else if(div.find('button#type_file').hasClass('active')){
+                    if(div.find('input[type=file]').val().length == 0 && div.find('input[type=text]').val().length == 0){
+                        valid = false;
+                        msg = "Please enter a link or upload a pdf."
+                    }
+                    if($('input[type=file]').val().length != 0 && div.find('input[type=text]').val().length != 0){
+                        valid = false;
+                        msg = "Only one of the options can be chosen."
+                    }
+                }
+
+                if(!valid){
+                    div.find('.error.filetype_error').html(msg);
+                    div.find('.error.filetype_error').css('display', 'block');
+                } else{
+                    div.find('.error.filetype_error').css('display', 'none');
                 }
                 return valid;
             }
@@ -85,84 +156,13 @@ function showAnswerType(e) {
     }
 }
 
-/**
- * validatiefunctie voor antwoordtypes
- * Gebruik {!! Form::open(array('data-abide', 'onsubmit'=>'return validate("newTopicForm")')) !!}
- * @param {string} id Id van het formulier dat gevalideerd wordt.
- * @return {boolean} valid
- */
-function validate(id){
-    var div = $("#" + id);
-    var valid = true;
-    var msg;
+/********
+* FORMS *
+********/
 
-    // check if anything is selected
-    if(!div.find('.type_select').hasClass('active')){
-        valid = false;
-        msg = "Please choose on of the file types."
-    }
-
-    // text
-    if(div.find('button#type_text').hasClass('active')){
-        if(div.find('.filetype .ql-editor').text().length <= 0){
-            valid = false;
-            msg = "Please enter some text.";
-        } else {
-            div.find('.filetype textarea').val(div.find('.filetype .ql-editor').html());
-        }
-    // image
-    } else if(div.find('button#type_image').hasClass('active')){
-        if(div.find('.filetype input[type=file]').val().length == 0 && div.find('.filetype input[type=text]').val().length == 0){
-            valid = false;
-            msg = "Please enter a link or upload an image."
-        }
-        if($('.filetype input[type=file]').val().length != 0 && div.find('.filetype input[type=text]').val().length != 0){
-            valid = false;
-            msg = "Only one of the options can be chosen."
-        }
-    // video
-    } else if(div.find('button#type_video').hasClass('active')){
-        if(div.find('.filetype input[type=text]').val().length == 0){
-            valid = false;
-            msg = "Please enter a link to a video on YouTube or Vimeo."
-        }
-    // file
-    } else if(div.find('button#type_file').hasClass('active')){
-        if(div.find('.filetype input[type=file]').val().length == 0 && div.find('.filetype input[type=text]').val().length == 0){
-            valid = false;
-            msg = "Please enter a link or upload a pdf."
-        }
-        if($('.filetype input[type=file]').val().length != 0 && div.find('.filetype input[type=text]').val().length != 0){
-            valid = false;
-            msg = "Only one of the options can be chosen."
-        }
-    }
-
-    if(!valid){
-        div.find('.error.filetype_error').html(msg);
-        div.find('.error.filetype_error').css('display', 'block');
-    } else{
-        div.find('.error.filetype_error').css('display', 'none');
-    }
-
-    /* messy way of checking for tags too */
-    if (div.find('#answer_tags').length){
-        if ($('#answer_tags input:checked').length != 2) {
-            valid = false;
-            $('#error_tags').html("Select exactly 2 existing tags.");
-            $('#error_tags').css('display', 'block');
-        } else {
-            $('#error_tags').css('display', 'none');
-        }
-    }
-
-
-    return valid;
-}
-
-/* FEEDBACK FORM */
-$(document).ready(function(){
-    $('#feedback').on('submit', function(e){
+/* FEEDBACK */
+$(function(){
+    $('#feedback').submit(function(e){
         e.preventDefault();
 
         var name = $('#feedback #fb_name').val();

@@ -200,7 +200,7 @@
                <img src="{{ asset('img/plus_plain.png') }}" alt="plus"/>
             </div>
             <div class="large-8 medium-12 columns end">
-            	{!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return validate("newTopicForm")', 'url'=>'topic/new','method'=>'POST', 'files'=>true)) !!}
+            	{!! Form::open(array('id'=>'newTopicForm', 'data-abide'=>'ajax', 'url'=>'topic/new','method'=>'POST', 'files'=>true)) !!}
                 <h2>Start a new topic</h2>
                 <p>Initiate a topic using a video, text, photo,...</p>
                 <fieldset>
@@ -333,7 +333,7 @@
                                 <small class="error filetype_error">Please choose one of the file types.</small>
                             </div>
                         </div>
-                        <input type="hidden" class="temp_type" name="topic_temp_type" id="topic_temp_type" />
+                        <input type="hidden" data-abide-validator="filetype"  class="temp_type" name="topic_temp_type" id="topic_temp_type" />
                     </div>
                 </fieldset>
                 <fieldset><!-- EXTRA INFO topic_copyright, topic_attachment -->
@@ -383,6 +383,17 @@
                 <input type="submit" class="purple full" value="Submit"/>
             </form>
           <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+    </div>
+
+    <div id="progress" class="reveal-modal small" data-reveal aria-hidden="true" role="dialog">
+       <div class="row">
+           <div class="columns small-12 text-center">
+                <div class="progress round">
+                  <span class="meter"></span>
+                </div>
+                <p class="message">Loading...</p>
+           </div>
+       </div>
     </div>
 
     {!! HTML::script('js/vendor/jquery.js') !!}

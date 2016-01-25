@@ -254,7 +254,7 @@
                    <img src="{{ asset('img/plus_plain.png') }}" alt="plus"/>
                 </div>
                     <div class="large-8 medium-12 columns end">
-                    {!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return validate("newTopicForm")', 'url'=>'comment', 'method'=>'POST', 'files'=>true)) !!}
+                    {!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'url'=>'comment', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add (some)thing</h2>
                     <p>add (some)thing to this topic using the form below...</p>
                     <fieldset>
@@ -276,8 +276,8 @@
                         </div>
                         <label>Select two tags below:</label>
                         <div class="tag-select" id="answer_tags">
+                            <small class="error" id="error_tags">Select exactly 2 existing tags.</small>
                         </div>
-                        <small class="error" id="error_tags">Select exactly 2 existing tags.</small>
                         <div>
                             <label class="form-left-label" for="new-tag">Add one new tag:
                                 <input id="new-tag" type="text" name="answer_new_tag" required data-abide-validator="tag_existing"/>
@@ -380,7 +380,7 @@
                                     <small class="error filetype_error">Please choose one of the file types.</small>
                                 </div>
                             </div>
-                            <input type="hidden" class="temp_type" name="answer_temp_type" id="answer_temp_type" />
+                            <input type="hidden" data-abide-validator="filetype" class="temp_type" name="answer_temp_type" id="answer_temp_type" />
                         </div>
                     </fieldset>
                     <fieldset>
@@ -410,7 +410,7 @@
                    <img src="{{ asset('img/plus_plain.png') }}" alt="plus"/>
                 </div>
                 <div class="large-8 medium-12 columns end">
-                    {!! Form::open(array('id'=>'newInstructionForm', 'data-abide', 'onsubmit'=>'return validate("newInstructionForm")', 'url'=>'instruction/new', 'method'=>'POST', 'files'=>true)) !!}
+                    {!! Form::open(array('id'=>'newInstructionForm', 'data-abide', 'url'=>'instruction/new', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add instruction</h2>
                     <p>add an instruction to this topic. The current instruction will be disabled.</p>
                     <fieldset>
@@ -534,7 +534,7 @@
                                     <small class="error filetype_error">Please choose one of the file types.</small>
                                 </div>
                             </div>
-                            <input type="hidden" class="temp_type" name="instruction_temp_type" id="instruction_temp_type" />
+                            <input type="hidden" class="temp_type" name="instruction_temp_type" data-abide-validator="filetype" id="instruction_temp_type" />
                         </div>
                     </fieldset>
                     <input type="hidden" name="instruction_parent" id="instruction_parent" />
