@@ -133,19 +133,9 @@
             <div class="large-5 columns">
                 <h2>{{ $topic->title }}</h2>
                 <div class="extra laatste_wijziging">
-                   initiated
-                   <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->created_at)) }} {{ date('H:i', strtotime($topic->created_at)) }}</span>
-                   by
+                   initiated by
                     <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span><br />
                 </div>
-                @if (isset($topic->last_modified))
-                    <div class="extra laatste_wijziging">
-                        last addition
-                        <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }} {{ date('H:i', strtotime($topic->last_modified)) }}</span>
-                        by
-                        <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ isset($topic->last_modifier) ? $topic->last_modifier->id : $topic->the_author->id}}">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</a></span>
-                    </div>
-                @endif
             </div>
             <div class="info">
                 <div class="large-3 columns laatste_wijziging">
@@ -187,9 +177,7 @@
                 </div>
             </div>
             <div class="extra">
-                <div class="large-10 columns antwoorden">
-                <ul class="inline arrow"></ul>
-            </div>
+                <div class="large-10 columns antwoorden">hello</div>
             </div>
         </div>
         <!-- END item -->
@@ -357,7 +345,7 @@
     </div>
     @endif
     
-    <div id="instruction" class="artefact_lightbox reveal-modal" data-reveal role="dialog">
+    <div id="instruction" class="artefact_lightbox reveal-modal full" data-reveal role="dialog">
             <div class="row">
                 <div class="medium-3 columns" id="instruction_metadata">
                     <h2 id="modalTitle" class="data-title">Title</h2>
@@ -423,6 +411,7 @@
     {!! HTML::script('js/help.js') !!}
     {!! HTML::script('js/app.js') !!}
     {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
+    {!! HTML::script('js/imagesloaded.min.js') !!}
     <script>
         var host = "{{ URL::to('/') }}";
         $(document).foundation();
@@ -456,11 +445,7 @@
 
             /* TOPIC TOEVOEGEN */
             $('.type_select').click(showAnswerType);
-            
-            /* ANTWOORDEN LADEN */
-            // boolean - bepaalt of er één (true) of meerdere (false) items tegelijk gemaximaliseerd mogen zijn
-            var SINGLE = true;
-            
+
             $('button[data-reveal-id="instruction"]').click(function(e){
                 e.stopImmediatePropagation();
                 $('#instruction').foundation('reveal', 'open');
@@ -468,17 +453,10 @@
                 $("#instruction .data-added").html(parseDate($(this).data('instruction-added')));
                 $("#instruction .data-author").html($(this).data('instruction-author'));
 
-                var data = {
-                    contents: "test"
-                }
-
-                render($('#instruction'), text, data);
-
-
-                                //var data = $(this).parents(".row.item").data();
-                /*$.getJSON(host + '/json/topic/' + data['id'], function(data){
-                    console.log(data);
-                });*/
+                var data = $(this).parents(".row.item").data();
+                $.getJSON(host + '/json/topic/' + data['id'], function(data){
+                    render($('#instruction'), data.instruction[0].instruction_type.description, data.instruction[0]);
+                });
             });
 
             $(".item a").click(function(e){
@@ -488,14 +466,20 @@
             $(".item").click(function(e){
                 // als de view niet uitgeklapt is
                 if(!$(this).hasClass("active")){
-                    if(SINGLE){
-                        $(".item").removeClass("active");
-                        $(".item .extra").slideUp();
-                        $(".item .info").show();
-                    }
+                    // vorige inklappen
+                    $(".item").removeClass("active");
+                    $(".item .extra").hide();
+                    $(".item .info").show();
+                    // show new one
                     $(this).toggleClass("active");
                     $(".info", this).toggle();
-                    $(".extra", this).slideToggle();
+                    // scroll naar boven
+                    // maak info grootte van scherm
+                    $(".extra", this).height('1000px');
+                    $('html,body').animate({
+                        scrollTop: $(".extra", this).offset().top},
+                    'slow');
+                    $(".extra", this).toggle();
                 }
             });
             

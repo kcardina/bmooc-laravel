@@ -191,21 +191,6 @@ $(document).ready(function(){
     })
 });
 
-
-/*******************
-* HELPER FUNCTIONS *
-*******************/
-
-function parseDate(d) {
-    var date = d.substring(0, d.indexOf(" "));
-    var time = d.substring(d.indexOf(" ") + 1);
-    var year = date.substring(0, 4);
-    var month = date.substring(5, 7);
-    var day = date.substring(8, 10);
-
-    return(day + "/" + month + "/" + year + " " + time.substring(0, time.length - 3));
-}
-
 /**
  * Show an artefact in the desired container
  * The container should have two divs, .loader & .artefact
@@ -213,13 +198,12 @@ function parseDate(d) {
  * @param type The type of the artefact
  * @param data The artefact
  */
-
 function render(div, type, data){
     var html;
     var loadImg = false;
 
-    div.children('.artefact').hide();
-    div.children('.loader').show();
+    div.find('.artefact').hide();
+    div.find('.loader').show();
 
     switch (type) {
         case 'text':
@@ -256,17 +240,31 @@ function render(div, type, data){
             break;
     }
 
-    div.children('.artefact').html(html);
+    div.find('.artefact').html(html);
 
     if (loadImg) {
         div.imagesLoaded(function () {
             div.stop(true, true)
-            div.children('.loader').hide();
-            div.children('.artefact').fadeIn();
+            div.find('.loader').hide();
+            div.find('.artefact').fadeIn();
         });
     } else {
         div.stop(true, true)
-        div.children('.loader').hide();
-        div.children('.artefact').fadeIn();
+        div.find('.loader').hide();
+        div.find('.artefact').fadeIn();
     }
+}
+
+/*******************
+* HELPER FUNCTIONS *
+*******************/
+
+function parseDate(d) {
+    var date = d.substring(0, d.indexOf(" "));
+    var time = d.substring(d.indexOf(" ") + 1);
+    var year = date.substring(0, 4);
+    var month = date.substring(5, 7);
+    var day = date.substring(8, 10);
+
+    return(day + "/" + month + "/" + year + " " + time.substring(0, time.length - 3));
 }
