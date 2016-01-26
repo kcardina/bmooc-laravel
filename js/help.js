@@ -14,7 +14,7 @@ var text = {
     search: "<p>Use these fields to search for contributions by (a combination of) author, tag or keyword.</p>",
     view_current_instruction: "<p>Use this button to see the latest instruction for the current topic.</p>",
     new_instruction: "<p>Use this button to add a new instruction. If existing, the previous instruction will be disabled and replaced.</p>",
-    details: "<p>Use this button to get more information about the artefact above.</p>",
+    details: "<p>Use this button to get more detailed information about the artefact above.</p>",
     new_artefact: "<p>Use this button to add (some)thing to the artefact above. Your addition will appear next to it, like a tree getting a new branch.</p>"
 
 }

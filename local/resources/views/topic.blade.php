@@ -88,11 +88,11 @@
                 </nav>
                 <div class="row buttons">
                     <div class="small-6 columns" id="artefect_left_buttons">
-                        <button class="small information space" data-reveal-id="artefact_lightbox_left" data-help="topic" data-help-id="details">Details</button>
+                        <button class="small eye space" data-reveal-id="artefact_lightbox_left" data-help="topic" data-help-id="details">Details</button>
                         <button class="small plus" data-artefact="left" data-reveal-id="new_artefact" data-help="topic" data-help-id="new_artefact">Add (some)thing</button>
                     </div>
                     <div class="small-6 columns" id="artefact_right_buttons">
-                        <button class="small information space" data-reveal-id="artefact_lightbox_right">Details</button>
+                        <button class="small eye space" data-reveal-id="artefact_lightbox_right">Details</button>
                         <button class="small plus" data-artefact="right" data-reveal-id="new_artefact">Add (some)thing</button>
                     </div>
                 </div>
@@ -143,9 +143,13 @@
                         </dd>
                         -->
                     </dl>
-                    @if (isset($user))
-                    <button id="button_add_left" class="big plus" data-reveal-id="new_artefact"  data-artefact="left">Add (some)thing</button>
-                    @endif
+                    <div class="buttons">
+                        <button class="small information space space-bottom" data-reveal-id="instruction" data-help="topic" data-help-id="view_current_instruction" style="display: none;">Topic instruction</button>
+                        @if (isset($user))
+                        <button id="button_add_left" class="big plus" data-reveal-id="new_artefact"  data-artefact="left">Add (some)thing</button>
+                        @endif
+                    </div>
+
                 </div>
                 <div class="small-12 large-9 columns data-item large-float">
                     Item
@@ -198,9 +202,12 @@
                         </dd>
                         -->
                     </dl>
-                    @if (isset($user))
-                    <button id="button_add_right" class="big plus" data-reveal-id="new_artefact"  data-artefact="right">Add (some)thing</button>
-                    @endif
+                    <div class="buttons">
+                        <button class="small information space space-bottom" data-reveal-id="instruction" data-help="topic" data-help-id="view_current_instruction" style="display: none;">Topic instruction</button>
+                        @if (isset($user))
+                        <button id="button_add_left" class="big plus" data-reveal-id="new_artefact"  data-artefact="left">Add (some)thing</button>
+                        @endif
+                    </div>
                 </div>
                 <div class="small-12 large-9 columns data-item large-float">
                     Item

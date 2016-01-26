@@ -130,7 +130,7 @@
 				?>
     	
     		<div class="row item" data-id="{{ $topic->id }}">
-            <div class="large-2 columns">
+            <div class="large-5 columns">
                 <h2>{{ $topic->title }}</h2>
                 <div class="extra laatste_wijziging">
                    initiated
@@ -160,7 +160,7 @@
                     <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span>
                     @endif
                 </div>
-                <div class="large-2 columns antwoorden">
+                <div class="large-1 columns antwoorden">
                 		@foreach ($aantalAntwoorden as $aantal)
                 			@if ($aantal->thread == $topic->thread)
                 			 <strong>{{ $aantal->aantal_antwoorden }}</strong>
@@ -172,13 +172,16 @@
                 			 @endif
                 		@endforeach
                 </div>
-                <div class="large-5 columns">
+                <div class="large-2 columns">
                     tags:
                     <ul class="inline slash">
                     @foreach ($topic->tags as $tag)
                         <li><a href="{{ URL::to('/') }}/search/all/{{$tag->id}}">{{$tag->tag}}</a></li>
                     @endforeach
                     </ul>
+                </div>
+                <div class="large-1 columns instruction text-right">
+                		<button class="small information" data-reveal-id="artefact_lightbox_left" data-help="topic" data-help-id="details"></button>
                 </div>
             </div>
             <div class="extra">
