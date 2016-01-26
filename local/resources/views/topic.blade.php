@@ -88,11 +88,11 @@
                 </nav>
                 <div class="row buttons">
                     <div class="small-6 columns" id="artefect_left_buttons">
-                        <button class="small information space" data-reveal-id="artefact_lightbox_left" data-help="topic" data-help-id="details">Details</button>
+                        <button class="small eye space" data-reveal-id="artefact_lightbox_left" data-help="topic" data-help-id="details">Details</button>
                         <button class="small plus" data-artefact="left" data-reveal-id="new_artefact" data-help="topic" data-help-id="new_artefact">Add (some)thing</button>
                     </div>
                     <div class="small-6 columns" id="artefact_right_buttons">
-                        <button class="small information space" data-reveal-id="artefact_lightbox_right">Details</button>
+                        <button class="small eye space" data-reveal-id="artefact_lightbox_right">Details</button>
                         <button class="small plus" data-artefact="right" data-reveal-id="new_artefact">Add (some)thing</button>
                     </div>
                 </div>
@@ -128,7 +128,7 @@
                             <dd class="data-copyright"></dd>
                            </div>
                            <div class="small-6 medium-3 large-12 columns">
-                            <dt>Attachment</dt>
+                            <dt>Extra information</dt>
                             <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
                            </div>
                         </div>
@@ -143,9 +143,13 @@
                         </dd>
                         -->
                     </dl>
-                    @if (isset($user))
-                    <button id="button_add_left" class="big plus" data-reveal-id="new_artefact"  data-artefact="left">Add (some)thing</button>
-                    @endif
+                    <div class="buttons">
+                        <button class="small information space space-bottom" data-reveal-id="instruction" data-help="topic" data-help-id="view_current_instruction" style="display: none;">Topic instruction</button>
+                        @if (isset($user))
+                        <button id="button_add_left" class="big plus" data-reveal-id="new_artefact"  data-artefact="left">Add (some)thing</button>
+                        @endif
+                    </div>
+
                 </div>
                 <div class="small-12 large-9 columns data-item large-float">
                     Item
@@ -183,7 +187,7 @@
                             <dd class="data-copyright"></dd>
                            </div>
                            <div class="small-6 medium-3 large-12 columns">
-                            <dt>Attachment</dt>
+                            <dt>Extra information</dt>
                             <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
                            </div>
                         </div>
@@ -198,9 +202,12 @@
                         </dd>
                         -->
                     </dl>
-                    @if (isset($user))
-                    <button id="button_add_right" class="big plus" data-reveal-id="new_artefact"  data-artefact="right">Add (some)thing</button>
-                    @endif
+                    <div class="buttons">
+                        <button class="small information space space-bottom" data-reveal-id="instruction" data-help="topic" data-help-id="view_current_instruction" style="display: none;">Topic instruction</button>
+                        @if (isset($user))
+                        <button id="button_add_left" class="big plus" data-reveal-id="new_artefact"  data-artefact="left">Add (some)thing</button>
+                        @endif
+                    </div>
                 </div>
                 <div class="small-12 large-9 columns data-item large-float">
                     Item
@@ -236,7 +243,7 @@
             <a class="close-reveal-modal" aria-label="Close">&#215;</a>
         </div>
 
-        <div id="help" class="reveal-modal" data-reveal aria-labelledby="Help" aria-hidden="true" role="dialog">
+        <div id="help" class="reveal-modal small" data-reveal aria-labelledby="Help" aria-hidden="true" role="dialog">
             <h2 id="modalTitle">bMOOC</h2>
             <p>bMOOC consists out of topics. A topic is a cluster, a collection of online things that join into some form or shape. This can be a conversation, a discussion, a tension or a kind of unspeakable resonance.</p>
             <p>What joins the topic, is not fixed. The topic can change its course at all times. The word "topic" derives from the Greek ta topica, which means "commonplace". The topic offers a common place of attention for (some)thing(s), a place for forms of (re)searching that may lead eventually to an artistic practice.</p>
@@ -256,7 +263,6 @@
                     <div class="large-8 medium-12 columns end">
                     {!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return validate("newTopicForm")', 'url'=>'comment', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add (some)thing</h2>
-                    <p>add (some)thing to this topic using the form below...</p>
                     <fieldset>
                         <h3 id="instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
                         <div class="row">
@@ -286,7 +292,7 @@
                         </div>
                     </fieldset>
                     <fieldset> <!-- BUTTONS: answer_button_xxx -->
-                        <h3>Choose one of the following:</h3>
+                        <h3>Add text, an image, a video or a document:</h3>
                         <div class="filetype">
                            <!-- buttons -->
                             <div class="row large" data-equalizer>
@@ -348,6 +354,9 @@
                                         <option value="justify" label="Justify"></option>
                                     </select>
                                 </span>
+                                <span class="ql-format-group">
+                                    <span title="Link" class="ql-format-button ql-link"></span>
+                                </span>
                             </div>
                             <div class="ql_editor"></div>
                             <textarea name="answer_text" style="display:none"></textarea>
@@ -355,24 +364,18 @@
                             </div>
                             <div class="row type_input input_file" id="answer_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
-                                    <label for="answer_upload">Upload a file:</label>
-                                    <span class="field">
+                                    <label for="answer_upload">
+                                        <span class="filetype_label">Select a file to upload <small>(&lt;2MB)</small></span>:
                                         <input data-abide-validator="filesize" type="file" id="answer_upload" name="answer_upload"/>
-                                        <small class="error">The document is too large (> 2MB).</small>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row type_input input_separator" id="answer_input_or" style="display: none;"> <!-- Div voor 'or' bij file upload aan te zetten -->
-                                <div class="small-12 columns">
-                                    <strong>or</strong>
+                                    </label>
+                                    <small class="error">The document is too large (> 2MB).</small>
                                 </div>
                             </div>
                             <div class="row type_input input_url" id="answer_input_url" style="display: none;"> <!-- Div voor url mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
-                                    <label for="answer_url">url:</label>
-                                    <span class="field">
-                                                <input id="answer_url" type="text" name="answer_url"/>
-                                    </span>
+                                    <label for="answer_url">Upload or find a video on YouTube or Vimeo and paste the link to the video here:
+                                        <input id="answer_url" type="text" name="answer_url"/>
+                                    </label>
                                 </div>
                             </div>
                             <div class="row">
@@ -380,15 +383,15 @@
                                     <small class="error filetype_error">Please choose one of the file types.</small>
                                 </div>
                             </div>
+                            <label>Copyright, author or reference (optional):
+                                <input type="text" id="copyright" name="answer_copyright"/>
+                            </label>
                             <input type="hidden" class="temp_type" name="answer_temp_type" id="answer_temp_type" />
                         </div>
                     </fieldset>
                     <fieldset>
                         <h3>Extra information (optional)</h3>
-                        <label>Copyright:
-                            <input type="text" id="copyright" name="answer_copyright"/>
-                        </label>
-                        <label>Attachment <small>(jpg, png, gif or pdf)</small>:
+                        <label>You can attach an extra jpg, png, gif or pdf file to your contribution:
                             <input type="file" data-abide-validator="filesize" id="attachment" name="answer_attachment"/>
                         </label>
                         <small class="error">The attachment is too large (> 2MB).</small>
@@ -412,7 +415,7 @@
                 <div class="large-8 medium-12 columns end">
                     {!! Form::open(array('id'=>'newInstructionForm', 'data-abide', 'onsubmit'=>'return validate("newInstructionForm")', 'url'=>'instruction/new', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add instruction</h2>
-                    <p>add an instruction to this topic. The current instruction will be disabled.</p>
+                    <p>Add an instruction to this topic. The current instruction will be disabled and replaced by the new one.</p>
                     <fieldset>
                         <h3 id="new_instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
                         <div class="row">
@@ -430,17 +433,9 @@
                             </label>
                             <small class="error">Please enter a title for the topic.</small>
                         </div>
-                        <label>Accepted answer types (click to disable):</label>
-                       <div class="tag-select" id="instruction_types">
-                            <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="text"><span>Text</span></label></div><!--
-                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="image"><span>Image</span></label></div><!--
-                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="video"><span>Video</span></label></div><!--
-                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="file"><span>Document (pdf)</span></label></div>
-                            <small class="error" id="error_types">Select at least 1 available option.</small>
-                        </div>
                     </fieldset>
                     <fieldset> <!-- BUTTONS: instruction_button_xxx -->
-                        <h3>Choose one of the following:</h3>
+                        <h3>Add text, an image, a video or a document as an instruction:</h3>
                         <div class="filetype">
                            <!-- buttons -->
                             <div class="row large" data-equalizer>
@@ -472,61 +467,57 @@
                             <!-- input fields -->
                             <div class="row type_input input_textarea" id="instruction_input_text" style="display: none;"> <!-- Div om text-input mogelijk te maken -->
                                                             <div class="small-12 columns ql_wrapper">
-                	    <!-- Create the toolbar container -->
-                        <div class="ql_toolbar" class="toolbar ql-toolbar ql-snow">
-                            <span class="ql-format-group">
-                                <select title="Size" class="ql-size">
-                                    <option value="0.8rem">Small</option>
-                                    <option value="1rem" selected="selected">Normal</option>
-                                    <option value="1.3rem">Large</option>
-                                </select>
-                            </span>
-                            <span class="ql-format-group">
-                                <span title="Bold" class="ql-format-button ql-bold"></span>
-                                <span class="ql-format-separator"></span>
-                                <span title="Italic" class="ql-format-button ql-italic"></span>
-                                <span class="ql-format-separator"></span>
-                                <span title="Underline" class="ql-format-button ql-underline"></span>
-                                <span class="ql-format-separator"></span>
-                                <span title="Strikethrough" class="ql-format-button ql-strike"></span>
-                            </span>
-                            <span class="ql-format-group">
-                                <span title="List" class="ql-format-button ql-list"></span>
-                                <span class="ql-format-separator"></span>
-                                <span title="Bullet" class="ql-format-button ql-bullet"></span>
-                                <span class="ql-format-separator"></span>
-                                <select title="Text Alignment" class="ql-align">
-                                    <option value="left" label="Left" selected=""></option>
-                                    <option value="center" label="Center"></option>
-                                    <option value="right" label="Right"></option>
-                                    <option value="justify" label="Justify"></option>
-                                </select>
-                            </span>
-                        </div>
-                    <div class="ql_editor"></div>
-                    <textarea name="instruction_text" style="display:none"></textarea>
-                	</div>
+                                <!-- Create the toolbar container -->
+                                <div class="ql_toolbar" class="toolbar ql-toolbar ql-snow">
+                                    <span class="ql-format-group">
+                                        <select title="Size" class="ql-size">
+                                            <option value="0.8rem">Small</option>
+                                            <option value="1rem" selected="selected">Normal</option>
+                                            <option value="1.3rem">Large</option>
+                                        </select>
+                                    </span>
+                                    <span class="ql-format-group">
+                                        <span title="Bold" class="ql-format-button ql-bold"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <span title="Italic" class="ql-format-button ql-italic"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <span title="Underline" class="ql-format-button ql-underline"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <span title="Strikethrough" class="ql-format-button ql-strike"></span>
+                                    </span>
+                                    <span class="ql-format-group">
+                                        <span title="List" class="ql-format-button ql-list"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <span title="Bullet" class="ql-format-button ql-bullet"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <select title="Text Alignment" class="ql-align">
+                                            <option value="left" label="Left" selected=""></option>
+                                            <option value="center" label="Center"></option>
+                                            <option value="right" label="Right"></option>
+                                            <option value="justify" label="Justify"></option>
+                                        </select>
+                                    </span>
+                                    <span class="ql-format-group">
+                                        <span title="Link" class="ql-format-button ql-link"></span>
+                                    </span>
+                                </div>
+                            <div class="ql_editor"></div>
+                            <textarea name="instruction_text" style="display:none"></textarea>
+                            </div>
                             </div>
                             <div class="row type_input input_file" id="instruction_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
-                                    <label for="instruction_upload">Upload a file:</label>
-                                    <span class="field">
+                                    <label for="instruction_upload"><span class="filetype_label">Select a file to upload <small>(&lt;2MB)</small></span>:
                                         <input data-abide-validator="filesize" type="file" id="instruction_upload" name="instruction_upload"/>
-                                        <small class="error">The document is too large (> 2MB).</small>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row type_input input_separator" id="instruction_input_or" style="display: none;"> <!-- Div voor 'or' bij file upload aan te zetten -->
-                                <div class="small-12 columns">
-                                    <strong>or</strong>
+                                    </label>
+                                    <small class="error">The document is too large (> 2MB).</small>
                                 </div>
                             </div>
                             <div class="row type_input input_url" id="instruction_input_url" style="display: none;"> <!-- Div voor url mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
-                                    <label for="instruction_url">url:</label>
-                                    <span class="field">
-                                                <input id="instruction_url" type="text" name="instruction_url"/>
-                                    </span>
+                                    <label for="instruction_url">Upload or find a video on YouTube or Vimeo and paste the link to the video here:
+                                        <input id="instruction_url" type="text" name="instruction_url"/>
+                                    </label>
                                 </div>
                             </div>
                             <div class="row">
@@ -535,6 +526,17 @@
                                 </div>
                             </div>
                             <input type="hidden" class="temp_type" name="instruction_temp_type" id="instruction_temp_type" />
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                       <h3>Which contributions are allowed?</h3>
+                        <label>(click to disable)</label>
+                       <div class="tag-select" id="instruction_types">
+                            <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="text"><span>Text</span></label></div><!--
+                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="image"><span>Image</span></label></div><!--
+                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="video"><span>Video</span></label></div><!--
+                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="file"><span>Document (pdf)</span></label></div>
+                            <small class="error" id="error_types">Select at least 1 available option.</small>
                         </div>
                     </fieldset>
                     <input type="hidden" name="instruction_parent" id="instruction_parent" />
@@ -639,6 +641,7 @@
                 var quill_answer = new Quill('#answer_input_text .ql_editor', {
                     modules: {
                         'toolbar': { container: '#answer_input_text .ql_toolbar' },
+                        'link-tooltip': true
                     },
                     theme: 'snow'
                 });
@@ -646,6 +649,7 @@
                 var quill_instruction = new Quill('#instruction_input_text .ql_editor', {
                     modules: {
                         'toolbar': { container: '#instruction_input_text .ql_toolbar' },
+                        'link-tooltip': true
                     },
                     theme: 'snow'
                 });

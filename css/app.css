@@ -311,6 +311,7 @@ a:hover{
     position: absolute;
     /* bottom: -3rem; */
     bottom: 0;
+    width: 100%;
 }
 
 .artefact{
@@ -369,7 +370,7 @@ a:hover{
 	    height: 100% !important;
     }
 
-    .artefact_lightbox button.big{
+    .artefact_lightbox .buttons {
         position: absolute;
         bottom: 0.9375rem;
         left: 0.9375rem;
@@ -381,7 +382,7 @@ a:hover{
     }
 } /* large screens */
 
-.artefact_lightbox button.big {
+.artefact_lightbox .buttons {
 	margin-bottom: 2rem;
 }
 
@@ -529,6 +530,10 @@ form .form-inline input, form .form-inline input:focus, form textarea, .reveal-m
     background: white;
 }
 
+.ql-link-tooltip input, .ql-link-tooltip input:focus{
+    color: #000;
+}
+
 input[type="file"], input[type="submit"]{
     cursor: pointer;
 }
@@ -557,6 +562,14 @@ form input:focus, form textarea:focus, form .active{
 form label{
     color: #d9d9d9;
     font-size: 0.8rem;
+}
+
+form label a{
+    border-bottom: 1px dotted;
+}
+
+form label a:hover{
+    border-bottom: 1px solid;
 }
 
 form .form-inline label{
@@ -654,6 +667,10 @@ button.space{
         margin-right: 1rem;
 }
 
+button.space-bottom{
+    margin-bottom: 1rem;
+}
+
 button.pullup{
     margin-top: -10px;
 }
@@ -666,6 +683,15 @@ button.plus{
 button.information{
     background: url(../img/info.png) no-repeat left center;
     background-size: contain;
+}
+
+button.eye{
+    background: url(../img/eye.png) no-repeat left center;
+    background-size: contain;
+}
+
+button.block{
+    display: block;
 }
 
 .error label, label.error, .error label.error{
@@ -748,7 +774,7 @@ button.type_select.active .fa{
 }
 
 small{
-    font-size: 0.5rem;
+    font-size: 0.65rem;
 }
 
 strong{
@@ -762,6 +788,10 @@ b{
 
 .lightgrey{
     color: #d9d9d9;
+}
+
+.smallcaps{
+    font-variant: small-caps;
 }
 
 /** HELP **/

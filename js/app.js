@@ -70,17 +70,15 @@ function showAnswerType(e) {
         parent.find('.input_textarea').slideDown();
         parent.find('.temp_type').val('text');
     } else if ($this.attr('id') == 'type_image') {
-        parent.find('.input_file').show();
-        parent.find('.input_separator').slideDown();
-        parent.find('.input_url').slideDown();
+        parent.find('.filetype_label').html('Select an image to upload <small>(JPG, PNG or GIF, &lt;2MB)</small>');
+        parent.find('.input_file').slideDown();
         parent.find('.temp_type').val('image');
     } else if ($this.attr('id') == 'type_video') {
         parent.find('.input_url').slideDown();
         parent.find('.temp_type').val('video');
     } else if ($this.attr('id') == 'type_file') {
-        parent.find('.input_file').show();
-        parent.find('.input_separator').slideDown();
-        parent.find('.input_url').slideDown();
+        parent.find('.filetype_label').html('Select a PDF to upload. <small>(&lt;2MB. If the file is too large you can use <a href="http://smallpdf.com/compress-pdf">this free tool</a> to resize your PDF)</small>');
+        parent.find('.input_file').slideDown();
         parent.find('.temp_type').val('file');
     }
 }
