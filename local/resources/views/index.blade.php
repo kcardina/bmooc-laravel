@@ -239,7 +239,7 @@
                     </div>
                 </fieldset>
                 <fieldset> <!-- BUTTONS: topic_button_xxx -->
-                    <h3>Choose one of the following:</h3>
+                    <h3>Add text, an image, a video or a document:</h3>
                     <div class="filetype">
                        <!-- buttons -->
                         <div class="row large" data-equalizer>
@@ -271,61 +271,55 @@
                         <!-- input fields -->
                         <div class="row type_input input_textarea" id="topic_input_text" style="display: none;">
                            <div class="small-12 columns ql_wrapper">
-                	    <!-- Create the toolbar container -->
-                        <div class="ql_toolbar" class="toolbar ql-toolbar ql-snow">
-                            <span class="ql-format-group">
-                                <select title="Size" class="ql-size">
-                                    <option value="0.8rem">Small</option>
-                                    <option value="1rem" selected="selected">Normal</option>
-                                    <option value="1.3rem">Large</option>
-                                </select>
-                            </span>
-                            <span class="ql-format-group">
-                                <span title="Bold" class="ql-format-button ql-bold"></span>
-                                <span class="ql-format-separator"></span>
-                                <span title="Italic" class="ql-format-button ql-italic"></span>
-                                <span class="ql-format-separator"></span>
-                                <span title="Underline" class="ql-format-button ql-underline"></span>
-                                <span class="ql-format-separator"></span>
-                                <span title="Strikethrough" class="ql-format-button ql-strike"></span>
-                            </span>
-                            <span class="ql-format-group">
-                                <span title="List" class="ql-format-button ql-list"></span>
-                                <span class="ql-format-separator"></span>
-                                <span title="Bullet" class="ql-format-button ql-bullet"></span>
-                                <span class="ql-format-separator"></span>
-                                <select title="Text Alignment" class="ql-align">
-                                    <option value="left" label="Left" selected=""></option>
-                                    <option value="center" label="Center"></option>
-                                    <option value="right" label="Right"></option>
-                                    <option value="justify" label="Justify"></option>
-                                </select>
-                            </span>
-                        </div>
-                    <div class="ql_editor"></div>
-                    <textarea name="topic_text" style="display:none"></textarea>
-                	</div>
-                        </div>
-                        <div class="row type_input input_file" id="topic_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
-                            <div class="small-12 columns form-inline">
-                                <label for="topic_upload">Upload a file:</label>
-                                <span class="field">
-                                    <input data-abide-validator="filesize" type="file" id="topic_upload" name="topic_upload"/>
-                                    <small class="error">The document is too large (> 2MB).</small>
-                                </span>
+                                <!-- Create the toolbar container -->
+                                <div class="ql_toolbar" class="toolbar ql-toolbar ql-snow">
+                                    <span class="ql-format-group">
+                                        <select title="Size" class="ql-size">
+                                            <option value="0.8rem">Small</option>
+                                            <option value="1rem" selected="selected">Normal</option>
+                                            <option value="1.3rem">Large</option>
+                                        </select>
+                                    </span>
+                                    <span class="ql-format-group">
+                                        <span title="Bold" class="ql-format-button ql-bold"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <span title="Italic" class="ql-format-button ql-italic"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <span title="Underline" class="ql-format-button ql-underline"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <span title="Strikethrough" class="ql-format-button ql-strike"></span>
+                                    </span>
+                                    <span class="ql-format-group">
+                                        <span title="List" class="ql-format-button ql-list"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <span title="Bullet" class="ql-format-button ql-bullet"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <select title="Text Alignment" class="ql-align">
+                                            <option value="left" label="Left" selected=""></option>
+                                            <option value="center" label="Center"></option>
+                                            <option value="right" label="Right"></option>
+                                            <option value="justify" label="Justify"></option>
+                                        </select>
+                                    </span>
+                                </div>
+                            <div class="ql_editor"></div>
+                            <textarea name="topic_text" style="display:none"></textarea>
                             </div>
                         </div>
-                        <div class="row type_input input_separator" id="topic_input_or" style="display: none;"> <!-- Div voor 'or' bij file upload aan te zetten -->
+                        <div class="row type_input input_file" id="topic_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                             <div class="small-12 columns">
-                                <strong>or</strong>
+                                <label for="topic_upload">
+                                    <span class="filetype_label">Select a file to upload <small>(&lt;2MB)</small></span>:
+                                    <input data-abide-validator="filesize" type="file" id="topic_upload" name="topic_upload"/>
+                                </label>
+                                <small class="error">The document is too large (> 2MB).</small>
                             </div>
                         </div>
                         <div class="row type_input input_url" id="topic_input_url" style="display: none;"> <!-- Div voor url mogelijk te maken -->
-                            <div class="small-12 columns form-inline">
-                                <label for="topic_url">url:</label>
-                                <span class="field">
-                                            <input id="topic_url" type="text" name="topic_url"/>
-                                </span>
+                            <div class="small-12 columns">
+                                <label for="topic_url">Upload or find a video on YouTube or Vimeo and paste the link to the video here:
+                                    <input id="topic_url" type="text" name="topic_url"/>
+                                </label>
                             </div>
                         </div>
                         <div class="row">
@@ -333,15 +327,15 @@
                                 <small class="error filetype_error">Please choose one of the file types.</small>
                             </div>
                         </div>
+                        <label>Copyright, author or reference (optional):
+                            <input type="text" id="copyright" name="topic_copyright"/>
+                        </label>
                         <input type="hidden" class="temp_type" name="topic_temp_type" id="topic_temp_type" />
                     </div>
                 </fieldset>
                 <fieldset><!-- EXTRA INFO topic_copyright, topic_attachment -->
                     <h3>Extra information (optional)</h3>
-                    <label>Copyright:
-                        <input type="text" id="copyright" name="topic_copyright"/>
-                    </label>
-                    <label>Attachment <small>(jpg, png, gif or pdf)</small>:
+                    <label>You can attach an extra JPG, PNG, GIF or PDF file to your contribution:
                         <input type="file" data-abide-validator="filesize" id="attachment" name="topic_attachment"/>
                     </label>
                     <small class="error">The attachment is too large (> 2MB).</small>
@@ -354,7 +348,7 @@
     </div>
     @endif
     
-    <div id="help" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+    <div id="help" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
         <h2 id="modalTitle">bMOOC</h2>
             <p>bMOOC consists out of topics. A topic is a cluster, a collection of online things that join into some form or shape. This can be a conversation, a discussion, a tension or a kind of unspeakable resonance.</p>
             <p>What joins the topic, is not fixed. The topic can change its course at all times. The word "topic" derives from the Greek ta topica, which means "commonplace". The topic offers a common place of attention for (some)thing(s), a place for forms of (re)searching that may lead eventually to an artistic practice.</p>

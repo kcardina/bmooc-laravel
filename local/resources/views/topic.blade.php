@@ -236,7 +236,7 @@
             <a class="close-reveal-modal" aria-label="Close">&#215;</a>
         </div>
 
-        <div id="help" class="reveal-modal" data-reveal aria-labelledby="Help" aria-hidden="true" role="dialog">
+        <div id="help" class="reveal-modal small" data-reveal aria-labelledby="Help" aria-hidden="true" role="dialog">
             <h2 id="modalTitle">bMOOC</h2>
             <p>bMOOC consists out of topics. A topic is a cluster, a collection of online things that join into some form or shape. This can be a conversation, a discussion, a tension or a kind of unspeakable resonance.</p>
             <p>What joins the topic, is not fixed. The topic can change its course at all times. The word "topic" derives from the Greek ta topica, which means "commonplace". The topic offers a common place of attention for (some)thing(s), a place for forms of (re)searching that may lead eventually to an artistic practice.</p>
@@ -354,26 +354,18 @@
                             </div>
                             <div class="row type_input input_file" id="answer_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
-                                   <p>Link naar pdf shrink (http://smallpdf.com/compress-pdf)</p>
-                                    <label for="answer_upload">Upload a file (<2MB):</label>
-                                    <span class="field">
+                                    <label for="answer_upload">
+                                        <span class="filetype_label">Select a file to upload <small>(&lt;2MB)</small></span>:
                                         <input data-abide-validator="filesize" type="file" id="answer_upload" name="answer_upload"/>
-                                        <small class="error">The document is too large (> 2MB).</small>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row type_input input_separator" id="answer_input_or" style="display: none;"> <!-- Div voor 'or' bij file upload aan te zetten -->
-                                <div class="small-12 columns">
-                                    <strong>or</strong>
+                                    </label>
+                                    <small class="error">The document is too large (> 2MB).</small>
                                 </div>
                             </div>
                             <div class="row type_input input_url" id="answer_input_url" style="display: none;"> <!-- Div voor url mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
-                                   <p>Upload or find a video on YouTube or Vimeo and paste the link to the video here.</p>
-                                    <label for="answer_url">url:</label>
-                                    <span class="field">
-                                                <input id="answer_url" type="text" name="answer_url"/>
-                                    </span>
+                                    <label for="answer_url">Upload or find a video on YouTube or Vimeo and paste the link to the video here:
+                                        <input id="answer_url" type="text" name="answer_url"/>
+                                    </label>
                                 </div>
                             </div>
                             <div class="row">
@@ -389,7 +381,7 @@
                     </fieldset>
                     <fieldset>
                         <h3>Extra information (optional)</h3>
-                        <label>You can attach an extra jpg, png, gif or pdf file to your contribution:</label>
+                        <label>You can attach an extra jpg, png, gif or pdf file to your contribution:
                             <input type="file" data-abide-validator="filesize" id="attachment" name="answer_attachment"/>
                         </label>
                         <small class="error">The attachment is too large (> 2MB).</small>
@@ -465,61 +457,54 @@
                             <!-- input fields -->
                             <div class="row type_input input_textarea" id="instruction_input_text" style="display: none;"> <!-- Div om text-input mogelijk te maken -->
                                                             <div class="small-12 columns ql_wrapper">
-                	    <!-- Create the toolbar container -->
-                        <div class="ql_toolbar" class="toolbar ql-toolbar ql-snow">
-                            <span class="ql-format-group">
-                                <select title="Size" class="ql-size">
-                                    <option value="0.8rem">Small</option>
-                                    <option value="1rem" selected="selected">Normal</option>
-                                    <option value="1.3rem">Large</option>
-                                </select>
-                            </span>
-                            <span class="ql-format-group">
-                                <span title="Bold" class="ql-format-button ql-bold"></span>
-                                <span class="ql-format-separator"></span>
-                                <span title="Italic" class="ql-format-button ql-italic"></span>
-                                <span class="ql-format-separator"></span>
-                                <span title="Underline" class="ql-format-button ql-underline"></span>
-                                <span class="ql-format-separator"></span>
-                                <span title="Strikethrough" class="ql-format-button ql-strike"></span>
-                            </span>
-                            <span class="ql-format-group">
-                                <span title="List" class="ql-format-button ql-list"></span>
-                                <span class="ql-format-separator"></span>
-                                <span title="Bullet" class="ql-format-button ql-bullet"></span>
-                                <span class="ql-format-separator"></span>
-                                <select title="Text Alignment" class="ql-align">
-                                    <option value="left" label="Left" selected=""></option>
-                                    <option value="center" label="Center"></option>
-                                    <option value="right" label="Right"></option>
-                                    <option value="justify" label="Justify"></option>
-                                </select>
-                            </span>
-                        </div>
-                    <div class="ql_editor"></div>
-                    <textarea name="instruction_text" style="display:none"></textarea>
-                	</div>
+                                <!-- Create the toolbar container -->
+                                <div class="ql_toolbar" class="toolbar ql-toolbar ql-snow">
+                                    <span class="ql-format-group">
+                                        <select title="Size" class="ql-size">
+                                            <option value="0.8rem">Small</option>
+                                            <option value="1rem" selected="selected">Normal</option>
+                                            <option value="1.3rem">Large</option>
+                                        </select>
+                                    </span>
+                                    <span class="ql-format-group">
+                                        <span title="Bold" class="ql-format-button ql-bold"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <span title="Italic" class="ql-format-button ql-italic"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <span title="Underline" class="ql-format-button ql-underline"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <span title="Strikethrough" class="ql-format-button ql-strike"></span>
+                                    </span>
+                                    <span class="ql-format-group">
+                                        <span title="List" class="ql-format-button ql-list"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <span title="Bullet" class="ql-format-button ql-bullet"></span>
+                                        <span class="ql-format-separator"></span>
+                                        <select title="Text Alignment" class="ql-align">
+                                            <option value="left" label="Left" selected=""></option>
+                                            <option value="center" label="Center"></option>
+                                            <option value="right" label="Right"></option>
+                                            <option value="justify" label="Justify"></option>
+                                        </select>
+                                    </span>
+                                </div>
+                            <div class="ql_editor"></div>
+                            <textarea name="instruction_text" style="display:none"></textarea>
+                            </div>
                             </div>
                             <div class="row type_input input_file" id="instruction_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
-                                    <label for="instruction_upload">Upload a file:</label>
-                                    <span class="field">
+                                    <label for="instruction_upload"><span class="filetype_label">Select a file to upload <small>(&lt;2MB)</small></span>:
                                         <input data-abide-validator="filesize" type="file" id="instruction_upload" name="instruction_upload"/>
-                                        <small class="error">The document is too large (> 2MB).</small>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row type_input input_separator" id="instruction_input_or" style="display: none;"> <!-- Div voor 'or' bij file upload aan te zetten -->
-                                <div class="small-12 columns">
-                                    <strong>or</strong>
+                                    </label>
+                                    <small class="error">The document is too large (> 2MB).</small>
                                 </div>
                             </div>
                             <div class="row type_input input_url" id="instruction_input_url" style="display: none;"> <!-- Div voor url mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
-                                    <label for="instruction_url">url:</label>
-                                    <span class="field">
-                                                <input id="instruction_url" type="text" name="instruction_url"/>
-                                    </span>
+                                    <label for="instruction_url">Upload or find a video on YouTube or Vimeo and paste the link to the video here:
+                                        <input id="instruction_url" type="text" name="instruction_url"/>
+                                    </label>
                                 </div>
                             </div>
                             <div class="row">

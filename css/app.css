@@ -559,6 +559,14 @@ form label{
     font-size: 0.8rem;
 }
 
+form label a{
+    border-bottom: 1px dotted;
+}
+
+form label a:hover{
+    border-bottom: 1px solid;
+}
+
 form .form-inline label{
     padding-top: 0.8rem;
 }
@@ -748,7 +756,7 @@ button.type_select.active .fa{
 }
 
 small{
-    font-size: 0.5rem;
+    font-size: 0.65rem;
 }
 
 strong{
@@ -762,6 +770,10 @@ b{
 
 .lightgrey{
     color: #d9d9d9;
+}
+
+.smallcaps{
+    font-variant: small-caps;
 }
 
 /** HELP **/
