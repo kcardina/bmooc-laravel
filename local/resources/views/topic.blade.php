@@ -127,7 +127,7 @@
                             <dd class="data-copyright"></dd>
                            </div>
                            <div class="small-6 medium-3 large-12 columns">
-                            <dt>Attachment</dt>
+                            <dt>Extra information</dt>
                             <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
                            </div>
                         </div>
@@ -182,7 +182,7 @@
                             <dd class="data-copyright"></dd>
                            </div>
                            <div class="small-6 medium-3 large-12 columns">
-                            <dt>Attachment</dt>
+                            <dt>Extra information</dt>
                             <dd class="data-attachment"><a href="#" target="_new">File</a></dd>
                            </div>
                         </div>
@@ -255,7 +255,6 @@
                     <div class="large-8 medium-12 columns end">
                     {!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return validate("newTopicForm")', 'url'=>'comment', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add (some)thing</h2>
-                    <p>add (some)thing to this topic using the form below...</p>
                     <fieldset>
                         <h3 id="instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
                         <div class="row">
@@ -285,7 +284,7 @@
                         </div>
                     </fieldset>
                     <fieldset> <!-- BUTTONS: answer_button_xxx -->
-                        <h3>Choose one of the following:</h3>
+                        <h3>Add text, an image, a video or a document:</h3>
                         <div class="filetype">
                            <!-- buttons -->
                             <div class="row large" data-equalizer>
@@ -322,7 +321,8 @@
                             </div>
                             <div class="row type_input input_file" id="answer_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
-                                    <label for="answer_upload">Upload a file:</label>
+                                   <p>Link naar pdf shrink (http://smallpdf.com/compress-pdf)</p>
+                                    <label for="answer_upload">Upload a file (<2MB):</label>
                                     <span class="field">
                                         <input data-abide-validator="filesize" type="file" id="answer_upload" name="answer_upload"/>
                                         <small class="error">The document is too large (> 2MB).</small>
@@ -336,6 +336,7 @@
                             </div>
                             <div class="row type_input input_url" id="answer_input_url" style="display: none;"> <!-- Div voor url mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
+                                   <p>Upload or find a video on YouTube or Vimeo and paste the link to the video here.</p>
                                     <label for="answer_url">url:</label>
                                     <span class="field">
                                                 <input id="answer_url" type="text" name="answer_url"/>
@@ -347,15 +348,15 @@
                                     <small class="error filetype_error">Please choose one of the file types.</small>
                                 </div>
                             </div>
+                            <label>Copyright, author or reference (optional):
+                                <input type="text" id="copyright" name="answer_copyright"/>
+                            </label>
                             <input type="hidden" class="temp_type" name="answer_temp_type" id="answer_temp_type" />
                         </div>
                     </fieldset>
                     <fieldset>
                         <h3>Extra information (optional)</h3>
-                        <label>Copyright:
-                            <input type="text" id="copyright" name="answer_copyright"/>
-                        </label>
-                        <label>Attachment <small>(jpg, png, gif or pdf)</small>:
+                        <label>You can attach an extra jpg, png, gif or pdf file to your contribution:</label>
                             <input type="file" data-abide-validator="filesize" id="attachment" name="answer_attachment"/>
                         </label>
                         <small class="error">The attachment is too large (> 2MB).</small>
@@ -379,7 +380,7 @@
                 <div class="large-8 medium-12 columns end">
                     {!! Form::open(array('id'=>'newInstructionForm', 'data-abide', 'onsubmit'=>'return validate("newInstructionForm")', 'url'=>'instruction/new', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add instruction</h2>
-                    <p>add an instruction to this topic. The current instruction will be disabled.</p>
+                    <p>Add an instruction to this topic. The current instruction will be disabled and replaced by the new one.</p>
                     <fieldset>
                         <h3 id="new_instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
                         <div class="row">
@@ -397,17 +398,9 @@
                             </label>
                             <small class="error">Please enter a title for the topic.</small>
                         </div>
-                        <label>Accepted answer types (click to disable):</label>
-                       <div class="tag-select" id="instruction_types">
-                            <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="text"><span>Text</span></label></div><!--
-                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="image"><span>Image</span></label></div><!--
-                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="video"><span>Video</span></label></div><!--
-                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="file"><span>Document (pdf)</span></label></div>
-                            <small class="error" id="error_types">Select at least 1 available option.</small>
-                        </div>
                     </fieldset>
                     <fieldset> <!-- BUTTONS: instruction_button_xxx -->
-                        <h3>Choose one of the following:</h3>
+                        <h3>Add text, an image, a video or a document as an instruction:</h3>
                         <div class="filetype">
                            <!-- buttons -->
                             <div class="row large" data-equalizer>
@@ -470,6 +463,17 @@
                                 </div>
                             </div>
                             <input type="hidden" class="temp_type" name="instruction_temp_type" id="instruction_temp_type" />
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                       <h3>Which contributions are allowed?</h3>
+                        <label>(click to disable)</label>
+                       <div class="tag-select" id="instruction_types">
+                            <div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="text"><span>Text</span></label></div><!--
+                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="image"><span>Image</span></label></div><!--
+                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="video"><span>Video</span></label></div><!--
+                            --><div class="tag-button purple"><label><input type="checkbox" name="instruction_types[]" checked="checked" value="file"><span>Document (pdf)</span></label></div>
+                            <small class="error" id="error_types">Select at least 1 available option.</small>
                         </div>
                     </fieldset>
                     <input type="hidden" name="instruction_parent" id="instruction_parent" />

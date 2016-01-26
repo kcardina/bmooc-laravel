@@ -201,7 +201,7 @@
             <div class="large-8 medium-12 columns end">
             	{!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return validate("newTopicForm")', 'url'=>'topic/new','method'=>'POST', 'files'=>true)) !!}
                 <h2>Start a new topic</h2>
-                <p>Initiate a topic using a video, text, photo,...</p>
+                <p>Initiate a topic using text, an image, a video or a document. This will be the first contribution to the topic.</p>
                 <fieldset>
                     <h3>General information</h3>
                     <!-- INPUT: topic_title -->
