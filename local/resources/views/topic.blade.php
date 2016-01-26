@@ -347,6 +347,9 @@
                                         <option value="justify" label="Justify"></option>
                                     </select>
                                 </span>
+                                <span class="ql-format-group">
+                                    <span title="Link" class="ql-format-button ql-link"></span>
+                                </span>
                             </div>
                             <div class="ql_editor"></div>
                             <textarea name="answer_text" style="display:none"></textarea>
@@ -486,6 +489,9 @@
                                             <option value="right" label="Right"></option>
                                             <option value="justify" label="Justify"></option>
                                         </select>
+                                    </span>
+                                    <span class="ql-format-group">
+                                        <span title="Link" class="ql-format-button ql-link"></span>
                                     </span>
                                 </div>
                             <div class="ql_editor"></div>
@@ -628,6 +634,7 @@
                 var quill_answer = new Quill('#answer_input_text .ql_editor', {
                     modules: {
                         'toolbar': { container: '#answer_input_text .ql_toolbar' },
+                        'link-tooltip': true
                     },
                     theme: 'snow'
                 });
@@ -635,6 +642,7 @@
                 var quill_instruction = new Quill('#instruction_input_text .ql_editor', {
                     modules: {
                         'toolbar': { container: '#instruction_input_text .ql_toolbar' },
+                        'link-tooltip': true
                     },
                     theme: 'snow'
                 });

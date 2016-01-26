@@ -529,6 +529,10 @@ form .form-inline input, form .form-inline input:focus, form textarea, .reveal-m
     background: white;
 }
 
+.ql-link-tooltip input, .ql-link-tooltip input:focus{
+    color: #000;
+}
+
 input[type="file"], input[type="submit"]{
     cursor: pointer;
 }

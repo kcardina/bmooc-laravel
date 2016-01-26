@@ -272,6 +272,7 @@
                         <div class="row type_input input_textarea" id="topic_input_text" style="display: none;">
                            <div class="small-12 columns ql_wrapper">
                                 <!-- Create the toolbar container -->
+
                                 <div class="ql_toolbar" class="toolbar ql-toolbar ql-snow">
                                     <span class="ql-format-group">
                                         <select title="Size" class="ql-size">
@@ -300,6 +301,9 @@
                                             <option value="right" label="Right"></option>
                                             <option value="justify" label="Justify"></option>
                                         </select>
+                                    </span>
+                                    <span class="ql-format-group">
+                                        <span title="Link" class="ql-format-button ql-link"></span>
                                     </span>
                                 </div>
                             <div class="ql_editor"></div>
@@ -516,6 +520,7 @@
         var quill = new Quill('.ql_editor', {
             modules: {
                 'toolbar': { container: '.ql_toolbar' },
+                'link-tooltip': true
             },
             theme: 'snow'
         });
