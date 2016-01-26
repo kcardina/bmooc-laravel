@@ -181,7 +181,9 @@
                     </ul>
                 </div>
                 <div class="large-1 columns instruction text-right">
-                		<button class="small information" data-reveal-id="artefact_lightbox_left" data-help="topic" data-help-id="details"></button>
+                    @if (isset($topic->active_instruction))
+                        <button class="small information" data-instruction-id="{{ $topic->active_instruction->id }}" data-instruction-added="{{ $topic->active_instruction->active_from }}" data-instruction-author="{{ $topic->active_instruction->name }}" data-instruction-title="{{ $topic->active_instruction->title }}" data-reveal-id="instruction" data-help="topic" data-help-id="details">Instruction</button>
+                    @endif
                 </div>
             </div>
             <div class="extra">
@@ -355,6 +357,36 @@
     </div>
     @endif
     
+    <div id="instruction" class="artefact_lightbox reveal-modal" data-reveal role="dialog">
+            <div class="row">
+                <div class="medium-3 columns" id="instruction_metadata">
+                    <h2 id="modalTitle" class="data-title">Title</h2>
+                    <dl class="details">
+                        <dt>Added</dt>
+                        <dd class="data-added">dd/mm/yy hh:mm</dd>
+                        <dt>By</dt>
+                        <dd class="data-author"><a href="#">Author</a></dd>
+                        @if (isset($user) && $user->role == 'editor')
+                        <dt>Accepted answer types</dt>
+                        <dd class="data-answer-types"></dd>
+                        @endif
+                    </dl>
+                    <!--
+                    @if (isset($user) && $user->role == 'editor')
+                    <button class="big plus" data-reveal-id="new_artefact">Add (some)thing</button>
+                    @endif
+                    -->
+                </div>
+                <div class="medium-9 columns data-item">
+                    <div class="loader">
+                        {!! HTML::image(asset("img/loader_overlay_big.gif"), 'loading...') !!}
+                    </div>
+                   <div class="artefact"></div>
+                </div>
+            </div>
+            <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+        </div>
+
     <div id="help" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
         <h2 id="modalTitle">bMOOC</h2>
             <p>bMOOC consists out of topics. A topic is a cluster, a collection of online things that join into some form or shape. This can be a conversation, a discussion, a tension or a kind of unspeakable resonance.</p>
@@ -429,6 +461,26 @@
             // boolean - bepaalt of er één (true) of meerdere (false) items tegelijk gemaximaliseerd mogen zijn
             var SINGLE = true;
             
+            $('button[data-reveal-id="instruction"]').click(function(e){
+                e.stopImmediatePropagation();
+                $('#instruction').foundation('reveal', 'open');
+                $("#instruction .data-title").html($(this).data('instruction-title'));
+                $("#instruction .data-added").html(parseDate($(this).data('instruction-added')));
+                $("#instruction .data-author").html($(this).data('instruction-author'));
+
+                var data = {
+                    contents: "test"
+                }
+
+                render($('#instruction'), text, data);
+
+
+                                //var data = $(this).parents(".row.item").data();
+                /*$.getJSON(host + '/json/topic/' + data['id'], function(data){
+                    console.log(data);
+                });*/
+            });
+
             $(".item a").click(function(e){
                 e.stopImmediatePropagation();
             });
@@ -459,7 +511,6 @@
                     $('#li_loader').remove();
                     for(var i = 0; i < data.length; i++){
                         var answer = data[i];
-                        console.log(answer);
                         // voor UX: voeg een loading-spinner toe
                         var url = answer.url;
                         var alt = "afbeelding " + i;

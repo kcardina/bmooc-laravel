@@ -314,7 +314,7 @@ a:hover{
     width: 100%;
 }
 
-.artefact{
+.artefact, .loader{
     width: 100%;
     height: 100%;
     max-width: 100%;
@@ -324,7 +324,7 @@ a:hover{
     transition: background-color 0.5s ease;
 }
 
-.artefact img, .artefact_lightbox img {
+.artefact img, .loader img, .artefact_lightbox img {
     display: block;
     position: absolute;
     margin: auto;
@@ -357,7 +357,7 @@ a:hover{
     text-align: center;
 }
 
-.artefact:hover, .artefact a:hover, .artefact object:hover, .artefact iframe:hover{
+.topic .artefact:hover, .topic .artefact a:hover, .topic .artefact object:hover, .topic .artefact iframe:hover{
     cursor: zoom-in;
 }
 

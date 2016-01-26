@@ -68,13 +68,13 @@
             <div class="topic">
                 <div class="row fullflex">
                     <div class="small-6 columns full">
-                        <div class="artefact loader" id="artefact_left_loader">
+                        <div class="loader" id="artefact_left_loader">
                             {!! HTML::image(asset("img/loader_dark_big.gif"), 'loading...') !!}
                         </div>
                         <div class="artefact" id="artefact_left_contents" data-reveal-id="artefact_lightbox_left"></div>
                     </div>
                     <div class="small-6 columns full">
-                        <div class="artefact loader" id="artefact_right_loader">
+                        <div class="loader" id="artefact_right_loader">
                             {!! HTML::image(asset("img/loader_dark_big.gif"), 'loading...') !!}
                         </div>
                         <div class="artefact" id="artefact_right_contents" data-reveal-id="artefact_lightbox_right"></div>
@@ -152,7 +152,10 @@
 
                 </div>
                 <div class="small-12 large-9 columns data-item large-float">
-                    Item
+                    <div class="loader">
+                        {!! HTML::image(asset("img/loader_overlay_big.gif"), 'loading...') !!}
+                    </div>
+                   <div class="artefact"></div>
                 </div>
             </div>
             <a class="close-reveal-modal" aria-label="Close">&#215;</a>
@@ -210,7 +213,10 @@
                     </div>
                 </div>
                 <div class="small-12 large-9 columns data-item large-float">
-                    Item
+                    <div class="loader">
+                        {!! HTML::image(asset("img/loader_overlay_big.gif"), 'loading...') !!}
+                    </div>
+                   <div class="artefact"></div>
                 </div>
             </div>
             <a class="close-reveal-modal" aria-label="Close">&#215;</a>
@@ -237,7 +243,10 @@
                     -->
                 </div>
                 <div class="medium-9 columns data-item">
-                    {!! HTML::image(asset("img/loader_overlay_big.gif"), 'loading...') !!}
+                   <div class="loader">
+                        {!! HTML::image(asset("img/loader_overlay_big.gif"), 'loading...') !!}
+                    </div>
+                   <div class="artefact"></div>
                 </div>
             </div>
             <a class="close-reveal-modal" aria-label="Close">&#215;</a>
@@ -267,7 +276,12 @@
                         <h3 id="instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
                         <div class="row">
                             <div class="small-12 columns">
-                                <div class="panel" id="instruction_content"></div>
+                                <div class="panel" id="instruction_content">
+                                    <div class="loader">
+                                        {!! HTML::image(asset("img/loader_overlay_big.gif"), 'loading...') !!}
+                                    </div>
+                                   <div class="artefact"></div>
+                                </div>
                             </div>
                         </div>
                     </fieldset>
@@ -420,7 +434,12 @@
                         <h3 id="new_instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
                         <div class="row">
                             <div class="small-12 columns">
-                                <div class="panel" id="new_instruction_content"></div>
+                                <div class="panel" id="new_instruction_content">
+                                    <div class="loader">
+                                        {!! HTML::image(asset("img/loader_overlay_big.gif"), 'loading...') !!}
+                                    </div>
+                                   <div class="artefact"></div>
+                                </div>
                             </div>
                         </div>
                     </fieldset>

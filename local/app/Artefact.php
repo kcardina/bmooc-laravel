@@ -31,7 +31,8 @@ class Artefact extends Model {
     }
 
     public function active_instruction() {
-        return $this->belongsTo('App\Instruction', 'active_instruction_id');
+        return $this->belongsTo('App\Instruction', 'thread', 'thread')
+            ->join('users', 'users.id', '=', 'instructions.author');;
     }
 
 }
