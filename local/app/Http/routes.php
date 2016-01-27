@@ -22,5 +22,13 @@ Route::get('json/instruction/{thread}', 'BmoocJsonController@instruction');
 Route::get('json/topic/{id}/answers', 'BmoocJsonController@answers');
 Route::get('json/topic/{id}', 'BmoocJsonController@discussion');
 
-Route::get('login/{provider?}', ['uses'=>'Auth\AuthController@login', 'as' => 'login']);
-Route::get('logout', 'Auth\AuthController@getLogout');
+//Route::get('login/{provider?}', ['uses'=>'Auth\AuthController@login', 'as' => 'login']);
+//Route::get('logout', 'Auth\AuthController@getLogout');
+
+// Authentication and registration
+Route::get('auth/login', 'Auth\AuthController@getLogin');
+Route::post('auth/login', 'Auth\AuthController@postLogin');
+//Route::get('auth/logout', 'Auth\AuthController@getLogout');
+Route::get('auth/logout', 'BmoocController@getLogout');
+Route::get('auth/register', 'Auth\AuthController@getRegister');
+Route::post('auth/register', 'Auth\AuthController@postRegister');
