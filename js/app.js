@@ -193,7 +193,6 @@ $(function(){
     })
 });
 
-
 /* NEW TOPIC */
 $(function(){
     $('#newTopicForm').on('valid.fndtn.abide', function(e) {
