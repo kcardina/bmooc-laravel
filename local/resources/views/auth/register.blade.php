@@ -1,6 +1,5 @@
 <h2>Create an account</h2>
-<form method="POST" action="register" data-abide>
-    {!! csrf_field() !!}
+{!! Form::open(array('data-abide', 'url'=>'/auth/register','method'=>'POST')) !!}
 
     <label>
         Name:
@@ -23,6 +22,7 @@
     </label>
 
     <input type="submit" class="full purple" value="Create account" />
-</form>
+
+{!! Form::close() !!}
 
 <a class="close-reveal-modal" aria-label="Close">&#215;</a>
