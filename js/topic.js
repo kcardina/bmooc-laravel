@@ -111,6 +111,8 @@ function hideDiv(div) {
 }
 
 function displayDiv(type, div, data) {
+    div.html("");
+    var loadImg = false;
     if (div.attr("data-reveal-id")) {
         // load metadata
         var lb = div.attr("data-reveal-id");
@@ -129,10 +131,48 @@ function displayDiv(type, div, data) {
         });
         $("#" + lb + " .data-tags").html(list);
     }
+    var html;
+    // load content
+    switch (type) {
+        case 'text':
+            html = "<div class=\"textContainer\"><div class=\"text\">" + data.contents + "</div></div>";
+            break;
+        case 'local_image':
+            html = '<a href="' + host + "/uploads/" + data.url + '" data-lightbox="image-1" data-title="Image"><img src="' + host + "/uploads/" + data.url + '"></a>';
+            loadImg = true;
+            break;
+        case 'remote_image':
+            html = '<a href="' + data.url + '" data-lightbox="image-1" data-title="Image"><img src="' + data.url + '"></a>';
+            loadImg = true;
+            break;
+        case 'video_youtube':
+            html = '<iframe  id="ytplayer" src="' + data.url + '?autoplay=0&controls=2" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+            break;
+        case 'video_vimeo':
+            html = '<iframe src="' + data.url + '" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+            break;
+        case 'local_pdf':
+            html = '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>';
+            break;
+        case 'remote_pdf':
+            html = '<object data="' + data.url + '" type="application/pdf"><a href="' + data.url + '">[PDF]</a></object>';
+            break;
+    }
+    div.html(html);
 
-    render(div.parent(), type, data);
-    if(lb) render($("#" + lb + " .data-item"), type, data);
+    if (lb) $("#" + lb + " .data-item").html(html);
 
+    if (loadImg) {
+        div.imagesLoaded(function () {
+            div.stop(true, true)
+            $('.artefact.loader', div.parent()).hide();
+            div.fadeIn();
+        });
+    } else {
+        div.stop(true, true)
+        $('.artefact.loader', div.parent()).hide();
+        div.fadeIn();
+    }
 }
 
 function showArrowLeft(id) {
@@ -221,7 +261,7 @@ function showInstruction(instruct, current) {
             });
         });
         if (instruct.instruction_type)
-            render( $('#' + prefix + 'instruction_content'), instruct.instruction_type.description, instruct);
+            displayDiv(instruct.instruction_type.description, $('#' + prefix + 'instruction_content'), instruct);
     } else {
         $('button[data-reveal-id="instruction"]').hide();
 
@@ -255,13 +295,55 @@ function configCurrentInstructionPanel(div, data) {
             });
             $("#" + lb + " .data-tags").html(list);
         }
+        var html;
+        // load content
+        switch (data.instruction_type.description) {
+            case 'text':
+                html = "<div class=\"textContainer\"><div class=\"text\"><h2>" + data.title + "</h2>" + data.contents + "</div></div>";
+                break;
+            case 'local_image':
+                html = '<img src="' + host + "/uploads/" + data.url + '">';
+                loadImg = true;
+                break;
+            case 'remote_image':
+                html = '<img src="' + data.url + '">';
+                loadImg = true;
+                break;
+            case 'video_youtube':
+                html = '<iframe  src="' + data.url + '?autoplay=0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+                break;
+            case 'video_vimeo':
+                html = '<iframe src="' + data.url + '" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+                break;
+            case 'remote_document':
+                html = 'Please, <a href="' + data.url + '" target="_new">download</a> the document to open...';
+                break;
+            case 'local_document':
+                html = 'Please, <a href="' + host + "/uploads/" + data.url + '" target="_new">download</a> the document to open...';
+                break;
+            case 'local_pdf':
+                html = '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>';
+                break;
+            case 'remote_pdf':
+                html = '<object data="' + data.url + '" type="application/pdf"><a href="' + data.url + '">[PDF]</a></object>';
+                break;
+        }
 
-        render(div, data.instruction_type.description, data);
-        if(lb) render($("#" + lb + " .data-item"), data.instruction_type.description, data);
-
+        $("#" + lb + " .data-item").html(html);
     } else {
         $('#instruction_metadata').html('&nbsp;');
         $("#" + lb + " .data-item").html("No instruction given...");
+    }
+    if (loadImg) {
+        div.imagesLoaded(function () {
+            div.stop(true, true)
+            $('.artefact.loader', div.parent()).hide();
+            div.fadeIn();
+        });
+    } else {
+        div.stop(true, true)
+        $('.artefact.loader', div.parent()).hide();
+        div.fadeIn();
     }
 }
 
@@ -270,6 +352,12 @@ function configNewInstructionPanel(artefact) {
     //console.log(artefact);
     $('#instruction_parent').val(artefact.artefact.thread);
     showInstruction(artefact.instruction[0], false);
+}
+
+function parseDate(d) {
+    d = d.replace(/-/g, "/");
+    d = d.substring(0, d.length - 3);
+    return d;
 }
 
 function filetypesToIcons(f){
