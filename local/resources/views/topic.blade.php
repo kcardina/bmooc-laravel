@@ -671,11 +671,11 @@
                 });
                 
                 $(document).on('close.fndtn.reveal', '[data-reveal]', function () {
-                var modal = $(this);
-                if(modal.hasClass('slide')){
-                    modal.animate({right:'-50%'},500);
-                }
-            });
+                    var modal = $(this);
+                    if(modal.hasClass('slide')){
+                        modal.animate({right:'-50%'},500);
+                    }
+                });
 
                 // if there's a video playing: reset it
                 $(document).on('closed.fndtn.reveal', '#artefact_lightbox_left[data-reveal]', function () {
@@ -698,6 +698,7 @@
                 $('#artefact_right_contents').hide();
                 showArtefactLeft({{ $artefactLeft }}, {{ isset($answerRight)? $answerRight : 0 }});
 
+            @if (isset($user))
                 // editor
                 var quill_answer = new Quill('#answer_input_text .ql_editor', {
                     modules: {
@@ -714,6 +715,7 @@
                     },
                     theme: 'snow'
                 });
+            @endif
 
                 document.onkeydown = function(evt) {
                     evt = evt || window.event;

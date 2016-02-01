@@ -595,7 +595,7 @@
                 break;
             }
         }
-
+        @if (isset($user))
         // editor
         var quill = new Quill('.ql_editor', {
             modules: {
@@ -604,6 +604,7 @@
             },
             theme: 'snow'
         });
+        @endif
     </script>
   </body>
 </html>
