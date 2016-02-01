@@ -146,8 +146,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 		
-		'Illuminate\Html\HtmlServiceProvider',
-		Laravel\Socialite\SocialiteServiceProvider::class
+        'Illuminate\Html\HtmlServiceProvider'
+        //Laravel\Socialite\SocialiteServiceProvider::class
 
     ],
 
@@ -198,9 +198,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
 		
-		'Form'=> 'Illuminate\Html\FormFacade',
-		'HTML'=> 'Illuminate\Html\HtmlFacade',
-		'Socialite' => Laravel\Socialite\Facades\Socialite::class
+        'Form'=> 'Illuminate\Html\FormFacade',
+        'HTML'=> 'Illuminate\Html\HtmlFacade'
+        //'Socialite' => Laravel\Socialite\Facades\Socialite::class
 
     ],
 

@@ -42,6 +42,10 @@ html, body{
     height: 100%;
 }
 
+.half{
+    height: 50%;
+}
+
 .fullflex{
     position: absolute;
     height: 100%;
@@ -79,7 +83,7 @@ html, body{
     color: white;
 }
 
-/* TITLES */
+/* TYPOGRAPHY */
 h1, h2, h3{
     font-family: inherit;
     color: inherit;
@@ -109,6 +113,10 @@ h2{
 h3{
     font-size: 1rem;
     color: #17cf1f;
+}
+
+p{
+    font-weight: 300;
 }
 
 /* HEADER */
@@ -211,6 +219,15 @@ a, a:hover, a:visited, a:active{
 a:hover{
     border-bottom: 1px dotted;
 }
+
+a.emphasis, .text a{
+    border-bottom: 1px dotted;
+    cursor: pointer;
+}
+
+a.emphasis:hover, .text a:hover{
+    border-bottom: 1px solid;
+}
     
 /* ITEMS */  
 .items{
@@ -311,9 +328,10 @@ a:hover{
     position: absolute;
     /* bottom: -3rem; */
     bottom: 0;
+    width: 100%;
 }
 
-.artefact{
+.artefact, .loader{
     width: 100%;
     height: 100%;
     max-width: 100%;
@@ -323,7 +341,7 @@ a:hover{
     transition: background-color 0.5s ease;
 }
 
-.artefact img, .artefact_lightbox img {
+.artefact img, .loader img, .artefact_lightbox img {
     display: block;
     position: absolute;
     margin: auto;
@@ -356,7 +374,7 @@ a:hover{
     text-align: center;
 }
 
-.artefact:hover, .artefact a:hover, .artefact object:hover, .artefact iframe:hover{
+.topic .artefact:hover, .topic .artefact a:hover, .topic .artefact object:hover, .topic .artefact iframe:hover{
     cursor: zoom-in;
 }
 
@@ -369,7 +387,7 @@ a:hover{
 	    height: 100% !important;
     }
 
-    .artefact_lightbox button.big{
+    .artefact_lightbox .buttons {
         position: absolute;
         bottom: 0.9375rem;
         left: 0.9375rem;
@@ -381,7 +399,7 @@ a:hover{
     }
 } /* large screens */
 
-.artefact_lightbox button.big {
+.artefact_lightbox .buttons {
 	margin-bottom: 2rem;
 }
 
@@ -442,6 +460,10 @@ nav #nav_left{
     left: -4rem;
     top: 50%;
     margin-top: -1rem;
+}
+
+#instruction_content .artefact img, #new_instruction_content .artefact img {
+    position: relative;
 }
 
 /* FORMS */
@@ -545,6 +567,10 @@ form .form-inline input, form .form-inline input:focus, form textarea, .reveal-m
     background: white;
 }
 
+.ql-link-tooltip input, .ql-link-tooltip input:focus{
+    color: #000;
+}
+
 input[type="file"], input[type="submit"]{
     cursor: pointer;
 }
@@ -573,6 +599,14 @@ form input:focus, form textarea:focus, form .active{
 form label{
     color: #d9d9d9;
     font-size: 0.8rem;
+}
+
+form label a{
+    border-bottom: 1px dotted;
+}
+
+form label a:hover{
+    border-bottom: 1px solid;
 }
 
 form .form-inline label{
@@ -670,6 +704,10 @@ button.space{
         margin-right: 1rem;
 }
 
+button.space-bottom{
+    margin-bottom: 1rem;
+}
+
 button.pullup{
     margin-top: -10px;
 }
@@ -682,6 +720,15 @@ button.plus{
 button.information{
     background: url(../img/info.png) no-repeat left center;
     background-size: contain;
+}
+
+button.eye{
+    background: url(../img/eye.png) no-repeat left center;
+    background-size: contain;
+}
+
+button.block{
+    display: block;
 }
 
 .error label, label.error, .error label.error{
@@ -764,7 +811,11 @@ button.type_select.active .fa{
 }
 
 small{
-    font-size: 0.5rem;
+    font-size: 0.65rem;
+}
+
+p.small{
+    font-size: 0.8rem;
 }
 
 strong{
@@ -780,11 +831,16 @@ b{
     color: #d9d9d9;
 }
 
+<<<<<<< HEAD
 .loader{
     background: url(../img/loader_overlay_big.gif) no-repeat center center;
     width: 100%;
     height: 32px;
     margin-bottom: 1rem;
+=======
+.smallcaps{
+    font-variant: small-caps;
+>>>>>>> master
 }
 
 /** HELP **/
