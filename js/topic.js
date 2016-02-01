@@ -103,10 +103,10 @@ function showArtefactRight(number_of_answer) {
 function hideDiv(div) {
     if (div.is(":visible")) {
         div.fadeOut(function () {
-            $('.artefact.loader', div.parent()).show();
+            div.find('.loader').show();
         });
     } else {
-        $('.artefact.loader', div.parent()).show();
+        div.find('.loader').show();
     }
 }
 
