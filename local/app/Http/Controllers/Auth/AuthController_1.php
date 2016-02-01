@@ -39,7 +39,7 @@ class AuthController extends Controller
         $this->middleware('guest', ['except' => 'getLogout']);
         //$this->socialite = $socialite;
     }
-    
+
     /**
      * Get a validator for an incoming registration request.
      *
@@ -74,7 +74,7 @@ class AuthController extends Controller
     	if(!config("services.$provider")) abort('404'); //just to handle providers that doesn't exist
     	return $authenticateUser->execute($request->all(), $this, $provider);
     }*/
-    
+
     public function userHasLoggedIn(User $user) {
         return Redirect::intended();
     }

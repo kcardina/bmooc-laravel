@@ -172,7 +172,7 @@ function configAnswer(artefact) {
     // Tags klaarzetten
     $('#answer_tags div').remove();
     $.each(artefact.tags, function (k, tag) {
-        $('#answer_tags').append('<div class="tag-button purple"><label><input  type="checkbox" name="answer_tags[]" value="' + tag.id + '"><span>' + tag.tag + '</span></label></div>');
+        $('#answer_tags').prepend('<div class="tag-button purple"><label><input  type="checkbox" data-abide-validator="tag_select" name="answer_tags[]" value="' + tag.id + '"><span>' + tag.tag + '</span></label></div>');
     });
 
     // Beschikbare antwoordtypes klaarmaken

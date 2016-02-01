@@ -19,7 +19,7 @@ class PasswordController extends Controller
     */
 
     use ResetsPasswords;
-    
+
     protected $redirectTo = '/';
 
     /**
