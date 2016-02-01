@@ -789,6 +789,10 @@ small{
     font-size: 0.65rem;
 }
 
+p.small{
+    font-size: 0.8rem;
+}
+
 strong{
     font-weight: 400;
     color: #ffffff;
