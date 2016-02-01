@@ -141,17 +141,15 @@ function showAnswerType(e) {
         parent.find('.input_textarea').slideDown();
         parent.find('.temp_type').val('text');
     } else if ($this.attr('id') == 'type_image') {
-        parent.find('.input_file').show();
-        parent.find('.input_separator').slideDown();
-        parent.find('.input_url').slideDown();
+        parent.find('.filetype_label').html('Select an image to upload <small>(JPG, PNG or GIF, &lt;2MB)</small>');
+        parent.find('.input_file').slideDown();
         parent.find('.temp_type').val('image');
     } else if ($this.attr('id') == 'type_video') {
         parent.find('.input_url').slideDown();
         parent.find('.temp_type').val('video');
     } else if ($this.attr('id') == 'type_file') {
-        parent.find('.input_file').show();
-        parent.find('.input_separator').slideDown();
-        parent.find('.input_url').slideDown();
+        parent.find('.filetype_label').html('Select a PDF to upload. <small>(&lt;2MB. If the file is too large you can use <a href="http://smallpdf.com/compress-pdf">this free tool</a> to resize your PDF)</small>');
+        parent.find('.input_file').slideDown();
         parent.find('.temp_type').val('file');
     }
 }
@@ -193,6 +191,7 @@ $(function(){
     })
 });
 
+<<<<<<< HEAD
 /* NEW TOPIC */
 $(function(){
     $('#newTopicForm').on('valid.fndtn.abide', function(e) {
@@ -236,3 +235,82 @@ $(function(){
         // upload thumbnail
     });
 });
+=======
+/**
+ * Show an artefact in the desired container
+ * The container should have two divs, .loader & .artefact
+ * @param div A div which contains two childeren, .loader & .artefact
+ * @param type The type of the artefact
+ * @param data The artefact
+ */
+function render(div, type, data){
+    var html;
+    var loadImg = false;
+
+    div.find('.artefact').hide();
+    div.find('.loader').show();
+
+    switch (type) {
+        case 'text':
+            html = "<div class=\"textContainer\"><div class=\"text\"><h2>" + data.title + "</h2>" + data.contents + "</div></div>";
+            break;
+        case 'local_image':
+            html = '&nbsp;<img src="' + host + "/uploads/" + data.url + '">';
+            loadImg = true;
+            break;
+        case 'remote_image':
+            html = '&nbsp;<img src="' + data.url + '">';
+            loadImg = true;
+            break;
+        case 'video_youtube':
+            html = '<iframe  src="' + data.url + '?autoplay=0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+            break;
+        case 'video_vimeo':
+            html = '<iframe src="' + data.url + '" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+            break;
+        case 'remote_document':
+            html = 'Please, <a href="' + data.url + '" target="_new">download</a> the document to open...';
+            break;
+        case 'local_document':
+            html = 'Please, <a href="' + host + "/uploads/" + data.url + '" target="_new">download</a> the document to open...';
+            break;
+        case 'local_pdf':
+            html = '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>';
+            break;
+        case 'remote_pdf':
+            html = '<object data="' + data.url + '" type="application/pdf"><a href="' + data.url + '">[PDF]</a></object>';
+            break;
+        default:
+            html = '<p>Oops. Something went wrong. Try reloading the page.</p>';
+            break;
+    }
+
+    div.find('.artefact').html(html);
+
+    if (loadImg) {
+        div.imagesLoaded(function () {
+            div.stop(true, true)
+            div.find('.loader').hide();
+            div.find('.artefact').fadeIn();
+        });
+    } else {
+        div.stop(true, true)
+        div.find('.loader').hide();
+        div.find('.artefact').fadeIn();
+    }
+}
+
+/*******************
+* HELPER FUNCTIONS *
+*******************/
+
+function parseDate(d) {
+    var date = d.substring(0, d.indexOf(" "));
+    var time = d.substring(d.indexOf(" ") + 1);
+    var year = date.substring(0, 4);
+    var month = date.substring(5, 7);
+    var day = date.substring(8, 10);
+
+    return(day + "/" + month + "/" + year + " " + time.substring(0, time.length - 3));
+}
+>>>>>>> master

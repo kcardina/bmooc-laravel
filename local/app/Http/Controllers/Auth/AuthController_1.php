@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Auth;
 
 use App\User;
 use Validator;
+use Session;
+use Redirect;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
-use Auth;
-use Hash;
-use Input;
+use Laravel\Socialite\Contracts\Factory as Socialite;
+use App\Http\Controllers\Auth\AuthenticateUser;
+use Illuminate\Http\Request;
+
 
 class AuthController extends Controller
 {
@@ -27,31 +30,14 @@ class AuthController extends Controller
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
     /**
-     * Where to redirect users after login / registration.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/';
-    //protected $redirectAfterLogout = '/';
-
-    /**
      * Create a new authentication controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(/*Socialite $socialite*/)
     {
-        $this->middleware('guest', ['except' => 'logout']);
-    }
-
-    public function postLogin(){
-        $data = Input::all();
-        if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']]))
-        {
-            return redirect()->intended();
-        } else{
-            return view('errors.login');
-        }
+        $this->middleware('guest', ['except' => 'getLogout']);
+        //$this->socialite = $socialite;
     }
 
     /**
@@ -81,8 +67,15 @@ class AuthController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
-            'role' => 'author'
         ]);
     }
 
+    /*public function login(AuthenticateUser $authenticateUser, Request $request, $provider = null) {
+    	if(!config("services.$provider")) abort('404'); //just to handle providers that doesn't exist
+    	return $authenticateUser->execute($request->all(), $this, $provider);
+    }*/
+
+    public function userHasLoggedIn(User $user) {
+        return Redirect::intended();
+    }
 }
