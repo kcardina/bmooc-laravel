@@ -25,24 +25,6 @@
 
         </script>
         <header class="green">
-			<div class="row large">
-			    <div class="small-12 columns text-right">
-                    <nav class="main">
-                        <ul class="inline slash">
-                            <li>
-                                {!! HTML::link('#', 'help', array('data-reveal-id' => 'help')) !!}
-                            </li>
-                            <li>
-                                @if (isset($user))
-						{!! HTML::link('logout','Sign out', array('class'=>'logout')) !!}
-					@else
-						{!! HTML::link('login/twitter','Sign in with Twitter', ['class'=>'logout']) !!}
-					@endif
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
             <div class="row large">
 				<div class="small-3 large-2 columns">
 					<h1>{!! HTML::link('/','bMOOC') !!}</h1>
