@@ -35,12 +35,14 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
     
+    /*
     'twitter' => [
 	    'client_id' => 'wwaRMHz98jgkkXqBJsMHXSjIL',
 	    'client_secret' => '2G9SPoJm162JQudPeJzkuNStq0E6EUJzmDcZdJgBtpKeyQZyQr',
 	    'redirect' => 'http://bmooc.local/login/twitter',
 	    //'redirect' => 'http://localhost/bMoocLaravel/public/auth/twitter/callback',
     ],
+     */
 
 ];
 

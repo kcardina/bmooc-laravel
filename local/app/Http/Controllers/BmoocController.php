@@ -24,6 +24,11 @@ class BmoocController extends Controller {
     public function __construct() {
         //$this->middleware('auth', ['except' => 'index']);
     }
+    
+    public function getLogout() {
+        Auth::logout();
+        return Redirect::to('/');
+    }
 
     public function index(Request $request) {
         //$user = Auth::user();

@@ -42,10 +42,15 @@
                             </li>
                             <li>
                                 @if (isset($user))
-						{!! HTML::link('logout','Sign out', array('class'=>'logout')) !!}
+						{!! HTML::link('auth/logout','Sign out', array('class'=>'logout')) !!}
 					@else
-						{!! HTML::link('login/twitter','Sign in with Twitter', ['class'=>'logout']) !!}
+						{!! HTML::link('auth/login','Sign in', ['class'=>'logout']) !!} 
 					@endif
+                            </li>
+                            <li>
+                                @if (!isset($user))
+                                        {!! HTML::link('auth/register','Register', ['class'=>'logout']) !!}
+                                @endif
                             </li>
                         </ul>
                     </nav>
