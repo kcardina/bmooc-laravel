@@ -7,9 +7,6 @@ use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
-use Auth;
-use Hash;
-use Input;
 
 class AuthController extends Controller
 {
@@ -32,6 +29,7 @@ class AuthController extends Controller
      * @var string
      */
     protected $redirectTo = '/';
+    protected $loginPath = '/auth/error';
     //protected $redirectAfterLogout = '/';
 
     /**
@@ -42,16 +40,6 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('guest', ['except' => 'logout']);
-    }
-
-    public function postLogin(){
-        $data = Input::all();
-        if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']]))
-        {
-            return redirect()->intended();
-        } else{
-            return view('errors.login');
-        }
     }
 
     /**

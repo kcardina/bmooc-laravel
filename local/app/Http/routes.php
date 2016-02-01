@@ -27,6 +27,9 @@ Route::get('json/topic/{id}', 'BmoocJsonController@discussion');
 
 // Authentication and registration
 Route::get('auth/login', 'Auth\AuthController@getLogin');
+Route::get('auth/error', function ()    {
+    return view('errors/login');
+});
 Route::post('auth/login', 'Auth\AuthController@postLogin');
 //Route::get('auth/logout', 'Auth\AuthController@getLogout');
 Route::get('auth/logout', 'BmoocController@getLogout');

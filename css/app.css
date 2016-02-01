@@ -57,6 +57,18 @@ html, body{
     height: 100%;
 }
 
+/* IE support */
+.no-flexboxlegacy #container{
+    display: block;
+    height: 65%;
+}
+
+/* IE support */
+.no-flexboxlegacy #container .topic{
+    display: block;
+    height: 100%;
+}
+
 @media only screen and (min-width: 64.063em) {
     .float-medium{
         float: none;
@@ -252,7 +264,7 @@ a.emphasis:hover, .text a:hover{
     padding-bottom: 20px;
     font-weight: 300;
     border-bottom: 1px dotted #165d6c;
-    cursor: zoom-in;
+    cursor: pointer;
 }
 
 .item:last-child{
@@ -375,6 +387,7 @@ a.emphasis:hover, .text a:hover{
 }
 
 .topic .artefact:hover, .topic .artefact a:hover, .topic .artefact object:hover, .topic .artefact iframe:hover{
+    cursor: pointer;
     cursor: zoom-in;
 }
 
