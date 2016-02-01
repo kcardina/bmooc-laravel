@@ -431,14 +431,10 @@
                                     <small class="error filetype_error">Please choose one of the file types.</small>
                                 </div>
                             </div>
-<<<<<<< HEAD
-                            <input type="hidden" data-abide-validator="filetype" class="temp_type" name="answer_temp_type" id="answer_temp_type" />
-=======
                             <label>Copyright, author or reference (optional):
                                 <input type="text" id="copyright" name="answer_copyright"/>
                             </label>
                             <input type="hidden" class="temp_type" name="answer_temp_type" id="answer_temp_type" />
->>>>>>> master
                         </div>
                     </fieldset>
                     <fieldset>

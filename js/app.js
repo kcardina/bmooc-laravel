@@ -191,7 +191,6 @@ $(function(){
     })
 });
 
-<<<<<<< HEAD
 /* NEW TOPIC */
 $(function(){
     $('#newTopicForm').on('valid.fndtn.abide', function(e) {
@@ -235,7 +234,7 @@ $(function(){
         // upload thumbnail
     });
 });
-=======
+
 /**
  * Show an artefact in the desired container
  * The container should have two divs, .loader & .artefact
@@ -313,4 +312,3 @@ function parseDate(d) {
 
     return(day + "/" + month + "/" + year + " " + time.substring(0, time.length - 3));
 }
->>>>>>> master

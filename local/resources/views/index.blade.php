@@ -326,14 +326,11 @@
                                 <small class="error filetype_error">Please choose one of the file types.</small>
                             </div>
                         </div>
-<<<<<<< HEAD
-                        <input type="hidden" data-abide-validator="filetype"  class="temp_type" name="topic_temp_type" id="topic_temp_type" />
-=======
+
                         <label>Copyright, author or reference (optional):
                             <input type="text" id="copyright" name="topic_copyright"/>
                         </label>
                         <input type="hidden" class="temp_type" name="topic_temp_type" id="topic_temp_type" />
->>>>>>> master
                     </div>
                 </fieldset>
                 <fieldset><!-- EXTRA INFO topic_copyright, topic_attachment -->
@@ -434,7 +431,6 @@
           <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
 
-<<<<<<< HEAD
     <div id="progress" class="reveal-modal small" data-reveal aria-hidden="true" role="dialog">
        <div class="row">
            <div class="columns small-12 text-center">
@@ -444,14 +440,14 @@
                 <p class="message">Loading...</p>
            </div>
        </div>
-=======
+    </div>
+
     <div id="signin" class="reveal-modal tiny" data-reveal role="dialog" aria-hidden="true">
         <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
 
     <div id="signup" class="reveal-modal tiny" data-reveal role="dialog" aria-hidden="true">
         <a class="close-reveal-modal" aria-label="Close">&#215;</a>
->>>>>>> master
     </div>
 
     {!! HTML::script('js/vendor/jquery.js') !!}
