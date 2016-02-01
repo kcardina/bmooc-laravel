@@ -304,7 +304,7 @@
                    <img src="{{ asset('img/plus_plain.png') }}" alt="plus"/>
                 </div>
                     <div class="large-8 medium-12 columns end">
-                    {!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'onsubmit'=>'return validate("newTopicForm")', 'url'=>'comment', 'method'=>'POST', 'files'=>true)) !!}
+                    {!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'url'=>'comment', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add (some)thing</h2>
                     <fieldset>
                         <h3 id="instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
@@ -330,8 +330,8 @@
                         </div>
                         <label>Select two tags below:</label>
                         <div class="tag-select" id="answer_tags">
+                            <small class="error" id="error_tags">Select exactly 2 existing tags.</small>
                         </div>
-                        <small class="error" id="error_tags">Select exactly 2 existing tags.</small>
                         <div>
                             <label class="form-left-label" for="new-tag">Add one new tag:
                                 <input id="new-tag" type="text" name="answer_new_tag" required data-abide-validator="tag_existing"/>
@@ -461,7 +461,7 @@
                    <img src="{{ asset('img/plus_plain.png') }}" alt="plus"/>
                 </div>
                 <div class="large-8 medium-12 columns end">
-                    {!! Form::open(array('id'=>'newInstructionForm', 'data-abide', 'onsubmit'=>'return validate("newInstructionForm")', 'url'=>'instruction/new', 'method'=>'POST', 'files'=>true)) !!}
+                    {!! Form::open(array('id'=>'newInstructionForm', 'data-abide', 'url'=>'instruction/new', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add instruction</h2>
                     <p>Add an instruction to this topic. The current instruction will be disabled and replaced by the new one.</p>
                     <fieldset>
@@ -578,7 +578,7 @@
                                     <small class="error filetype_error">Please choose one of the file types.</small>
                                 </div>
                             </div>
-                            <input type="hidden" class="temp_type" name="instruction_temp_type" id="instruction_temp_type" />
+                            <input type="hidden" class="temp_type" name="instruction_temp_type" data-abide-validator="filetype" id="instruction_temp_type" />
                         </div>
                     </fieldset>
                     <fieldset>

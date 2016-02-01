@@ -84,5 +84,5 @@ class AuthController extends Controller
             'role' => 'author'
         ]);
     }
-    
+
 }
