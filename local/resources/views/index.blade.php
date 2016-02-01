@@ -42,14 +42,9 @@
                             </li>
                             <li>
                                 @if (isset($user))
-						{!! HTML::link('auth/logout','Sign out', array('class'=>'logout')) !!}
-					@else
-						{!! HTML::link('auth/login','Sign in', ['class'=>'logout']) !!} 
-					@endif
-                            </li>
-                            <li>
-                                @if (!isset($user))
-                                        {!! HTML::link('auth/register','Register', ['class'=>'logout']) !!}
+                                    {!! HTML::link('auth/logout','Sign out', array('class'=>'logout')) !!}
+                                @else
+                                    {!! HTML::link('auth/login','Sign in', ['class'=>'logout', 'data-reveal-id'=>'signin', 'data-reveal-ajax'=>'true']) !!}
                                 @endif
                             </li>
                         </ul>
@@ -392,8 +387,8 @@
           <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
 
-    <div id="feedback" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-        <h2 id="modalTitle">Feedback</h2>
+    <div id="feedback" class="reveal-modal small" data-reveal aria-labelledby="feedback_title" aria-hidden="true" role="dialog">
+        <h2 id="feedback_title">Feedback</h2>
             <p>Remarks, problems or suggestions? Please fill in the form below.</p>
                {!! Form::open(array('data-abide', 'url'=>'feedback','method'=>'POST', 'files'=>true)) !!}
                <small class="mailstatus error full"></small>
@@ -411,6 +406,14 @@
                 <input type="submit" class="purple full" value="Submit"/>
             </form>
           <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+    </div>
+
+    <div id="signin" class="reveal-modal tiny" data-reveal role="dialog" aria-hidden="true">
+        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+    </div>
+
+    <div id="signup" class="reveal-modal tiny" data-reveal role="dialog" aria-hidden="true">
+        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
 
     {!! HTML::script('js/vendor/jquery.js') !!}
@@ -529,6 +532,10 @@
                 var keyword = $("nav input#zoek").val();
                 window.location = host + '/search/' + author + '/' + tag + (keyword?'/' + keyword:'');
             }
+        });
+
+        $(document).on('opened.fndtn.reveal', '#signin', function () {
+            $('#signin').foundation('abide', 'reflow');
         });
 
         function displayAnswer(type, data) {

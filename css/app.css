@@ -215,6 +215,14 @@ a, a:hover, a:visited, a:active{
 a:hover{
     border-bottom: 1px dotted;
 }
+
+a.emphasis{
+    border-bottom: 1px dotted;
+}
+
+a.emphasis:hover{
+    border-bottom: 1px solid;
+}
     
 /* ITEMS */  
 .items{

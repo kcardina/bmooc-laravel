@@ -1,21 +1,22 @@
-<form method="POST" action="login">
-    {!! csrf_field() !!}
+<h2>Sign in</h2>
+<p>Using bMOOC for the first time? {!! HTML::link('auth/register','Create an account.', ['class'=>'emphasis', 'data-reveal-id'=>'signup', 'data-reveal-ajax'=>'true']) !!}</p>
 
-    <div>
-        Email
-        <input type="email" name="email" value="{{ old('email') }}">
-    </div>
+{!! Form::open(array('data-abide', 'url'=>'/auth/login','method'=>'POST')) !!}
+    <label>Email:
+        <input type="email" required name="email" value="{{ old('email') }}">
+    </label>
+    <small class="error">Please enter a valid e-mail address.</small>
 
-    <div>
-        Password
-        <input type="password" name="password" id="password">
-    </div>
+    <label>Password:
+        <input type="password" required name="password" id="password">
+    </label>
+    <small class="error">Please enter your password.</small>
 
-    <div>
-        <input type="checkbox" name="remember"> Remember Me
-    </div>
+    <label>Remember me:
+        <input type="checkbox" name="remember">
+    </label>
 
-    <div>
-        <button type="submit">Login</button>
-    </div>
-</form>
+    <input type="submit" class="full purple" value="Login" />
+{!! Form::close() !!}
+
+<a class="close-reveal-modal" aria-label="Close">&#215;</a>

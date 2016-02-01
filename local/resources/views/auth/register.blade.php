@@ -1,27 +1,28 @@
-<form method="POST" action="register">
+<h2>Create an account</h2>
+<form method="POST" action="register" data-abide>
     {!! csrf_field() !!}
 
-    <div>
-        Name
-        <input type="text" name="name" value="{{ old('name') }}">
-    </div>
+    <label>
+        Name:
+        <input type="text" required name="name" value="{{ old('name') }}">
+    </label>
 
-    <div>
-        Email
-        <input type="email" name="email" value="{{ old('email') }}">
-    </div>
+    <label>
+        Email:
+        <input type="email" required name="email" value="{{ old('email') }}">
+    </label>
 
-    <div>
-        Password
-        <input type="password" name="password">
-    </div>
+    <label>
+        Password:
+        <input type="password" required name="password">
+    </label>
 
-    <div>
-        Confirm Password
-        <input type="password" name="password_confirmation">
-    </div>
+    <label>
+        Confirm Password:
+        <input type="password" required name="password_confirmation">
+    </label>
 
-    <div>
-        <button type="submit">Register</button>
-    </div>
+    <input type="submit" class="full purple" value="Create account" />
 </form>
+
+<a class="close-reveal-modal" aria-label="Close">&#215;</a>
