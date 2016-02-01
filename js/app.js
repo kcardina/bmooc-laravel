@@ -72,11 +72,11 @@ $(document).foundation({
 
                 // text
                 if(div.find('button#type_text').hasClass('active')){
-                    if(div.find('.ql_editor').text().length <= 0){
+                    if(div.find('.ql-editor').text().length <= 0){
                         valid = false;
                         msg = "Please enter some text.";
                     } else {
-                        div.find('textarea').val(div.find('.ql_editor').html());
+                        div.find('textarea').val(div.find('.ql-editor').html());
                     }
                 // image
                 } else if(div.find('button#type_image').hasClass('active')){

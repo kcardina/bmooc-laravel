@@ -434,7 +434,7 @@
                             <label>Copyright, author or reference (optional):
                                 <input type="text" id="copyright" name="answer_copyright"/>
                             </label>
-                            <input type="hidden" class="temp_type" name="answer_temp_type" id="answer_temp_type" />
+                            <input type="hidden" class="temp_type" data-abide-validator="filetype" name="answer_temp_type" id="answer_temp_type" />
                         </div>
                     </fieldset>
                     <fieldset>
