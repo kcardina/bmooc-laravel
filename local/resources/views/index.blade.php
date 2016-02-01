@@ -42,14 +42,9 @@
                             </li>
                             <li>
                                 @if (isset($user))
-						{!! HTML::link('auth/logout','Sign out', array('class'=>'logout')) !!}
-					@else
-						{!! HTML::link('auth/login','Sign in', ['class'=>'logout']) !!} 
-					@endif
-                            </li>
-                            <li>
-                                @if (!isset($user))
-                                        {!! HTML::link('auth/register','Register', ['class'=>'logout']) !!}
+                                    {!! HTML::link('auth/logout','Sign out', array('class'=>'logout')) !!}
+                                @else
+                                    {!! HTML::link('auth/login','Sign in', ['class'=>'logout', 'data-reveal-id'=>'signin', 'data-reveal-ajax'=>'true']) !!}
                                 @endif
                             </li>
                         </ul>
@@ -138,19 +133,9 @@
             <div class="large-5 columns">
                 <h2>{{ $topic->title }}</h2>
                 <div class="extra laatste_wijziging">
-                   initiated
-                   <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->created_at)) }} {{ date('H:i', strtotime($topic->created_at)) }}</span>
-                   by
+                   initiated by
                     <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span><br />
                 </div>
-                @if (isset($topic->last_modified))
-                    <div class="extra laatste_wijziging">
-                        last addition
-                        <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }} {{ date('H:i', strtotime($topic->last_modified)) }}</span>
-                        by
-                        <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ isset($topic->last_modifier) ? $topic->last_modifier->id : $topic->the_author->id}}">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</a></span>
-                    </div>
-                @endif
             </div>
             <div class="info">
                 <div class="large-3 columns laatste_wijziging">
@@ -186,13 +171,15 @@
                     </ul>
                 </div>
                 <div class="large-1 columns instruction text-right">
-                		<button class="small information" data-reveal-id="artefact_lightbox_left" data-help="topic" data-help-id="details"></button>
+                    @if (isset($topic->active_instruction))
+                        <button class="small information" data-instruction-id="{{ $topic->active_instruction->id }}" data-instruction-added="{{ $topic->active_instruction->active_from }}" data-instruction-author="{{ $topic->active_instruction->name }}" data-instruction-title="{{ $topic->active_instruction->title }}" data-reveal-id="instruction" data-help="topic" data-help-id="details">Instruction</button>
+                    @endif
                 </div>
             </div>
             <div class="extra">
                 <div class="large-10 columns antwoorden">
-                <ul class="inline arrow"></ul>
-            </div>
+                    <ul class="inline"></ul>
+                </div>
             </div>
         </div>
         <!-- END item -->
@@ -360,18 +347,70 @@
     </div>
     @endif
     
+    <div id="instruction" class="artefact_lightbox reveal-modal half" data-reveal role="dialog">
+            <div class="row">
+                <div class="medium-3 columns" id="instruction_metadata">
+                    <h2 id="modalTitle" class="data-title">Title</h2>
+                    <dl class="details">
+                        <dt>Added</dt>
+                        <dd class="data-added">dd/mm/yy hh:mm</dd>
+                        <dt>By</dt>
+                        <dd class="data-author"><a href="#">Author</a></dd>
+                        <!--
+                        <dt>Accepted answer types</dt>
+                        <dd class="data-answer-types"></dd>
+                        -->
+                    </dl>
+                    <!--
+                    @if (isset($user) && $user->role == 'editor')
+                    <button class="big plus" data-reveal-id="new_artefact">Add (some)thing</button>
+                    @endif
+                    -->
+                </div>
+                <div class="medium-9 columns data-item">
+                    <div class="loader">
+                        {!! HTML::image(asset("img/loader_overlay_big.gif"), 'loading...') !!}
+                    </div>
+                   <div class="artefact"></div>
+                </div>
+            </div>
+            <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+        </div>
+
     <div id="help" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
         <h2 id="modalTitle">bMOOC</h2>
-            <p>bMOOC consists out of topics. A topic is a cluster, a collection of online things that join into some form or shape. This can be a conversation, a discussion, a tension or a kind of unspeakable resonance.</p>
-            <p>What joins the topic, is not fixed. The topic can change its course at all times. The word "topic" derives from the Greek ta topica, which means "commonplace". The topic offers a common place of attention for (some)thing(s), a place for forms of (re)searching that may lead eventually to an artistic practice.</p>
-            <p>A topic is presented by juxtapositions of images/artefacts/things. In other words, it's the relations, commonalities or positions of these things that matter. What these are is often unclear, ambiguous or polysemic.</p>
-        <h3>Navigation</h3>
-            <p>Navigate a topic by moving the images/artefacts/things. Intervene, explore, trouble, clarify or contribute to a topic by adding (some)thing. What you can add, depends on the topic. This could be an audio recording, a piece of text or a mystery. Push "add (some)thing" wherever you want to add/intervene/contribute, and then follow the instructions of the topic.</p>
+        <h3>A Massive, Open, Online Course to think with eyes and hands</h3>
+
+        <p>The point of departure and finality of <strong>b</strong>MOOC is that, whether you are a teacher or a student, you are intrigued by 'images'.</p>
+
+        <p>The structure of bMOOC is simple: the course consists of topics. A topic is a collection of online artefacts that are placed next to each other. A topic opens a space for gathering. The first question is: how to relate to this topic?</p>
+
+        <p>Topics may have specific instructions. They do not determine the contribution, but ask the contributor to disclose the gaze and to become attentive for (some)thing(s).</p>
+
+        <p>Login/register in order to join. Feel free to contribute to any topic. Click {!! HTML::link('#', 'help', array('class'=>'emphasis', 'help-show' => 'index')) !!} for assistance and {!! HTML::link('#', 'about', array('class'=>'emphasis', 'data-reveal-id' => 'help')) !!} for more information.</p>
+
+        <div class="deep">
+            <h3>Massive</h3>
+            <p>The course is the embodiment of a common commitment, it is a collective affair. A contribution never stands on its own, but is always related to other contributions within a topic. In their mutual relationship the different contributions bring something collectively to life: a massif is formed and takes shape.</p>
+
+            <h3>Open</h3>
+            <p>Nobody knows in advance the final destination of his/her contribution(s): to what it contributes and what it brings about. The direction and the content of the course is not fixed, or pre-conceived, but is formed and shaped by everyone's contribution.</p>
+
+            <h3>Online</h3>
+            <p>The word 'topic' derives from the Greek ta topica, and means commonplace. Several contributions are placed in the same space. The online space of topics collects individuals around "something". The linear narrative structure of a classic course is interrupted. No program, but a network shows itself. The contributions represent a shared research practice where possible connections and interests become visible.</p>
+
+            <h3>Course</h3>
+            <p>Contributions are not random, they imply a certain care for images. Images exist and never stand alone. They always have a context in which they are embedded and from which they make sense. Therefore the course creates structures that urge us to become attentive for something and to create new meanings (as non sense).</p>
+
+            <p class="small"><em>bMOOC is a OOF- Research project by LUCA School of Arts (Art, Practices &amp; Education) and KU Leuven (Laboratory for Education and Society), commissioned by Association KU Leuven.</em></p>
+
+            <p class="small"><strong>bMOOC is a constant test-run prototype: please {!! HTML::link('#', 'contact us', array('class'=>'emphasis', 'data-reveal-id' => 'feedback')) !!} with your suggestions.</strong></p>
+        </div>
           <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
 
-    <div id="feedback" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-        <h2 id="modalTitle">Feedback</h2>
+    <div id="feedback" class="reveal-modal small" data-reveal aria-labelledby="feedback_title" aria-hidden="true" role="dialog">
+        <h2 id="feedback_title">Feedback</h2>
             <p>Remarks, problems or suggestions? Please fill in the form below.</p>
                {!! Form::open(array('data-abide', 'url'=>'feedback','method'=>'POST', 'files'=>true)) !!}
                <small class="mailstatus error full"></small>
@@ -391,11 +430,20 @@
           <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
 
+    <div id="signin" class="reveal-modal tiny" data-reveal role="dialog" aria-hidden="true">
+        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+    </div>
+
+    <div id="signup" class="reveal-modal tiny" data-reveal role="dialog" aria-hidden="true">
+        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+    </div>
+
     {!! HTML::script('js/vendor/jquery.js') !!}
     {!! HTML::script('js/foundation.min.js') !!}
     {!! HTML::script('js/help.js') !!}
     {!! HTML::script('js/app.js') !!}
     {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
+    {!! HTML::script('js/imagesloaded.min.js') !!}
     <script>
         var host = "{{ URL::to('/') }}";
         $(document).foundation();
@@ -405,9 +453,14 @@
                 // show the 'about' popup on first login
                 if(!isset($_COOKIE['firstlogin'])){
                     // show popup and set cookie
+                    echo "$('#help .deep').hide();";
                     echo "setTimeout(function(){
                         $('#help').foundation('reveal', 'open');
                     }, 2000);";
+                    echo "$(document).on('closed.fndtn.reveal', '[data-reveal]', function () {
+                      var modal = $(this);
+                      modal.find('.deep').show();
+                    });";
                     setcookie("firstlogin", "firstlogin", time() + 3600 * 24 * 356);
                 }
             ?>
@@ -429,11 +482,20 @@
 
             /* TOPIC TOEVOEGEN */
             $('.type_select').click(showAnswerType);
-            
-            /* ANTWOORDEN LADEN */
-            // boolean - bepaalt of er één (true) of meerdere (false) items tegelijk gemaximaliseerd mogen zijn
-            var SINGLE = true;
-            
+
+            $('button[data-reveal-id="instruction"]').click(function(e){
+                e.stopImmediatePropagation();
+                $('#instruction').foundation('reveal', 'open');
+                $("#instruction .data-title").html($(this).data('instruction-title'));
+                $("#instruction .data-added").html(parseDate($(this).data('instruction-added')));
+                $("#instruction .data-author").html($(this).data('instruction-author'));
+
+                var data = $(this).parents(".row.item").data();
+                $.getJSON(host + '/json/topic/' + data['id'], function(data){
+                    render($('#instruction'), data.instruction[0].instruction_type.description, data.instruction[0]);
+                });
+            });
+
             $(".item a").click(function(e){
                 e.stopImmediatePropagation();
             });
@@ -441,13 +503,19 @@
             $(".item").click(function(e){
                 // als de view niet uitgeklapt is
                 if(!$(this).hasClass("active")){
-                    if(SINGLE){
-                        $(".item").removeClass("active");
-                        $(".item .extra").slideUp();
-                        $(".item .info").show();
-                    }
+                    // vorige inklappen
+                    $(".item").removeClass("active");
+                    $(".item .extra").hide();
+                    // show new one
                     $(this).toggleClass("active");
-                    $(".info", this).toggle();
+                    /*
+                    // scroll naar boven
+                    // maak info grootte van scherm
+                    $(".extra", this).height('1000px');
+                    $('html,body').animate({
+                        scrollTop: $(".extra", this).offset().top},
+                    'slow');
+                    */
                     $(".extra", this).slideToggle();
                 }
             });
@@ -464,7 +532,6 @@
                     $('#li_loader').remove();
                     for(var i = 0; i < data.length; i++){
                         var answer = data[i];
-                        console.log(answer);
                         // voor UX: voeg een loading-spinner toe
                         var url = answer.url;
                         var alt = "afbeelding " + i;
@@ -494,10 +561,15 @@
             }
         });
 
+        $(document).on('opened.fndtn.reveal', '#signin', function () {
+            $('#signin').foundation('abide', 'reflow');
+            $('#signup').foundation('abide', 'reflow');
+        });
+
         function displayAnswer(type, data) {
             switch (type) {
             case 'text':
-                return '<p style="width: 100px; font-size: 8px; overflow:hidden; display: inline-block">' + data.contents + '</p>';
+                return '<p style="width: 100px; font-size: 0.8rem; overflow:hidden; display: inline-block">' + data.title + '</p>';
                 break;
             case 'local_image':
                 return '<img src="'+ host + "/uploads/"+data.url+'"/>';
