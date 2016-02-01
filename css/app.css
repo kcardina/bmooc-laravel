@@ -220,11 +220,12 @@ a:hover{
     border-bottom: 1px dotted;
 }
 
-a.emphasis{
+a.emphasis, .text a{
     border-bottom: 1px dotted;
+    cursor: pointer;
 }
 
-a.emphasis:hover{
+a.emphasis:hover, .text a:hover{
     border-bottom: 1px solid;
 }
     
@@ -459,6 +460,10 @@ nav #nav_left{
     left: -4rem;
     top: 50%;
     margin-top: -1rem;
+}
+
+#instruction_content .artefact img, #new_instruction_content .artefact img {
+    position: relative;
 }
 
 /* FORMS */
