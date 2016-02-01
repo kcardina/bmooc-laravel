@@ -42,6 +42,10 @@ html, body{
     height: 100%;
 }
 
+.half{
+    height: 50%;
+}
+
 .fullflex{
     position: absolute;
     height: 100%;

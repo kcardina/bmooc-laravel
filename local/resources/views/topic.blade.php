@@ -222,7 +222,7 @@
             <a class="close-reveal-modal" aria-label="Close">&#215;</a>
         </div>
 
-        <div id="instruction" class="artefact_lightbox reveal-modal full" data-reveal role="dialog">
+        <div id="instruction" class="artefact_lightbox reveal-modal half" data-reveal role="dialog">
             <div class="row">
                 <div class="medium-3 columns" id="instruction_metadata">
                     <h2 id="modalTitle" class="data-title">Title</h2>
@@ -231,10 +231,10 @@
                         <dd class="data-added">dd/mm/yy hh:mm</dd>
                         <dt>By</dt>
                         <dd class="data-author"><a href="#">Author</a></dd>
-                        @if (isset($user) && $user->role == 'editor')
+                        <!--
                         <dt>Accepted answer types</dt>
                         <dd class="data-answer-types"></dd>
-                        @endif
+                        -->
                     </dl>
                     <!-- 
                     @if (isset($user) && $user->role == 'editor')

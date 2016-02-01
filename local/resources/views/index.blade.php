@@ -177,7 +177,9 @@
                 </div>
             </div>
             <div class="extra">
-                <div class="large-10 columns antwoorden">hello</div>
+                <div class="large-10 columns antwoorden">
+                    <ul class="inline"></ul>
+                </div>
             </div>
         </div>
         <!-- END item -->
@@ -345,7 +347,7 @@
     </div>
     @endif
     
-    <div id="instruction" class="artefact_lightbox reveal-modal full" data-reveal role="dialog">
+    <div id="instruction" class="artefact_lightbox reveal-modal half" data-reveal role="dialog">
             <div class="row">
                 <div class="medium-3 columns" id="instruction_metadata">
                     <h2 id="modalTitle" class="data-title">Title</h2>
@@ -354,10 +356,10 @@
                         <dd class="data-added">dd/mm/yy hh:mm</dd>
                         <dt>By</dt>
                         <dd class="data-author"><a href="#">Author</a></dd>
-                        @if (isset($user) && $user->role == 'editor')
+                        <!--
                         <dt>Accepted answer types</dt>
                         <dd class="data-answer-types"></dd>
-                        @endif
+                        -->
                     </dl>
                     <!--
                     @if (isset($user) && $user->role == 'editor')
@@ -469,17 +471,17 @@
                     // vorige inklappen
                     $(".item").removeClass("active");
                     $(".item .extra").hide();
-                    $(".item .info").show();
                     // show new one
                     $(this).toggleClass("active");
-                    $(".info", this).toggle();
+                    /*
                     // scroll naar boven
                     // maak info grootte van scherm
                     $(".extra", this).height('1000px');
                     $('html,body').animate({
                         scrollTop: $(".extra", this).offset().top},
                     'slow');
-                    $(".extra", this).toggle();
+                    */
+                    $(".extra", this).slideToggle();
                 }
             });
             
@@ -527,7 +529,7 @@
         function displayAnswer(type, data) {
             switch (type) {
             case 'text':
-                return '<p style="width: 100px; font-size: 8px; overflow:hidden; display: inline-block">' + data.contents + '</p>';
+                return '<p style="width: 100px; font-size: 0.8rem; overflow:hidden; display: inline-block">' + data.title + '</p>';
                 break;
             case 'local_image':
                 return '<img src="'+ host + "/uploads/"+data.url+'"/>';
