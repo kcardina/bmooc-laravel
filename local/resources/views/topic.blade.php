@@ -707,7 +707,8 @@
                     },
                     theme: 'snow'
                 });
-
+            @endif
+            @if (isset($user) && $user->role=="editor")
                 var quill_instruction = new Quill('#instruction_input_text .ql_editor', {
                     modules: {
                         'toolbar': { container: '#instruction_input_text .ql_toolbar' },
