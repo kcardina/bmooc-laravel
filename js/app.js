@@ -192,6 +192,7 @@ $(function(){
 });
 
 /* NEW TOPIC */
+/*
 $(function(){
     $('#newTopicForm').on('valid.fndtn.abide', function(e) {
         console.log('submit');
@@ -234,6 +235,7 @@ $(function(){
         // upload thumbnail
     });
 });
+*/
 
 /**
  * Show an artefact in the desired container

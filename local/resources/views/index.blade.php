@@ -195,7 +195,7 @@
                <img src="{{ asset('img/plus_plain.png') }}" alt="plus"/>
             </div>
             <div class="large-8 medium-12 columns end">
-            	{!! Form::open(array('id'=>'newTopicForm', 'data-abide'=>'ajax', 'url'=>'topic/new','method'=>'POST', 'files'=>true)) !!}
+            	{!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'url'=>'topic/new','method'=>'POST', 'files'=>true)) !!}
                 <h2>Start a new topic</h2>
                 <p>Initiate a topic using text, an image, a video or a document. This will be the first contribution to the topic.</p>
                 <fieldset>
@@ -430,7 +430,7 @@
             </form>
           <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
-
+    <!--
     <div id="progress" class="reveal-modal small" data-reveal aria-hidden="true" role="dialog">
        <div class="row">
            <div class="columns small-12 text-center">
@@ -441,7 +441,7 @@
            </div>
        </div>
     </div>
-
+    -->
     <div id="signin" class="reveal-modal tiny" data-reveal role="dialog" aria-hidden="true">
         <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
