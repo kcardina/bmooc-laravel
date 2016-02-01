@@ -53,7 +53,7 @@ $(document).foundation({
                 var valid = true;
                 if(el.files.length > 0){
                     var f = el.files[0];
-                    if (f.size > 2000000) {
+                    if (f.size > 5120000) {
                         valid = false;
                     }
                 }

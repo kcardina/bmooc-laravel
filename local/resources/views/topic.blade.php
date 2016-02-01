@@ -413,10 +413,10 @@
                             <div class="row type_input input_file" id="answer_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
                                     <label for="answer_upload">
-                                        <span class="filetype_label">Select a file to upload <small>(&lt;2MB)</small></span>:
+                                        <span class="filetype_label">Select a file to upload <small>(&lt;5MB)</small></span>:
                                         <input data-abide-validator="filesize" type="file" id="answer_upload" name="answer_upload"/>
                                     </label>
-                                    <small class="error">The document is too large (> 2MB).</small>
+                                    <small class="error">The document is too large (> 5MB).</small>
                                 </div>
                             </div>
                             <div class="row type_input input_url" id="answer_input_url" style="display: none;"> <!-- Div voor url mogelijk te maken -->
@@ -442,7 +442,7 @@
                         <label>You can attach an extra jpg, png, gif or pdf file to your contribution:
                             <input type="file" data-abide-validator="filesize" id="attachment" name="answer_attachment"/>
                         </label>
-                        <small class="error">The attachment is too large (> 2MB).</small>
+                        <small class="error">The attachment is too large (> 5MB).</small>
                     </fieldset>
                     <input type="hidden" name="answer_parent" id="answer_parent" />
                     <input type="submit" class="full purple" value="Add (some)thing"/>
@@ -560,10 +560,10 @@
                             </div>
                             <div class="row type_input input_file" id="instruction_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                                 <div class="small-12 columns form-inline">
-                                    <label for="instruction_upload"><span class="filetype_label">Select a file to upload <small>(&lt;2MB)</small></span>:
+                                    <label for="instruction_upload"><span class="filetype_label">Select a file to upload <small>(&lt;5MB)</small></span>:
                                         <input data-abide-validator="filesize" type="file" id="instruction_upload" name="instruction_upload"/>
                                     </label>
-                                    <small class="error">The document is too large (> 2MB).</small>
+                                    <small class="error">The document is too large (> 5MB).</small>
                                 </div>
                             </div>
                             <div class="row type_input input_url" id="instruction_input_url" style="display: none;"> <!-- Div voor url mogelijk te maken -->

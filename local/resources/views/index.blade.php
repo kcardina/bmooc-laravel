@@ -308,10 +308,10 @@
                         <div class="row type_input input_file" id="topic_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                             <div class="small-12 columns">
                                 <label for="topic_upload">
-                                    <span class="filetype_label">Select a file to upload <small>(&lt;2MB)</small></span>:
+                                    <span class="filetype_label">Select a file to upload <small>(&lt;5MB)</small></span>:
                                     <input data-abide-validator="filesize" type="file" id="topic_upload" name="topic_upload"/>
                                 </label>
-                                <small class="error">The document is too large (> 2MB).</small>
+                                <small class="error">The document is too large (> 5MB).</small>
                             </div>
                         </div>
                         <div class="row type_input input_url" id="topic_input_url" style="display: none;"> <!-- Div voor url mogelijk te maken -->
@@ -338,7 +338,7 @@
                     <label>You can attach an extra JPG, PNG, GIF or PDF file to your contribution:
                         <input type="file" data-abide-validator="filesize" id="attachment" name="topic_attachment"/>
                     </label>
-                    <small class="error">The attachment is too large (> 2MB).</small>
+                    <small class="error">The attachment is too large (> 5MB).</small>
                 </fieldset>
                 <input type="submit" class="full purple" value="Add topic"/>
                 </form>
