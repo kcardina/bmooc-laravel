@@ -83,7 +83,7 @@ html, body{
     color: white;
 }
 
-/* TITLES */
+/* TYPOGRAPHY */
 h1, h2, h3{
     font-family: inherit;
     color: inherit;
@@ -113,6 +113,10 @@ h2{
 h3{
     font-size: 1rem;
     color: #17cf1f;
+}
+
+p{
+    font-weight: 300;
 }
 
 /* HEADER */
