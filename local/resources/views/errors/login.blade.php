@@ -59,7 +59,6 @@
         <div class="columns medium-6 large-3 small-centered">
             <h2>Sign in</h2>
                <p>Your email and password combination did not match. Please try again.</p>
-                <p>Using bMOOC for the first time? {!! HTML::link('auth/register','Create an account.', ['class'=>'emphasis', 'data-reveal-id'=>'signup', 'data-reveal-ajax'=>'true']) !!}</p>
 
                 {!! Form::open(array('data-abide', 'url'=>'/auth/login','method'=>'POST')) !!}
                     <label>Email:
@@ -78,6 +77,7 @@
 
                     <input type="submit" class="full purple" value="Login" />
                 {!! Form::close() !!}
+                <p><small>Trouble signing in? {!! HTML::link('#', 'Send us a message', array('class'=>'emphasis', 'data-reveal-id' => 'feedback')) !!}.</small></p>
 
         </div>
 
