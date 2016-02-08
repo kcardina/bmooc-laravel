@@ -72,37 +72,29 @@ $(document).foundation({
 
                 // text
                 if(div.find('button#type_text').hasClass('active')){
-                    if(div.find('.ql_editor').text().length <= 0){
+                    if(div.find('.ql-editor').text().length <= 0){
                         valid = false;
                         msg = "Please enter some text.";
                     } else {
-                        div.find('textarea').val(div.find('.ql_editor').html());
+                        div.find('textarea').val(div.find('.ql-editor').html());
                     }
                 // image
                 } else if(div.find('button#type_image').hasClass('active')){
-                    if(div.find('input[type=file]').val().length == 0 && div.find('input[type=text]').val().length == 0){
+                    if(div.find('.input_url input[type=file]').val().length == 0){
                         valid = false;
-                        msg = "Please enter a link or upload an image."
-                    }
-                    if($('input[type=file]').val().length != 0 && div.find('input[type=text]').val().length != 0){
-                        valid = false;
-                        msg = "Only one of the options can be chosen."
+                        msg = "Please select an image to upload."
                     }
                 // video
                 } else if(div.find('button#type_video').hasClass('active')){
-                    if(div.find('input[type=text]').val().length == 0){
+                    if(div.find('.input_url input[type=text]').val().length == 0){
                         valid = false;
                         msg = "Please enter a link to a video on YouTube or Vimeo."
                     }
                 // file
                 } else if(div.find('button#type_file').hasClass('active')){
-                    if(div.find('input[type=file]').val().length == 0 && div.find('input[type=text]').val().length == 0){
+                    if(div.find('input[type=file]').val().length == 0){
                         valid = false;
-                        msg = "Please enter a link or upload a pdf."
-                    }
-                    if($('input[type=file]').val().length != 0 && div.find('input[type=text]').val().length != 0){
-                        valid = false;
-                        msg = "Only one of the options can be chosen."
+                        msg = "Please select a PDF to upload."
                     }
                 }
 

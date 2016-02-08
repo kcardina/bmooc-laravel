@@ -330,7 +330,7 @@
                         <label>Copyright, author or reference (optional):
                             <input type="text" id="copyright" name="topic_copyright"/>
                         </label>
-                        <input type="hidden" class="temp_type" name="topic_temp_type" id="topic_temp_type" />
+                        <input type="hidden" class="temp_type" name="topic_temp_type" id="topic_temp_type" data-abide-validator="filetype"/>
                     </div>
                 </fieldset>
                 <fieldset><!-- EXTRA INFO topic_copyright, topic_attachment -->
