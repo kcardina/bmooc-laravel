@@ -43,7 +43,7 @@ html, body{
 }
 
 .half{
-    height: 50%;
+    height: 60%;
 }
 
 .fullflex{
@@ -372,9 +372,10 @@ a.emphasis:hover, .text a:hover{
 }
 
 .artefact .textContainer, .artefact_lightbox .textContainer {
-    display: table;
+    display: block;
     height: 100%;
     width: 100%;
+    overflow: scroll;
 }
 
 .artefact .text, .artefact_lightbox .text{
