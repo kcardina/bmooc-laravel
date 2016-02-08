@@ -7,6 +7,7 @@
  */
 $(document).foundation({
     abide : {
+        timeout: 1000,
         validators: {
             tag_new: function(el, required, parent){
                 var tags = [];

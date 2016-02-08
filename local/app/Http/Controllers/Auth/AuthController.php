@@ -58,6 +58,16 @@ class AuthController extends Controller
     }
 
     /**
+     * Get the failed login message.
+     *
+     * @return string
+     */
+    protected function getFailedLoginMessage()
+    {
+        return 'Incorrect email/password combination. Please try again.';
+    }
+
+    /**
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data

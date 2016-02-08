@@ -40,18 +40,25 @@
         </header>
         <div class="columns medium-6 large-3 small-centered">
             <h2>Sign in</h2>
-               <p>Your email and password combination did not match. Please try again.</p>
+               @if (count($errors))
+                        @foreach($errors->all() as $error)
+                            <small class="error">{{ $error }}</small>
+                        @endforeach
+                @endif
 
                 {!! Form::open(array('data-abide', 'url'=>'/auth/login','method'=>'POST')) !!}
+                   <div>
                     <label>Email:
                         <input type="email" required name="email" value="{{ old('email') }}">
                     </label>
                     <small class="error">Please enter a valid e-mail address.</small>
-
+            </div>
+                   <div>
                     <label>Password:
                         <input type="password" required name="password" id="password">
                     </label>
                     <small class="error">Please enter your password.</small>
+            </div>
 
                     <label>Remember me:
                         <input type="checkbox" name="remember">
