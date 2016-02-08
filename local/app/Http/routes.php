@@ -37,3 +37,7 @@ Route::get('login/{provider?}', ['uses'=>'Auth\AuthController@login', 'as' => 'l
 Route::get('logout', 'Auth\AuthController@getLogout');
 
 Route::post('feedback', 'BmoocController@feedback');
+
+Route::get('canvas', function(){
+    return view('canvas');
+});
