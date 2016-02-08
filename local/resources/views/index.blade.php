@@ -573,11 +573,6 @@
             }
         });
 
-        $(document).on('opened.fndtn.reveal', '#signin', function () {
-            $('#signin').foundation('abide', 'reflow');
-            $('#signup').foundation('abide', 'reflow');
-        });
-
         function displayAnswer(type, data) {
             switch (type) {
             case 'text':
