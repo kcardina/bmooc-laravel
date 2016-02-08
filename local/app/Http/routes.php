@@ -18,6 +18,10 @@ Route::get('discussion/{encodedlink?}', array('as'=>'discussionEncoded', 'uses'=
 Route::get('search/{author?}/{tag?}/{keyword?}', 'BmoocController@searchDiscussions');
 Route::post('comment', 'BmoocController@commentDiscussion');
 
+Route::get('artefact/{id}', 'BmoocController@getImage');
+Route::get('artefact/{id}/thumbnail', 'BmoocController@getImageThumbnail');
+Route::get('artefact/{id}/original', 'BmoocController@getImageOriginal');
+
 Route::get('json/instruction/{thread}', 'BmoocJsonController@instruction');
 Route::get('json/topic/{id}/answers', 'BmoocJsonController@answers');
 Route::get('json/topic/{id}', 'BmoocJsonController@discussion');

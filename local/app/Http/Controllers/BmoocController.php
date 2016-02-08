@@ -292,7 +292,7 @@ class BmoocController extends Controller {
                             $extension = strtolower(Input::file('answer_upload')->getClientOriginalExtension());
                             if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg'])) {
                                 $destinationPath = 'uploads';
-                                $filename = base64_encode(Input::file('answer_upload')->getClientOriginalName());
+                                $filename = base64_encode(Input::file('answer_upload')->getClientOriginalName() . time());
                                 Input::file('answer_upload')->move($destinationPath, $filename);
                                 $comment->url = $filename;
                                 $at = ArtefactType::where('description', 'local_image')->first();
@@ -309,7 +309,7 @@ class BmoocController extends Controller {
                             $extension = strtolower(Input::file('answer_upload')->getClientOriginalExtension());
                             if (in_array($extension, ['pdf'])) {
                                 $destinationPath = 'uploads';
-                                $filename = base64_encode(Input::file('answer_upload')->getClientOriginalName());
+                                $filename = base64_encode(Input::file('answer_upload')->getClientOriginalName() . time());
                                 Input::file('answer_upload')->move($destinationPath, $filename);
                                 $comment->url = $filename;
                                 $at = ArtefactType::where('description', 'local_pdf')->first();
@@ -341,7 +341,7 @@ class BmoocController extends Controller {
                     $extension = strtolower(Input::file('answer_attachment')->getClientOriginalExtension());
                     if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg', 'pdf'])) {
                         $destinationPath = 'uploads/attachments';
-                        $filename = base64_encode(Input::file('answer_attachment')->getClientOriginalName()).'.'.$extension;
+                        $filename = base64_encode(Input::file('answer_attachment')->getClientOriginalName() . time()).'.'.$extension;
                         Input::file('answer_attachment')->move($destinationPath, $filename);
                         $comment->attachment = $filename;
                     } else throw new Exception('Wrong file uploaded for new topic attachment');
@@ -431,7 +431,7 @@ class BmoocController extends Controller {
                             $extension = strtolower(Input::file('instruction_upload')->getClientOriginalExtension());
                             if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg'])) {
                                 $destinationPath = 'uploads';
-                                $filename = base64_encode(Input::file('instruction_upload')->getClientOriginalName());
+                                $filename = base64_encode(Input::file('instruction_upload')->getClientOriginalName() . time());
                                 Input::file('instruction_upload')->move($destinationPath, $filename);
                                 $instruction->url = $filename;
                                 $at = ArtefactType::where('description', 'local_image')->first();
@@ -449,7 +449,7 @@ class BmoocController extends Controller {
                             $extension = strtolower(Input::file('instruction_upload')->getClientOriginalExtension());
                             if (in_array($extension, ['pdf'])) {
                                 $destinationPath = 'uploads';
-                                $filename = base64_encode(Input::file('instruction_upload')->getClientOriginalName());
+                                $filename = base64_encode(Input::file('instruction_upload')->getClientOriginalName() . time());
                                 Input::file('instruction_upload')->move($destinationPath, $filename);
                                 $instruction->url = $filename;
                                 $at = ArtefactType::where('description', 'local_pdf')->first();
@@ -577,7 +577,7 @@ class BmoocController extends Controller {
                         $extension = strtolower(Input::file('topic_upload')->getClientOriginalExtension());
                         if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg'])) {
                             $destinationPath = 'uploads';
-                            $filename = base64_encode(Input::file('topic_upload')->getClientOriginalName());
+                            $filename = base64_encode(Input::file('topic_upload')->getClientOriginalName() . time());
                             Input::file('topic_upload')->move($destinationPath, $filename);
                             $topic->url = $filename;
                             $at = ArtefactType::where('description', 'local_image')->first();
@@ -594,7 +594,7 @@ class BmoocController extends Controller {
                         $extension = strtolower(Input::file('topic_upload')->getClientOriginalExtension());
                         if (in_array($extension, ['pdf'])) {
                             $destinationPath = 'uploads';
-                            $filename = base64_encode(Input::file('topic_upload')->getClientOriginalName());
+                            $filename = base64_encode(Input::file('topic_upload')->getClientOriginalName() . time());
                             Input::file('topic_upload')->move($destinationPath, $filename);
                             $topic->url = $filename;
                             $at = ArtefactType::where('description', 'local_pdf')->first();
@@ -616,7 +616,7 @@ class BmoocController extends Controller {
                 $extension = strtolower(Input::file('topic_attachment')->getClientOriginalExtension());
                 if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg', 'pdf'])) {
                     $destinationPath = 'uploads/attachments';
-                    $filename = base64_encode(Input::file('topic_attachment')->getClientOriginalName()).'.'.$extension;
+                    $filename = base64_encode(Input::file('topic_attachment')->getClientOriginalName() . time()).'.'.$extension;
                     Input::file('topic_attachment')->move($destinationPath, $filename);
                     //$topic->url = $filename;
                     $topic->attachment = $filename;
@@ -648,5 +648,18 @@ class BmoocController extends Controller {
             return view('errors.topic', ['error' => $e]);
         }
         } // End if ($user)
+    }
+
+    public function getImage($id){
+
+    }
+
+    public function getImageThumbnail($id){
+        // check if the artefact has a thumbnail based on id
+
+    }
+
+    public function getImageOriginal($id){
+        // check if the artefact
     }
 }
