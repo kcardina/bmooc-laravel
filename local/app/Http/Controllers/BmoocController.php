@@ -655,7 +655,11 @@ class BmoocController extends Controller {
     }
 
     public function getImageThumbnail($id){
+        $path = base_path().'/../uploads/thumbnails/'.$id.'.jpg';
         // check if the artefact has a thumbnail based on id
+        if (file_exists($path)) {
+            dd('file exists');
+        }
 
     }
 
