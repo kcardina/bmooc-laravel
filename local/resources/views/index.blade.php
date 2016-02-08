@@ -579,7 +579,7 @@
                 return '<p style="width: 100px; font-size: 0.8rem; overflow:hidden; display: inline-block">' + data.title + '</p>';
                 break;
             case 'local_image':
-                return '<img src="'+ host + "/uploads/"+data.url+'"/>';
+                return '<img src="'+host+'/artefact/'+data.id+'/thumbnail"/>';
                 break;
             case 'remote_image':
                 return '<img src="'+data.url+'"/>';

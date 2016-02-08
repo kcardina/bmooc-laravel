@@ -18,6 +18,8 @@ use DB;
 use Carbon\Carbon;
 use Exception;
 use Mail;
+use Response;
+use File;
 
 class BmoocController extends Controller {
 
@@ -42,19 +44,6 @@ class BmoocController extends Controller {
                         ->groupBy('thread')->get();
         return view('index', ['topic' => $topics, 'user' => $user, 'auteurs' => $auteurs, 'tags' => $tags, 'aantalAntwoorden' => $aantalAntwoorden]);
     }
-
-    public function help() {
-        $user = Auth::user();
-        return view('help', ['user' => $user]);
-    }
-
-//    public function showDiscussionEncoded($encodedLink = '') {
-//        $link = explode('/', base64_decode($encodedLink));
-//        if (count($link) == 3)
-//            return $this->showDiscussion($link[0], $link[1], $link[2], false);
-//        else
-//            return view('index_login');
-//    }
 
     public function feedback(){
         $data = Input::all();
@@ -93,112 +82,6 @@ class BmoocController extends Controller {
         } else {
             return view('no_topic');
         }
-    }
-
-    public function showDiscussion($links, $rechts, $pretrail = '', $encodeLink = false) {
-        $user = Auth::user();
-        //if (!$user) return view('index_login');
-
-        $linksArray = explode('_', $links); // ID_antwoordnr
-        $trailArray = explode('$', $pretrail); // array van ID_antwoordnr
-        $pretrail = '';
-        $artefactLinks = Artefact::find($linksArray[0]); // De gevraagde discussie voor linker vak
-
-        if ($artefactLinks) {
-            $anchors = array();
-
-            $artefactRechts = null;
-            if (count($artefactLinks->antwoorden) > $rechts)
-                $artefactRechts = $artefactLinks->antwoorden[$rechts];
-
-            if ($artefactLinks->hoofd)
-                $anchors['hoofd'] = $artefactLinks->hoofd->id . '_0/' . $linksArray[1] . '/' . $links . '$' . $pretrail;
-            else
-                $anchors['hoofd'] = null;
-
-            if ($artefactRechts && count($artefactRechts->antwoorden) > 0) {
-                $anchors['volgende'] = $artefactRechts->id . '_' . $rechts . '/0/' . $links . '$' . $pretrail;
-            } elseif ($artefactRechts && count($artefactRechts->antwoorden) == 0) {
-                $anchors['volgende'] = $artefactRechts->id . '_' . $rechts . '/0/' . $links . '$' . $pretrail;
-            } else
-                $anchors['volgende'] = null;
-
-            if ($rechts > 0) // Het artefact rechts is niet het eerste kind, dus link bovenaan tonen
-                $anchors['boven'] = $links . '/' . ($rechts - 1) . '/' . $links . '$' . $pretrail;
-            else
-                $anchors['boven'] = null;
-
-            if (count($artefactLinks->antwoorden) > $rechts + 1) // Er is nog een antwoord na het rechtse
-                $anchors['onder'] = $links . '/' . ($rechts + 1) . '/' . $links . '$' . $pretrail;
-            else
-                $anchors['onder'] = null;
-
-            // Tags ophalen en gerelateerde discussies opzoeken op basis van de tags
-            //$tags = explode(',', $artefactLinks->tags);	
-            //$relatedDiscussions = Artefact::where('tags', 'rlike', implode('|',$tags))->where('id', '<>', $artefactLinks)->where('thread', '<>', $artefactLinks->thread)->get();
-            $relatedDiscussions = DB::table('artefacts_tags')->whereIn('tag_id', $taglist)->where('artefact_id', '<>', $id)->distinct()->lists('artefact_id');
-            $rels = Artefact::whereIn('id', $relatedDiscussions)->get();
-            $relatedLinks = array();
-            foreach ($rels as $relatedd) {
-                $i = 0;
-                if ($relatedd->child_of) {
-                    $h = $relatedd->child_of;
-                    foreach ($h->answers as $antwoord) {
-                        if ($antwoord->id == $relatedd->id)
-                            break;
-                        $i++;
-                    }
-                }
-                $link = $relatedd->id . '_' . $i . '/0/';
-                $link = $encodeLink ? base64_encode($link) : $link;
-                $relatedLinks[] = array('titel' => $relatedd->title, 'tags' => $relatedd->tags, 'link' => $link);
-            }
-
-            // Alle tags in de thread
-            $alleTags = DB::table('artefacts')->where('thread', $artefactLinks->thread)->get(['tags']);
-            $tagarray = array();
-            foreach ($alleTags as $t) {
-                $tag = explode(',', $t->tags);
-                array_walk($tag, function(&$item, $key) {
-                    $item = trim($item);
-                });
-                $tagarray = array_merge($tagarray, $tag);
-            }
-            if ($encodeLink)
-                foreach ($anchors as $key => $item)
-                    $anchors[$key] = base64_encode($item);
-
-            return view('discussion', ['artefactLinks' => $artefactLinks, 'artefactRechts' => $artefactRechts, 'related' => $relatedLinks, 'anchors' => $anchors, 'alletags' => array_unique($tagarray), 'user' => $user]);
-        }
-    }
-
-    public function searchDiscussionsByTag($tag) {
-        $user = Auth::user();
-        $discussies = DB::table('artefacts_tags')->leftJoin('tags', 'tag_id', '=', 'tags.id')
-                        ->leftJoin('artefacts', 'artefact_id', '=', 'artefacts.id')
-                        ->where('tags.id', $tag)->select('thread')->distinct()->lists('thread'); //Artefact::with(['the_author', 'tags', 'last_modifier'])->where('tags', 'like', '%'.$tag.'%')->get();
-        $discs = Artefact::whereIn('thread', $discussies)->whereNull('parent_id')->orderBy('last_modified')->get();
-        //dd($discussies);
-        $auteurs = DB::table('users')->select('name')->distinct()->get();
-        $tags = Tags::orderBy('tag')->get();
-        $aantalAntwoorden = DB::table('artefacts')->select(DB::raw('count(*) as aantal_antwoorden, thread'))
-                        ->groupBy('thread')->get();
-
-        //$filtered = $discussies->filter(function ($item) { 
-        //	return $item->vader_id == null; })->all();
-        return view('index', ['topic' => $discs, 'user' => $user, 'auteurs' => $auteurs, 'tags' => $tags, 'titel' => "met tag '" . $tag . "'", 'aantalAntwoorden' => $aantalAntwoorden]);
-    }
-
-    public function searchDiscussionsByAuthor($author) {
-        $user = Auth::user();
-        $discussies = Artefact::with(['the_author', 'tags', 'last_modifier'])->where('author', $author)->get();
-        $auteurs = DB::table('users')->select('name')->distinct()->get();
-        $tags = Tags::orderBy('tag')->get();
-
-        $aantalAntwoorden = DB::table('artefacts')->select(DB::raw('count(*) as aantal_antwoorden, thread'))
-                        ->groupBy('thread')->get();
-
-        return view('index', ['topic' => $discussies, 'user' => $user, 'titel' => "van auteur " . $author, 'auteurs' => $auteurs, 'tags' => $tags, 'aantalAntwoorden' => $aantalAntwoorden]);
     }
 
     public function searchDiscussions($author = null, $tag = null, $keyword = null) {
@@ -249,6 +132,7 @@ class BmoocController extends Controller {
     public function commentDiscussion(Request $request) {
         $user = Auth::user();
         if ($user) { // Als de gebruiker ingelogd is, anders niets doen
+            $filename = uniqid();
             try {
                 DB::beginTransaction();
                 $comment = new Artefact();
@@ -292,7 +176,6 @@ class BmoocController extends Controller {
                             $extension = strtolower(Input::file('answer_upload')->getClientOriginalExtension());
                             if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg'])) {
                                 $destinationPath = 'uploads';
-                                $filename = base64_encode(Input::file('answer_upload')->getClientOriginalName() . time());
                                 Input::file('answer_upload')->move($destinationPath, $filename);
                                 $comment->url = $filename;
                                 $at = ArtefactType::where('description', 'local_image')->first();
@@ -309,7 +192,6 @@ class BmoocController extends Controller {
                             $extension = strtolower(Input::file('answer_upload')->getClientOriginalExtension());
                             if (in_array($extension, ['pdf'])) {
                                 $destinationPath = 'uploads';
-                                $filename = base64_encode(Input::file('answer_upload')->getClientOriginalName() . time());
                                 Input::file('answer_upload')->move($destinationPath, $filename);
                                 $comment->url = $filename;
                                 $at = ArtefactType::where('description', 'local_pdf')->first();
@@ -390,6 +272,7 @@ class BmoocController extends Controller {
     public function newInstruction(Request $request) {
         $user = Auth::user();
         if ($user && $user->role == "editor") { // Als de gebruiker ingelogd is en editor is, anders niets doen
+            $filename = uniqid();
             try {
                 DB::beginTransaction();
                 $instruction = new Instruction();
@@ -431,7 +314,6 @@ class BmoocController extends Controller {
                             $extension = strtolower(Input::file('instruction_upload')->getClientOriginalExtension());
                             if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg'])) {
                                 $destinationPath = 'uploads';
-                                $filename = base64_encode(Input::file('instruction_upload')->getClientOriginalName() . time());
                                 Input::file('instruction_upload')->move($destinationPath, $filename);
                                 $instruction->url = $filename;
                                 $at = ArtefactType::where('description', 'local_image')->first();
@@ -449,7 +331,6 @@ class BmoocController extends Controller {
                             $extension = strtolower(Input::file('instruction_upload')->getClientOriginalExtension());
                             if (in_array($extension, ['pdf'])) {
                                 $destinationPath = 'uploads';
-                                $filename = base64_encode(Input::file('instruction_upload')->getClientOriginalName() . time());
                                 Input::file('instruction_upload')->move($destinationPath, $filename);
                                 $instruction->url = $filename;
                                 $at = ArtefactType::where('description', 'local_pdf')->first();
@@ -533,6 +414,7 @@ class BmoocController extends Controller {
         $user = Auth::user();
         if ($user && $user->role == "editor") { // Als de gebruiker ingelogd is en editor is, anders niets doen
         try {
+            $filename = uniqid();
             DB::beginTransaction();
             $topic = new Artefact();
             $topic->author = $user->id;
@@ -577,7 +459,6 @@ class BmoocController extends Controller {
                         $extension = strtolower(Input::file('topic_upload')->getClientOriginalExtension());
                         if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg'])) {
                             $destinationPath = 'uploads';
-                            $filename = base64_encode(Input::file('topic_upload')->getClientOriginalName() . time());
                             Input::file('topic_upload')->move($destinationPath, $filename);
                             $topic->url = $filename;
                             $at = ArtefactType::where('description', 'local_image')->first();
@@ -594,7 +475,6 @@ class BmoocController extends Controller {
                         $extension = strtolower(Input::file('topic_upload')->getClientOriginalExtension());
                         if (in_array($extension, ['pdf'])) {
                             $destinationPath = 'uploads';
-                            $filename = base64_encode(Input::file('topic_upload')->getClientOriginalName() . time());
                             Input::file('topic_upload')->move($destinationPath, $filename);
                             $topic->url = $filename;
                             $at = ArtefactType::where('description', 'local_pdf')->first();
@@ -651,19 +531,41 @@ class BmoocController extends Controller {
     }
 
     public function getImage($id){
-
+        $a = Artefact::find($id);
+        $path = base_path().'/../uploads/thumbnails'.$a->url.'_1000.jpg';
+        if (file_exists($path)) {
+            $filetype = File::type( $path );
+            $response = Response::make( File::get( $path ) , 200 );
+            $response->header('Content-Type', $filetype);
+            return $response;
+        }
+        return BmoocController::getImageOriginal($id);
     }
 
     public function getImageThumbnail($id){
-        $path = base_path().'/../uploads/thumbnails/'.$id.'.jpg';
+        // get url from id
+        $a = Artefact::find($id);
+        $path = base_path().'/../uploads/thumbnails/'.$a->url.'_100.jpg';
         // check if the artefact has a thumbnail based on id
         if (file_exists($path)) {
-            dd('file exists');
+            $filetype = File::type( $path );
+            $response = Response::make( File::get( $path ) , 200 );
+            $response->header('Content-Type', $filetype);
+            return $response;
         }
+        return BmoocController::getImage($id);
 
     }
 
     public function getImageOriginal($id){
-        // check if the artefact
+        $a = Artefact::find($id);
+        $path = base_path().'/../uploads/'.$a->url;
+        if (file_exists($path)) {
+            $filetype = File::type( $path );
+            $response = Response::make( File::get( $path ) , 200 );
+            $response->header('Content-Type', $filetype);
+            return $response;
+        }
+        abort(404, 'Image not found');
     }
 }
