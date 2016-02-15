@@ -195,7 +195,7 @@
                <img src="{{ asset('img/plus_plain.png') }}" alt="plus"/>
             </div>
             <div class="large-8 medium-12 columns end">
-            	{!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'url'=>'topic/new','method'=>'POST', 'files'=>true)) !!}
+            	{!! Form::open(array('id'=>'newTopicForm', 'data-abide'=>'ajax', 'url'=>'topic/new','method'=>'POST', 'files'=>true)) !!}
                 <h2>Start a new topic</h2>
                 <p>Initiate a topic using text, an image, a video or a document. This will be the first contribution to the topic.</p>
                 <fieldset>
@@ -430,18 +430,16 @@
             </form>
           <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
-    <!--
+
     <div id="progress" class="reveal-modal small" data-reveal aria-hidden="true" role="dialog">
        <div class="row">
            <div class="columns small-12 text-center">
-                <div class="progress round">
-                  <span class="meter"></span>
-                </div>
+                <div class="loader">&nbsp;</div>
                 <p class="message">Loading...</p>
            </div>
        </div>
     </div>
-    -->
+
     <div id="signin" class="reveal-modal tiny" data-reveal role="dialog" aria-hidden="true">
         <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>
@@ -456,6 +454,8 @@
     {!! HTML::script('js/app.js') !!}
     {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
     {!! HTML::script('js/imagesloaded.min.js') !!}
+    {!! HTML::script('js/jquery.form.min.js') !!}
+    {!! HTML::script('js/pdf.js') !!}
     <script>
         var host = "{{ URL::to('/') }}";
         $(document).foundation();
@@ -579,7 +579,7 @@
                 return '<p style="width: 100px; font-size: 0.8rem; overflow:hidden; display: inline-block">' + data.title + '</p>';
                 break;
             case 'local_image':
-                return '<img src="'+ host + "/uploads/"+data.url+'"/>';
+                return '<img src="'+host+'/artefact/'+data.id+'/thumbnail"/>';
                 break;
             case 'remote_image':
                 return '<img src="'+data.url+'"/>';

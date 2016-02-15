@@ -18,6 +18,9 @@ use DB;
 use Carbon\Carbon;
 use Exception;
 use Mail;
+use Response;
+use File;
+use URL;
 
 class BmoocController extends Controller {
 
@@ -42,19 +45,6 @@ class BmoocController extends Controller {
                         ->groupBy('thread')->get();
         return view('index', ['topic' => $topics, 'user' => $user, 'auteurs' => $auteurs, 'tags' => $tags, 'aantalAntwoorden' => $aantalAntwoorden]);
     }
-
-    public function help() {
-        $user = Auth::user();
-        return view('help', ['user' => $user]);
-    }
-
-//    public function showDiscussionEncoded($encodedLink = '') {
-//        $link = explode('/', base64_decode($encodedLink));
-//        if (count($link) == 3)
-//            return $this->showDiscussion($link[0], $link[1], $link[2], false);
-//        else
-//            return view('index_login');
-//    }
 
     public function feedback(){
         $data = Input::all();
@@ -93,112 +83,6 @@ class BmoocController extends Controller {
         } else {
             return view('no_topic');
         }
-    }
-
-    public function showDiscussion($links, $rechts, $pretrail = '', $encodeLink = false) {
-        $user = Auth::user();
-        //if (!$user) return view('index_login');
-
-        $linksArray = explode('_', $links); // ID_antwoordnr
-        $trailArray = explode('$', $pretrail); // array van ID_antwoordnr
-        $pretrail = '';
-        $artefactLinks = Artefact::find($linksArray[0]); // De gevraagde discussie voor linker vak
-
-        if ($artefactLinks) {
-            $anchors = array();
-
-            $artefactRechts = null;
-            if (count($artefactLinks->antwoorden) > $rechts)
-                $artefactRechts = $artefactLinks->antwoorden[$rechts];
-
-            if ($artefactLinks->hoofd)
-                $anchors['hoofd'] = $artefactLinks->hoofd->id . '_0/' . $linksArray[1] . '/' . $links . '$' . $pretrail;
-            else
-                $anchors['hoofd'] = null;
-
-            if ($artefactRechts && count($artefactRechts->antwoorden) > 0) {
-                $anchors['volgende'] = $artefactRechts->id . '_' . $rechts . '/0/' . $links . '$' . $pretrail;
-            } elseif ($artefactRechts && count($artefactRechts->antwoorden) == 0) {
-                $anchors['volgende'] = $artefactRechts->id . '_' . $rechts . '/0/' . $links . '$' . $pretrail;
-            } else
-                $anchors['volgende'] = null;
-
-            if ($rechts > 0) // Het artefact rechts is niet het eerste kind, dus link bovenaan tonen
-                $anchors['boven'] = $links . '/' . ($rechts - 1) . '/' . $links . '$' . $pretrail;
-            else
-                $anchors['boven'] = null;
-
-            if (count($artefactLinks->antwoorden) > $rechts + 1) // Er is nog een antwoord na het rechtse
-                $anchors['onder'] = $links . '/' . ($rechts + 1) . '/' . $links . '$' . $pretrail;
-            else
-                $anchors['onder'] = null;
-
-            // Tags ophalen en gerelateerde discussies opzoeken op basis van de tags
-            //$tags = explode(',', $artefactLinks->tags);	
-            //$relatedDiscussions = Artefact::where('tags', 'rlike', implode('|',$tags))->where('id', '<>', $artefactLinks)->where('thread', '<>', $artefactLinks->thread)->get();
-            $relatedDiscussions = DB::table('artefacts_tags')->whereIn('tag_id', $taglist)->where('artefact_id', '<>', $id)->distinct()->lists('artefact_id');
-            $rels = Artefact::whereIn('id', $relatedDiscussions)->get();
-            $relatedLinks = array();
-            foreach ($rels as $relatedd) {
-                $i = 0;
-                if ($relatedd->child_of) {
-                    $h = $relatedd->child_of;
-                    foreach ($h->answers as $antwoord) {
-                        if ($antwoord->id == $relatedd->id)
-                            break;
-                        $i++;
-                    }
-                }
-                $link = $relatedd->id . '_' . $i . '/0/';
-                $link = $encodeLink ? base64_encode($link) : $link;
-                $relatedLinks[] = array('titel' => $relatedd->title, 'tags' => $relatedd->tags, 'link' => $link);
-            }
-
-            // Alle tags in de thread
-            $alleTags = DB::table('artefacts')->where('thread', $artefactLinks->thread)->get(['tags']);
-            $tagarray = array();
-            foreach ($alleTags as $t) {
-                $tag = explode(',', $t->tags);
-                array_walk($tag, function(&$item, $key) {
-                    $item = trim($item);
-                });
-                $tagarray = array_merge($tagarray, $tag);
-            }
-            if ($encodeLink)
-                foreach ($anchors as $key => $item)
-                    $anchors[$key] = base64_encode($item);
-
-            return view('discussion', ['artefactLinks' => $artefactLinks, 'artefactRechts' => $artefactRechts, 'related' => $relatedLinks, 'anchors' => $anchors, 'alletags' => array_unique($tagarray), 'user' => $user]);
-        }
-    }
-
-    public function searchDiscussionsByTag($tag) {
-        $user = Auth::user();
-        $discussies = DB::table('artefacts_tags')->leftJoin('tags', 'tag_id', '=', 'tags.id')
-                        ->leftJoin('artefacts', 'artefact_id', '=', 'artefacts.id')
-                        ->where('tags.id', $tag)->select('thread')->distinct()->lists('thread'); //Artefact::with(['the_author', 'tags', 'last_modifier'])->where('tags', 'like', '%'.$tag.'%')->get();
-        $discs = Artefact::whereIn('thread', $discussies)->whereNull('parent_id')->orderBy('last_modified')->get();
-        //dd($discussies);
-        $auteurs = DB::table('users')->select('name')->distinct()->get();
-        $tags = Tags::orderBy('tag')->get();
-        $aantalAntwoorden = DB::table('artefacts')->select(DB::raw('count(*) as aantal_antwoorden, thread'))
-                        ->groupBy('thread')->get();
-
-        //$filtered = $discussies->filter(function ($item) { 
-        //	return $item->vader_id == null; })->all();
-        return view('index', ['topic' => $discs, 'user' => $user, 'auteurs' => $auteurs, 'tags' => $tags, 'titel' => "met tag '" . $tag . "'", 'aantalAntwoorden' => $aantalAntwoorden]);
-    }
-
-    public function searchDiscussionsByAuthor($author) {
-        $user = Auth::user();
-        $discussies = Artefact::with(['the_author', 'tags', 'last_modifier'])->where('author', $author)->get();
-        $auteurs = DB::table('users')->select('name')->distinct()->get();
-        $tags = Tags::orderBy('tag')->get();
-
-        $aantalAntwoorden = DB::table('artefacts')->select(DB::raw('count(*) as aantal_antwoorden, thread'))
-                        ->groupBy('thread')->get();
-
-        return view('index', ['topic' => $discussies, 'user' => $user, 'titel' => "van auteur " . $author, 'auteurs' => $auteurs, 'tags' => $tags, 'aantalAntwoorden' => $aantalAntwoorden]);
     }
 
     public function searchDiscussions($author = null, $tag = null, $keyword = null) {
@@ -249,6 +133,7 @@ class BmoocController extends Controller {
     public function commentDiscussion(Request $request) {
         $user = Auth::user();
         if ($user) { // Als de gebruiker ingelogd is, anders niets doen
+            $filename = uniqid();
             try {
                 DB::beginTransaction();
                 $comment = new Artefact();
@@ -292,11 +177,10 @@ class BmoocController extends Controller {
                             $extension = strtolower(Input::file('answer_upload')->getClientOriginalExtension());
                             if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg'])) {
                                 $destinationPath = 'uploads';
-                                $filename = base64_encode(Input::file('answer_upload')->getClientOriginalName());
                                 Input::file('answer_upload')->move($destinationPath, $filename);
                                 $comment->url = $filename;
                                 $at = ArtefactType::where('description', 'local_image')->first();
-                            } else throw new Exception('Wrong file uploaded for new topic');
+                            } else throw new Exception('Image should be a JPEG, PNG or GIF.');
                         } elseif ($request->input('answer_url') && $request->input('answer_url')!=null && $request->input('answer_url')!='') { // URL voor de afbeelding
                             if (getimagesize($request->input('answer_url'))) { // De afbeelding is een echte afbeelding als dit niet false teruggeeft
                                 $comment->url = $request->input('answer_url');
@@ -309,11 +193,10 @@ class BmoocController extends Controller {
                             $extension = strtolower(Input::file('answer_upload')->getClientOriginalExtension());
                             if (in_array($extension, ['pdf'])) {
                                 $destinationPath = 'uploads';
-                                $filename = base64_encode(Input::file('answer_upload')->getClientOriginalName());
                                 Input::file('answer_upload')->move($destinationPath, $filename);
                                 $comment->url = $filename;
                                 $at = ArtefactType::where('description', 'local_pdf')->first();
-                            } else throw new Exception('Wrong file uploaded for new topic');
+                            } else throw new Exception('File should be a PDF.');
                         } elseif ($request->input('answer_url') && $request->input('answer_url')!=null && $request->input('answer_url')!='') { // URL voor de afbeelding
                             if (getimagesize($request->input('answer_url'))) { // De afbeelding is een echte afbeelding als dit niet false teruggeeft
                                 $comment->url = $request->input('answer_url');
@@ -322,8 +205,23 @@ class BmoocController extends Controller {
                         }
                         break;
                 }
+
+                // Thumbnails opslaan
+                // small
+                if($request->input('thumbnail_small') && $request->input('thumbnail_small') != null && $request->input('thumbnail_small') != ''){
+                    $destinationPath = 'uploads/thumbnails/small/' . $comment->url;
+                    $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_small')));
+                    file_put_contents($destinationPath, $data);
+                }
+                // large
+                if($request->input('thumbnail_large') && $request->input('thumbnail_large') != null && $request->input('thumbnail_large') != ''){
+                    $destinationPath = 'uploads/thumbnails/large/' . $comment->url;
+                    $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_large')));
+                    file_put_contents($destinationPath, $data);
+                }
+
                 if ($at) $at->artefacts()->save($comment);
-                else throw new Exception('Error creating the new contribution for the topic (verkeerd type)');
+                else throw new Exception('Selected file is not a valid image or PDF.');
                 // Einde inhoud verwerken en type bepalen
 
                 if ($request->input('answer_parent')) {
@@ -341,10 +239,10 @@ class BmoocController extends Controller {
                     $extension = strtolower(Input::file('answer_attachment')->getClientOriginalExtension());
                     if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg', 'pdf'])) {
                         $destinationPath = 'uploads/attachments';
-                        $filename = base64_encode(Input::file('answer_attachment')->getClientOriginalName()).'.'.$extension;
+                        $filename = base64_encode(Input::file('answer_attachment')->getClientOriginalName() . time()).'.'.$extension;
                         Input::file('answer_attachment')->move($destinationPath, $filename);
                         $comment->attachment = $filename;
-                    } else throw new Exception('Wrong file uploaded for new topic attachment');
+                    } else throw new Exception('Attachment should be a JPG, PNG, GIF or PDF');
                 }
 
                 $comment->save();
@@ -374,14 +272,27 @@ class BmoocController extends Controller {
                 // Tel hoeveel kinderen er zijn voor de vader
                 if ($comment->child_of) {
                     $aantalKinderen = Artefact::where('parent_id', $comment->child_of->id)->count();
+                    $url = 'topic/' . $comment->child_of->id . '/' . ($aantalKinderen - 1);
+                    if ( $request->isXmlHttpRequest() ) {
+                        return Response::json( [
+                            'status' => '200',
+                            'url' => URL::to($url)
+                        ], 200);
+                    } else
                     return $this->showTopic($comment->child_of->id, $aantalKinderen - 1);
                 } else
-                    return $this->showTopic($comment->id, 0);
+                    if ( $request->isXmlHttpRequest() ) {
+                        return Response::json( [
+                            'status' => '200',
+                            'url' => URL::to('topic/' . $comment->child_of->id)
+                        ], 200);
+                    } else
+                        return $this->showTopic($comment->id, 0);
                 
             } catch (Exception $e) {
                 DB::rollback();
-                dd($e);
                 //return view('errors.topic', ['error' => $e]);
+                throw $e;
             }
 
         }
@@ -390,6 +301,7 @@ class BmoocController extends Controller {
     public function newInstruction(Request $request) {
         $user = Auth::user();
         if ($user && $user->role == "editor") { // Als de gebruiker ingelogd is en editor is, anders niets doen
+            $filename = uniqid();
             try {
                 DB::beginTransaction();
                 $instruction = new Instruction();
@@ -431,7 +343,6 @@ class BmoocController extends Controller {
                             $extension = strtolower(Input::file('instruction_upload')->getClientOriginalExtension());
                             if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg'])) {
                                 $destinationPath = 'uploads';
-                                $filename = base64_encode(Input::file('instruction_upload')->getClientOriginalName());
                                 Input::file('instruction_upload')->move($destinationPath, $filename);
                                 $instruction->url = $filename;
                                 $at = ArtefactType::where('description', 'local_image')->first();
@@ -449,7 +360,6 @@ class BmoocController extends Controller {
                             $extension = strtolower(Input::file('instruction_upload')->getClientOriginalExtension());
                             if (in_array($extension, ['pdf'])) {
                                 $destinationPath = 'uploads';
-                                $filename = base64_encode(Input::file('instruction_upload')->getClientOriginalName());
                                 Input::file('instruction_upload')->move($destinationPath, $filename);
                                 $instruction->url = $filename;
                                 $at = ArtefactType::where('description', 'local_pdf')->first();
@@ -463,6 +373,21 @@ class BmoocController extends Controller {
                         }
                         break;
                 }
+
+                // Thumbnails opslaan
+                // small
+                if($request->input('thumbnail_small') && $request->input('thumbnail_small') != null && $request->input('thumbnail_small') != ''){
+                    $destinationPath = 'uploads/thumbnails/small/' . $instruction->url;
+                    $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_small')));
+                    file_put_contents($destinationPath, $data);
+                }
+                // large
+                if($request->input('thumbnail_large') && $request->input('thumbnail_large') != null && $request->input('thumbnail_large') != ''){
+                    $destinationPath = 'uploads/thumbnails/large/' . $instruction->url;
+                    $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_large')));
+                    file_put_contents($destinationPath, $data);
+                }
+
                 if ($at)
                     $at->instructions()->save($instruction);
                 else
@@ -520,10 +445,21 @@ class BmoocController extends Controller {
                 // endif set the available artefact types for the thread
                 
                 DB::commit();
-                return Redirect::back();
+                // add handler for Ajax requests
+                if ( $request->isXmlHttpRequest() ) {
+                    return Response::json( [
+                        'status' => '200',
+                        'refresh' => 'refresh',
+                        'url' => URL::to('/')
+                    ], 200);
+                } else {
+                    return Redirect::back();
+                }
+
             } catch (Exception $e) {
                 DB::rollback();
-                return view('errors.instruction', ['error' => $e]);
+                //return view('errors.topic', ['error' => $e]);
+                throw $e;
             }
 
         } // End if ($user)
@@ -533,6 +469,7 @@ class BmoocController extends Controller {
         $user = Auth::user();
         if ($user && $user->role == "editor") { // Als de gebruiker ingelogd is en editor is, anders niets doen
         try {
+            $filename = uniqid();
             DB::beginTransaction();
             $topic = new Artefact();
             $topic->author = $user->id;
@@ -577,11 +514,10 @@ class BmoocController extends Controller {
                         $extension = strtolower(Input::file('topic_upload')->getClientOriginalExtension());
                         if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg'])) {
                             $destinationPath = 'uploads';
-                            $filename = base64_encode(Input::file('topic_upload')->getClientOriginalName());
                             Input::file('topic_upload')->move($destinationPath, $filename);
                             $topic->url = $filename;
                             $at = ArtefactType::where('description', 'local_image')->first();
-                        } else throw new Exception('Wrong file uploaded for new topic');
+                        } else throw new Exception('Image should be a JPEG, PNG or GIF.');
                     } elseif ($request->input('topic_url') && $request->input('topic_url')!=null && $request->input('topic_url')!='') { // URL voor de afbeelding
                         if (getimagesize($request->input('topic_url'))) { // De afbeelding is een echte afbeelding als dit niet false teruggeeft
                             $topic->url = $request->input('topic_url');
@@ -594,11 +530,10 @@ class BmoocController extends Controller {
                         $extension = strtolower(Input::file('topic_upload')->getClientOriginalExtension());
                         if (in_array($extension, ['pdf'])) {
                             $destinationPath = 'uploads';
-                            $filename = base64_encode(Input::file('topic_upload')->getClientOriginalName());
                             Input::file('topic_upload')->move($destinationPath, $filename);
                             $topic->url = $filename;
                             $at = ArtefactType::where('description', 'local_pdf')->first();
-                        } else throw new Exception('Wrong file uploaded for new topic');
+                        } else throw new Exception('File should be a PDF.');
                     } elseif ($request->input('topic_url') && $request->input('topic_url')!=null && $request->input('topic_url')!='') { // URL voor de afbeelding
                         if (getimagesize($request->input('topic_url'))) { // De afbeelding is een echte afbeelding als dit niet false teruggeeft
                             $topic->url = $request->input('topic_url');
@@ -607,8 +542,24 @@ class BmoocController extends Controller {
                     }
                     break;
             }
+
+            // Thumbnails opslaan
+            // small
+            if($request->input('thumbnail_small') && $request->input('thumbnail_small') != null && $request->input('thumbnail_small') != ''){
+                $destinationPath = 'uploads/thumbnails/small/' . $topic->url;
+                $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_small')));
+                file_put_contents($destinationPath, $data);
+            }
+            // large
+            if($request->input('thumbnail_large') && $request->input('thumbnail_large') != null && $request->input('thumbnail_large') != ''){
+                $destinationPath = 'uploads/thumbnails/large/' . $topic->url;
+                $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_large')));
+                file_put_contents($destinationPath, $data);
+            }
+
+
             if ($at) $at->artefacts()->save($topic);
-            else throw new Exception('Fout bij het topic aanmaken (verkeerd type)');
+            else throw new Exception('Selected file is not a valid image or PDF.');
             // Einde inhoud verwerken en type bepalen
             
             // Bijlage verwerken
@@ -616,11 +567,11 @@ class BmoocController extends Controller {
                 $extension = strtolower(Input::file('topic_attachment')->getClientOriginalExtension());
                 if (in_array($extension, ['jpg', 'png', 'gif', 'jpeg', 'pdf'])) {
                     $destinationPath = 'uploads/attachments';
-                    $filename = base64_encode(Input::file('topic_attachment')->getClientOriginalName()).'.'.$extension;
+                    $filename = base64_encode(Input::file('topic_attachment')->getClientOriginalName() . time()).'.'.$extension;
                     Input::file('topic_attachment')->move($destinationPath, $filename);
                     //$topic->url = $filename;
                     $topic->attachment = $filename;
-                } else throw new Exception('Wrong file uploaded for new topic attachment');
+                } else throw new Exception('Attachment should be a JPG, PNG, GIF or PDF');
             }
             
             // Topic opslaan
@@ -642,11 +593,60 @@ class BmoocController extends Controller {
             }
 
             DB::commit();
-            return Redirect::back();
+            // add handler for Ajax requests
+            if ( $request->isXmlHttpRequest() ) {
+                return Response::json( [
+                    'status' => '200',
+                    'url' => URL::to('/')
+                ], 200);
+            } else {
+                return Redirect::back();
+            }
+
         } catch (Exception $e) {
             DB::rollback();
-            return view('errors.topic', ['error' => $e]);
+            //return view('errors.topic', ['error' => $e]);
+            throw $e;
         }
         } // End if ($user)
+    }
+
+    public function getImage($id){
+        $a = Artefact::find($id);
+        $path = base_path().'/../uploads/thumbnails/large/'.$a->url;
+        if (file_exists($path)) {
+            $filetype = File::type( $path );
+            $response = Response::make( File::get( $path ) , 200 );
+            $response->header('Content-Type', $filetype);
+            return $response;
+        }
+        return BmoocController::getImageOriginal($id);
+    }
+
+    public function getImageThumbnail($id){
+        // get url from id
+        $a = Artefact::find($id);
+        $path = base_path().'/../uploads/thumbnails/small/'.$a->url;
+        // check if the artefact has a thumbnail based on id
+        if (file_exists($path)) {
+            $filetype = File::type( $path );
+            $response = Response::make( File::get( $path ) , 200 );
+            $response->header('Content-Type', $filetype);
+            return $response;
+        }
+        return BmoocController::getImage($id);
+
+    }
+
+    public function getImageOriginal($id){
+        $a = Artefact::find($id);
+        $path = base_path().'/../uploads/'.$a->url;
+        if (file_exists($path)) {
+            $filetype = File::type( $path );
+            $response = Response::make( File::get( $path ) , 200 );
+            $response->header('Content-Type', $filetype);
+            return $response;
+        }
+        abort(404, 'Image not found');
     }
 }

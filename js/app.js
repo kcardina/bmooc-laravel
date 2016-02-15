@@ -81,7 +81,7 @@ $(document).foundation({
                     }
                 // image
                 } else if(div.find('button#type_image').hasClass('active')){
-                    if(div.find('.input_url input[type=file]').val().length == 0){
+                    if(div.find('.input_file input[type=file]').val().length == 0){
                         valid = false;
                         msg = "Please select an image to upload."
                     }
@@ -93,7 +93,7 @@ $(document).foundation({
                     }
                 // file
                 } else if(div.find('button#type_file').hasClass('active')){
-                    if(div.find('input[type=file]').val().length == 0){
+                    if(div.find('.input_file input[type=file]').val().length == 0){
                         valid = false;
                         msg = "Please select a PDF to upload."
                     }
@@ -134,14 +134,14 @@ function showAnswerType(e) {
         parent.find('.input_textarea').slideDown();
         parent.find('.temp_type').val('text');
     } else if ($this.attr('id') == 'type_image') {
-        parent.find('.filetype_label').html('Select an image to upload <small>(JPG, PNG or GIF, &lt;2MB)</small>');
+        parent.find('.filetype_label').html('Select an image to upload <small>(JPG, PNG or GIF, &lt;5MB)</small>');
         parent.find('.input_file').slideDown();
         parent.find('.temp_type').val('image');
     } else if ($this.attr('id') == 'type_video') {
         parent.find('.input_url').slideDown();
         parent.find('.temp_type').val('video');
     } else if ($this.attr('id') == 'type_file') {
-        parent.find('.filetype_label').html('Select a PDF to upload. <small>(&lt;2MB. If the file is too large you can use <a href="http://smallpdf.com/compress-pdf">this free tool</a> to resize your PDF)</small>');
+        parent.find('.filetype_label').html('Select a PDF to upload. <small>(&lt;5MB. If the file is too large you can use <a href="http://smallpdf.com/compress-pdf">this free tool</a> to resize your PDF)</small>');
         parent.find('.input_file').slideDown();
         parent.find('.temp_type').val('file');
     }
@@ -185,50 +185,69 @@ $(function(){
 });
 
 /* NEW TOPIC */
-/*
 $(function(){
-    $('#newTopicForm').on('valid.fndtn.abide', function(e) {
-        console.log('submit');
+    $('*[data-abide="ajax"]').on('valid.fndtn.abide', function(e) {
+        var form = $(this);
+        e.preventDefault();
 
         // reset & show loading screen
-        $('#progress .message').html('Uploading...');
-        $('#progress .meter').css('width', '0')
+        $('#progress .loader').show();
+        $('#progress .message').html('Preparing your contribution for submission...');
         $('#progress').foundation('reveal', 'open');
 
-        // upload file while
-         $.ajax({
-             xhr: function() {
-                var xhr = new window.XMLHttpRequest();
+        var input = document.querySelectorAll('#'+form.attr('id')+' .input_file input')[0];
+        var parent = form.parents('[data-reveal]');
 
-                 xhr.upload.addEventListener("progress", function(evt) {
-                  if (evt.lengthComputable) {
-                    var percentComplete = evt.loaded / evt.total;
-                    percentComplete = parseInt(percentComplete * 100);
+        var t_100 = new Thumbnail(input, 100);
+        var t_1000 = new Thumbnail(input, 1000);
 
-                    console.log(percentComplete);
-                    $('#progress .meter').css('width', percentComplete + '%')
-
-                    if (percentComplete === 100) {
-                        console.log('done');
-                    }
-                  }
-                }, false);
-                return xhr;
-             },
-             type: "POST",
-             url: '/topic/new',
-             data: $('#newTopicForm').serialize(),
-             success: function(result) {
-                console.log(result);
-             }
-         });
-
-        // generate thumbnail on hidden canvas
-
-        // upload thumbnail
+        $.when(t_100.generate(), t_1000.generate()).done(function(){
+            if(t_100.hasData) {
+                console.log(t_100.get());
+                $('<input>', {
+                    type: 'hidden',
+                    id: 'thumbnail_small',
+                    name: 'thumbnail_small',
+                    value: t_100.get()
+                }).appendTo(form);
+            }
+            if(t_1000.hasData) {
+                $('<input>', {
+                    type: 'hidden',
+                    id: 'thumbnail_large',
+                    name: 'thumbnail_large',
+                    value: t_1000.get()
+                }).appendTo(form);
+            }
+            formSubmit(form, parent);
+        }).fail(function(data) {
+            formSubmit(form, parent);
+        });
     });
 });
-*/
+
+function formSubmit(form, parent){
+    $('#progress .message').html('Uploading files...');
+     var options = {
+        success: function(data){
+            if(data.refresh) location.reload(true);
+            else window.location = data.url;
+        },
+        error: function(data){
+            $('#progress .loader').hide();
+            $('#progress .message').html('<h2>Oops!</h2><p>Something went wrong while  saving your contribution.</p>');
+            $('#progress .message').append('<small class="error">' + data.responseJSON.message + '</small>');
+            $('#progress .message').append('<a href="#" data-reveal-id="' + parent.attr('id') + '" class="emphasis">Please try again</a>');
+        }
+     };
+
+    // bind form using 'ajaxForm'
+    form.ajaxSubmit(options);
+}
+
+/*********
+* RENDER *
+*********/
 
 /**
  * Show an artefact in the desired container
@@ -293,6 +312,189 @@ function render(div, type, data){
         div.find('.artefact').fadeIn();
     }
 }
+
+/** Generate thumbnails using HTML5 Canvas & PDFJS. */
+var Thumbnail = (function(){
+
+    var BASE64_MARKER = ';base64,';
+
+    /**
+     * Create a thumbnail.
+     * @param {dom element} el - The input element containing a image or pdf.
+     * @param {number} size - The size of the thumbnails bounding box.
+     */
+    function Thumbnail(el, size){
+        this.dfd = new $.Deferred();
+        this.c = document.createElement("canvas");
+        this.ctx = this.c.getContext("2d");
+        this.el = el;
+        this.size = size;
+        this.hasData = false;
+    }
+
+    /**
+     * Generate the thumbnail.
+     * @return {promise} A Jquery promise.
+     */
+    Thumbnail.prototype.generate = function(){
+        var support = browserSupport.call(this);
+        if(support.isSupported){
+            readFile.call(this);
+        } else {
+            this.dfd.reject(support.msg);
+        }
+        return this.dfd.promise();
+    }
+
+    /**
+     * Get the thumbnail image.
+     * @return {image} A base64 encoded png.
+     */
+    Thumbnail.prototype.get = function(){
+        return this.c.toDataURL('image/png');
+    }
+
+    /**
+     * Read the input file and call the appropriate render method
+     */
+    function readFile(){
+        var file = this.el.files[0];
+        var fr = new FileReader();
+        var pointer = this;
+        fr.onload = function(e){
+            if(file.type.match('image.*')){
+                var img = new Image();
+                img.onload = function(){
+                    render.call(pointer, img);
+                }
+                img.src = event.target.result;
+            } else if(file.type.match('application/pdf') || file.type.match('application/x-pdf')){
+                var pdfAsArray = convertDataURIToBinary(event.target.result);
+                renderPDF.call(pointer, pdfAsArray);
+            } else {
+                pointer.dfd.reject("The uploaded file was not an image, nor a pdf");
+            }
+        }
+
+        fr.readAsDataURL(file);
+    }
+
+    /**
+     * Render a thumbnail given an image.
+     * @param {Image} img - The original image
+     */
+    function render(img){
+        var ratio = img.height/img.width;
+        if(ratio > 1){ // portrait
+            if(img.height < this.size){ this.dfd.resolve(); return;}
+            this.c.height = this.size;
+            this.c.width = this.size/ratio;
+        } else{ // landscape
+            if(img.width < this.size){ this.dfd.resolve(); return;}
+            this.c.width = this.size;
+            this.c.height = this.size*ratio;
+        }
+
+        this.ctx.drawImage(img, 0, 0, this.c.width, this.c.height);
+        this.hasData = true;
+        this.dfd.resolve();
+    }
+
+    /**
+     * Render a thumbnail given a pdf.
+     * @param {Uint8Array} url - The original pdf, encoded as a Uint8Array
+     */
+    function renderPDF(url){
+        var pointer = this;
+        PDFJS.workerSrc = '/js/pdf.worker.js';
+
+        PDFJS.getDocument(url).then(function getPdfHelloWorld(pdf) {
+            pdf.getPage(1).then(function getPageHelloWorld(page) {
+                var viewport = page.getViewport(1);
+                var ratio = viewport.height/viewport.width;
+                if(ratio > 1){ // portrait -> s = max height
+                    var scale = pointer.size / viewport.height;
+                    viewport = page.getViewport(scale);
+                } else{ // landscape -> s = max width
+                    var scale = pointer.size / viewport.width;
+                    viewport = page.getViewport(scale);
+                }
+
+                pointer.c.height = viewport.height;
+                pointer.c.width = viewport.width;
+
+                // Render PDF page into canvas context
+                var renderContext = {
+                    canvasContext: pointer.ctx,
+                    viewport: viewport
+                };
+
+                var renderTask = page.render(renderContext);
+
+                renderTask.promise.then(function(){
+                    pointer.hasData = true;
+                    pointer.dfd.resolve();
+                });
+            });
+        });
+    }
+
+    /**
+     * Check if the browser supports the FileReader class and if input file is valid
+     * @return {boolean} isSupported.
+     * @return {string} msg.
+     */
+    function browserSupport(){
+        var support = {
+            isSupported: true,
+            msg: 'Browser supports thumbnail generation.'
+        }
+
+        if (!window.File || !window.FileReader || !window.FileList || !window.Blob){
+            support = {
+                isSupported: false,
+                msg: 'The File APIs are not fully supported in this browser.'
+            }
+        } else if (!this.el) {
+            support = {
+                isSupported: false,
+                msg: 'Couldn\'t find the fileinput element.'
+            }
+        } else if (!this.el.files) {
+            support = {
+                isSupported: false,
+                msg: 'This browser doesn\'t seem to support the \'files\' property of file inputs.'
+            }
+        } else if (!this.el.files[0]) {
+            support = {
+                isSupported: false,
+                msg: 'No file selected.'
+            }
+        }
+        return support;
+    }
+
+    /**
+     * Convert pdf from base64 to Uint8Array.
+     * @param {base64} dataURI - A base64 encoded pdf
+     * @return {Uint8Array} array - A Uint8Array encoded pdf
+     */
+    function convertDataURIToBinary(dataURI) {
+        var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+        var base64 = dataURI.substring(base64Index);
+        var raw = window.atob(base64);
+        var rawLength = raw.length;
+        var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+        for(var i = 0; i < rawLength; i++) {
+            array[i] = raw.charCodeAt(i);
+        }
+        return array;
+    }
+
+    return Thumbnail;
+
+})();
 
 /*******************
 * HELPER FUNCTIONS *
