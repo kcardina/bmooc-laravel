@@ -101,8 +101,7 @@
             }
 
             function renderPDF(url){
-                var size = this.size;
-                var ctx = this.ctx;
+                var pointer = this;
                 PDFJS.workerSrc = '/js/pdf.worker.js';
 
                 PDFJS.getDocument(url).then(function getPdfHelloWorld(pdf) {
@@ -110,27 +109,27 @@
                         var viewport = page.getViewport(1);
                         var ratio = viewport.height/viewport.width;
                         if(ratio > 1){ // portrait -> s = max height
-                            var scale = size / viewport.height;
+                            var scale = pointer.size / viewport.height;
                             viewport = page.getViewport(scale);
                         } else{ // landscape -> s = max width
-                            var scale = size / viewport.width;
+                            var scale = pointer.size / viewport.width;
                             viewport = page.getViewport(scale);
                         }
 
-                        c.height = viewport.height;
-                        c.width = viewport.width;
+                        pointer.c.height = viewport.height;
+                        pointer.c.width = viewport.width;
 
                         // Render PDF page into canvas context
                         var renderContext = {
-                            canvasContext: ctx,
+                            canvasContext: pointer.ctx,
                             viewport: viewport
                         };
 
                         var renderTask = page.render(renderContext);
 
                         renderTask.promise.then(function(){
-                            this.hasData = true;
-                            this.dfd.resolve();
+                            pointer.hasData = true;
+                            pointer.dfd.resolve();
                         });
                     });
                 });
