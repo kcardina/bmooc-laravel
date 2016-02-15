@@ -20,6 +20,7 @@ use Exception;
 use Mail;
 use Response;
 use File;
+use URL;
 
 class BmoocController extends Controller {
 
@@ -262,8 +263,7 @@ class BmoocController extends Controller {
                 
             } catch (Exception $e) {
                 DB::rollback();
-                dd($e);
-                //return view('errors.topic', ['error' => $e]);
+                return view('errors.topic', ['error' => $e]);
             }
 
         }
@@ -462,7 +462,7 @@ class BmoocController extends Controller {
                             Input::file('topic_upload')->move($destinationPath, $filename);
                             $topic->url = $filename;
                             $at = ArtefactType::where('description', 'local_image')->first();
-                        } else throw new Exception('Wrong file uploaded for new topic');
+                        } else throw new Exception('Image should be a JPEG, PNG or GIF.');
                     } elseif ($request->input('topic_url') && $request->input('topic_url')!=null && $request->input('topic_url')!='') { // URL voor de afbeelding
                         if (getimagesize($request->input('topic_url'))) { // De afbeelding is een echte afbeelding als dit niet false teruggeeft
                             $topic->url = $request->input('topic_url');
@@ -478,7 +478,7 @@ class BmoocController extends Controller {
                             Input::file('topic_upload')->move($destinationPath, $filename);
                             $topic->url = $filename;
                             $at = ArtefactType::where('description', 'local_pdf')->first();
-                        } else throw new Exception('Wrong file uploaded for new topic');
+                        } else throw new Exception('File should be a PDF.');
                     } elseif ($request->input('topic_url') && $request->input('topic_url')!=null && $request->input('topic_url')!='') { // URL voor de afbeelding
                         if (getimagesize($request->input('topic_url'))) { // De afbeelding is een echte afbeelding als dit niet false teruggeeft
                             $topic->url = $request->input('topic_url');
@@ -488,7 +488,7 @@ class BmoocController extends Controller {
                     break;
             }
             if ($at) $at->artefacts()->save($topic);
-            else throw new Exception('Fout bij het topic aanmaken (verkeerd type)');
+            else throw new Exception('File is not a valid image or PDF.');
             // Einde inhoud verwerken en type bepalen
             
             // Bijlage verwerken
@@ -500,7 +500,7 @@ class BmoocController extends Controller {
                     Input::file('topic_attachment')->move($destinationPath, $filename);
                     //$topic->url = $filename;
                     $topic->attachment = $filename;
-                } else throw new Exception('Wrong file uploaded for new topic attachment');
+                } else throw new Exception('Attachment should be a JPG, PNG, GIF or PDF');
             }
             
             // Topic opslaan
@@ -522,10 +522,20 @@ class BmoocController extends Controller {
             }
 
             DB::commit();
-            return Redirect::back();
+            // add handler for Ajax requests
+            if ( $request->isXmlHttpRequest() ) {
+                return Response::json( [
+                    'status' => '200',
+                    'url' => URL::to('/')
+                ], 200);
+            } else {
+                return Redirect::back();
+            }
+
         } catch (Exception $e) {
             DB::rollback();
-            return view('errors.topic', ['error' => $e]);
+            //return view('errors.topic', ['error' => $e]);
+            throw $e;
         }
         } // End if ($user)
     }

@@ -434,9 +434,7 @@
     <div id="progress" class="reveal-modal small" data-reveal aria-hidden="true" role="dialog">
        <div class="row">
            <div class="columns small-12 text-center">
-                <div class="loader">
-                    {!! HTML::image(asset("img/loader_overlay_big.gif"), 'loading...') !!}&nbsp;
-                </div>
+                <div class="loader">&nbsp;</div>
                 <p class="message">Loading...</p>
            </div>
        </div>
@@ -456,6 +454,7 @@
     {!! HTML::script('js/app.js') !!}
     {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
     {!! HTML::script('js/imagesloaded.min.js') !!}
+    {!! HTML::script('js/jquery.form.min.js') !!}
     {!! HTML::script('js/pdf.js') !!}
     <script>
         var host = "{{ URL::to('/') }}";

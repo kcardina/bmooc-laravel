@@ -134,14 +134,14 @@ function showAnswerType(e) {
         parent.find('.input_textarea').slideDown();
         parent.find('.temp_type').val('text');
     } else if ($this.attr('id') == 'type_image') {
-        parent.find('.filetype_label').html('Select an image to upload <small>(JPG, PNG or GIF, &lt;2MB)</small>');
+        parent.find('.filetype_label').html('Select an image to upload <small>(JPG, PNG or GIF, &lt;5MB)</small>');
         parent.find('.input_file').slideDown();
         parent.find('.temp_type').val('image');
     } else if ($this.attr('id') == 'type_video') {
         parent.find('.input_url').slideDown();
         parent.find('.temp_type').val('video');
     } else if ($this.attr('id') == 'type_file') {
-        parent.find('.filetype_label').html('Select a PDF to upload. <small>(&lt;2MB. If the file is too large you can use <a href="http://smallpdf.com/compress-pdf">this free tool</a> to resize your PDF)</small>');
+        parent.find('.filetype_label').html('Select a PDF to upload. <small>(&lt;5MB. If the file is too large you can use <a href="http://smallpdf.com/compress-pdf">this free tool</a> to resize your PDF)</small>');
         parent.find('.input_file').slideDown();
         parent.find('.temp_type').val('file');
     }
@@ -187,9 +187,11 @@ $(function(){
 /* NEW TOPIC */
 $(function(){
     $('#newTopicForm').on('valid.fndtn.abide', function(e) {
+        var form = $(this);
         e.preventDefault();
 
         // reset & show loading screen
+        $('#progress .loader').show();
         $('#progress .message').html('Preparing your artefact for submission...');
         $('#progress').foundation('reveal', 'open');
 
@@ -199,48 +201,52 @@ $(function(){
         var t_1000 = new Thumbnail(input, 1000);
 
         $.when(t_100.generate(), t_1000.generate()).done(function(){
-            if(t_100.hasData) $('body').append('<img src="'+t_100.get()+'" />');
-            if(t_1000.hasData) $('body').append('<img src="'+t_1000.get()+'" />');
-            console.log('Succes! Now submit the form.');
+            if(t_100.hasData) {
+                $('<input>', {
+                    type: 'hidden',
+                    id: 'thumbnail_100',
+                    name: 'thumbnail_100',
+                    value: t_100.get()
+                }).appendTo(form);
+            }
+            if(t_1000.hasData) {
+                $('<input>', {
+                    type: 'hidden',
+                    id: 'thumbnail_1000',
+                    name: 'thumbnail_1000',
+                    value: t_1000.get()
+                }).appendTo(form);
+            }
+            formSubmit(form);
         }).fail(function(data) {
             console.log('Fail! Now submit the form.');
             console.log(data);
+            formSubmit(form);
         });
-        /*
-
-        // upload file while
-         $.ajax({
-             xhr: function() {
-                var xhr = new window.XMLHttpRequest();
-
-                 xhr.upload.addEventListener("progress", function(evt) {
-                  if (evt.lengthComputable) {
-                    var percentComplete = evt.loaded / evt.total;
-                    percentComplete = parseInt(percentComplete * 100);
-
-                    console.log(percentComplete);
-                    $('#progress .meter').css('width', percentComplete + '%')
-
-                    if (percentComplete === 100) {
-                        console.log('done');
-                    }
-                  }
-                }, false);
-                return xhr;
-             },
-             type: "POST",
-             url: '/topic/new',
-             data: $('#newTopicForm').serialize(),
-             success: function(result) {
-                console.log(result);
-             }
-         });*/
-
-        // generate thumbnail on hidden canvas
-
-        // upload thumbnail
     });
 });
+
+function formSubmit(form){
+    $('#progress .message').html('Uploading files...');
+     var options = {
+        success: function(data){
+            window.location = data.url;
+        },
+        error: function(data){
+            $('#progress .loader').hide();
+            $('#progress .message').html('<h2>Oops!</h2><p>Something went wrong while creating adding your artefact.</p>');
+            $('#progress .message').append('<small class="error">' + data.responseJSON.message + '</small>');
+            $('#progress .message').append('<a href="#" data-reveal-id="new_topic" class="emphasis">Please try again</a>');
+        }
+     };
+
+    // bind form using 'ajaxForm'
+    form.ajaxSubmit(options);
+}
+
+/*********
+* RENDER *
+*********/
 
 /**
  * Show an artefact in the desired container
@@ -365,7 +371,7 @@ var Thumbnail = (function(){
                 var pdfAsArray = convertDataURIToBinary(event.target.result);
                 renderPDF.call(pointer, pdfAsArray);
             } else {
-                this.dfd.reject("The uploaded file was not an image, nor a pdf");
+                pointer.dfd.reject("The uploaded file was not an image, nor a pdf");
             }
         }
 
