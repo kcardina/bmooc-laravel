@@ -186,57 +186,58 @@ $(function(){
 
 /* NEW TOPIC */
 $(function(){
-    $('#newTopicForm').on('valid.fndtn.abide', function(e) {
+    $('*[data-abide="ajax"]').on('valid.fndtn.abide', function(e) {
         var form = $(this);
         e.preventDefault();
 
         // reset & show loading screen
         $('#progress .loader').show();
-        $('#progress .message').html('Preparing your artefact for submission...');
+        $('#progress .message').html('Preparing your contribution for submission...');
         $('#progress').foundation('reveal', 'open');
 
-        var input = document.getElementById('topic_upload');
+        var input = document.querySelectorAll('#'+form.attr('id')+' .input_file input')[0];
+        var parent = form.parents('[data-reveal]');
 
         var t_100 = new Thumbnail(input, 100);
         var t_1000 = new Thumbnail(input, 1000);
 
         $.when(t_100.generate(), t_1000.generate()).done(function(){
             if(t_100.hasData) {
+                console.log(t_100.get());
                 $('<input>', {
                     type: 'hidden',
-                    id: 'thumbnail_100',
-                    name: 'thumbnail_100',
+                    id: 'thumbnail_small',
+                    name: 'thumbnail_small',
                     value: t_100.get()
                 }).appendTo(form);
             }
             if(t_1000.hasData) {
                 $('<input>', {
                     type: 'hidden',
-                    id: 'thumbnail_1000',
-                    name: 'thumbnail_1000',
+                    id: 'thumbnail_large',
+                    name: 'thumbnail_large',
                     value: t_1000.get()
                 }).appendTo(form);
             }
-            formSubmit(form);
+            formSubmit(form, parent);
         }).fail(function(data) {
-            console.log('Fail! Now submit the form.');
-            console.log(data);
-            formSubmit(form);
+            formSubmit(form, parent);
         });
     });
 });
 
-function formSubmit(form){
+function formSubmit(form, parent){
     $('#progress .message').html('Uploading files...');
      var options = {
         success: function(data){
-            window.location = data.url;
+            if(data.refresh) location.reload(true);
+            else window.location = data.url;
         },
         error: function(data){
             $('#progress .loader').hide();
-            $('#progress .message').html('<h2>Oops!</h2><p>Something went wrong while creating adding your artefact.</p>');
+            $('#progress .message').html('<h2>Oops!</h2><p>Something went wrong while  saving your contribution.</p>');
             $('#progress .message').append('<small class="error">' + data.responseJSON.message + '</small>');
-            $('#progress .message').append('<a href="#" data-reveal-id="new_topic" class="emphasis">Please try again</a>');
+            $('#progress .message').append('<a href="#" data-reveal-id="' + parent.attr('id') + '" class="emphasis">Please try again</a>');
         }
      };
 

@@ -304,7 +304,7 @@
                    <img src="{{ asset('img/plus_plain.png') }}" alt="plus"/>
                 </div>
                     <div class="large-8 medium-12 columns end">
-                    {!! Form::open(array('id'=>'newTopicForm', 'data-abide', 'url'=>'comment', 'method'=>'POST', 'files'=>true)) !!}
+                    {!! Form::open(array('id'=>'newTopicForm', 'data-abide'=>'ajax', 'url'=>'comment', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add (some)thing</h2>
                     <fieldset>
                         <h3 id="instruction_title" style="cursor: pointer;">&#x25BC; Current instruction</h3>
@@ -461,7 +461,7 @@
                    <img src="{{ asset('img/plus_plain.png') }}" alt="plus"/>
                 </div>
                 <div class="large-8 medium-12 columns end">
-                    {!! Form::open(array('id'=>'newInstructionForm', 'data-abide', 'url'=>'instruction/new', 'method'=>'POST', 'files'=>true)) !!}
+                    {!! Form::open(array('id'=>'newInstructionForm', 'data-abide'=>'ajax', 'url'=>'instruction/new', 'method'=>'POST', 'files'=>true)) !!}
                     <h2>Add instruction</h2>
                     <p>Add an instruction to this topic. The current instruction will be disabled and replaced by the new one.</p>
                     <fieldset>
@@ -630,6 +630,15 @@
             <a class="close-reveal-modal" aria-label="Close">&#215;</a>
         </div>
 
+        <div id="progress" class="reveal-modal small" data-reveal aria-hidden="true" role="dialog">
+           <div class="row">
+               <div class="columns small-12 text-center">
+                    <div class="loader">&nbsp;</div>
+                    <p class="message">Loading...</p>
+               </div>
+           </div>
+        </div>
+
         {!! HTML::script('js/vendor/jquery.js') !!}
         {!! HTML::script('js/foundation.min.js') !!}
         {!! HTML::script('js/flexie.min.js') !!}
@@ -640,6 +649,8 @@
         {!! HTML::script('js/help.js') !!}
         {!! HTML::script('js/app.js') !!}
         {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
+        {!! HTML::script('js/jquery.form.min.js') !!}
+        {!! HTML::script('js/pdf.js') !!}
         <script>
             var host = "{{ URL::to('/') }}";
             var newTopic;

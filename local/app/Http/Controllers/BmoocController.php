@@ -180,7 +180,7 @@ class BmoocController extends Controller {
                                 Input::file('answer_upload')->move($destinationPath, $filename);
                                 $comment->url = $filename;
                                 $at = ArtefactType::where('description', 'local_image')->first();
-                            } else throw new Exception('Wrong file uploaded for new topic');
+                            } else throw new Exception('Image should be a JPEG, PNG or GIF.');
                         } elseif ($request->input('answer_url') && $request->input('answer_url')!=null && $request->input('answer_url')!='') { // URL voor de afbeelding
                             if (getimagesize($request->input('answer_url'))) { // De afbeelding is een echte afbeelding als dit niet false teruggeeft
                                 $comment->url = $request->input('answer_url');
@@ -196,7 +196,7 @@ class BmoocController extends Controller {
                                 Input::file('answer_upload')->move($destinationPath, $filename);
                                 $comment->url = $filename;
                                 $at = ArtefactType::where('description', 'local_pdf')->first();
-                            } else throw new Exception('Wrong file uploaded for new topic');
+                            } else throw new Exception('File should be a PDF.');
                         } elseif ($request->input('answer_url') && $request->input('answer_url')!=null && $request->input('answer_url')!='') { // URL voor de afbeelding
                             if (getimagesize($request->input('answer_url'))) { // De afbeelding is een echte afbeelding als dit niet false teruggeeft
                                 $comment->url = $request->input('answer_url');
@@ -205,8 +205,23 @@ class BmoocController extends Controller {
                         }
                         break;
                 }
+
+                // Thumbnails opslaan
+                // small
+                if($request->input('thumbnail_small') && $request->input('thumbnail_small') != null && $request->input('thumbnail_small') != ''){
+                    $destinationPath = 'uploads/thumbnails/small/' . $comment->url;
+                    $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_small')));
+                    file_put_contents($destinationPath, $data);
+                }
+                // large
+                if($request->input('thumbnail_large') && $request->input('thumbnail_large') != null && $request->input('thumbnail_large') != ''){
+                    $destinationPath = 'uploads/thumbnails/large/' . $comment->url;
+                    $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_large')));
+                    file_put_contents($destinationPath, $data);
+                }
+
                 if ($at) $at->artefacts()->save($comment);
-                else throw new Exception('Error creating the new contribution for the topic (verkeerd type)');
+                else throw new Exception('Selected file is not a valid image or PDF.');
                 // Einde inhoud verwerken en type bepalen
 
                 if ($request->input('answer_parent')) {
@@ -227,7 +242,7 @@ class BmoocController extends Controller {
                         $filename = base64_encode(Input::file('answer_attachment')->getClientOriginalName() . time()).'.'.$extension;
                         Input::file('answer_attachment')->move($destinationPath, $filename);
                         $comment->attachment = $filename;
-                    } else throw new Exception('Wrong file uploaded for new topic attachment');
+                    } else throw new Exception('Attachment should be a JPG, PNG, GIF or PDF');
                 }
 
                 $comment->save();
@@ -257,13 +272,27 @@ class BmoocController extends Controller {
                 // Tel hoeveel kinderen er zijn voor de vader
                 if ($comment->child_of) {
                     $aantalKinderen = Artefact::where('parent_id', $comment->child_of->id)->count();
+                    $url = 'topic/' . $comment->child_of->id . '/' . ($aantalKinderen - 1);
+                    if ( $request->isXmlHttpRequest() ) {
+                        return Response::json( [
+                            'status' => '200',
+                            'url' => URL::to($url)
+                        ], 200);
+                    } else
                     return $this->showTopic($comment->child_of->id, $aantalKinderen - 1);
                 } else
-                    return $this->showTopic($comment->id, 0);
+                    if ( $request->isXmlHttpRequest() ) {
+                        return Response::json( [
+                            'status' => '200',
+                            'url' => URL::to('topic/' . $comment->child_of->id)
+                        ], 200);
+                    } else
+                        return $this->showTopic($comment->id, 0);
                 
             } catch (Exception $e) {
                 DB::rollback();
-                return view('errors.topic', ['error' => $e]);
+                //return view('errors.topic', ['error' => $e]);
+                throw $e;
             }
 
         }
@@ -344,6 +373,21 @@ class BmoocController extends Controller {
                         }
                         break;
                 }
+
+                // Thumbnails opslaan
+                // small
+                if($request->input('thumbnail_small') && $request->input('thumbnail_small') != null && $request->input('thumbnail_small') != ''){
+                    $destinationPath = 'uploads/thumbnails/small/' . $instruction->url;
+                    $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_small')));
+                    file_put_contents($destinationPath, $data);
+                }
+                // large
+                if($request->input('thumbnail_large') && $request->input('thumbnail_large') != null && $request->input('thumbnail_large') != ''){
+                    $destinationPath = 'uploads/thumbnails/large/' . $instruction->url;
+                    $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_large')));
+                    file_put_contents($destinationPath, $data);
+                }
+
                 if ($at)
                     $at->instructions()->save($instruction);
                 else
@@ -401,10 +445,21 @@ class BmoocController extends Controller {
                 // endif set the available artefact types for the thread
                 
                 DB::commit();
-                return Redirect::back();
+                // add handler for Ajax requests
+                if ( $request->isXmlHttpRequest() ) {
+                    return Response::json( [
+                        'status' => '200',
+                        'refresh' => 'refresh',
+                        'url' => URL::to('/')
+                    ], 200);
+                } else {
+                    return Redirect::back();
+                }
+
             } catch (Exception $e) {
                 DB::rollback();
-                return view('errors.instruction', ['error' => $e]);
+                //return view('errors.topic', ['error' => $e]);
+                throw $e;
             }
 
         } // End if ($user)
@@ -487,8 +542,24 @@ class BmoocController extends Controller {
                     }
                     break;
             }
+
+            // Thumbnails opslaan
+            // small
+            if($request->input('thumbnail_small') && $request->input('thumbnail_small') != null && $request->input('thumbnail_small') != ''){
+                $destinationPath = 'uploads/thumbnails/small/' . $topic->url;
+                $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_small')));
+                file_put_contents($destinationPath, $data);
+            }
+            // large
+            if($request->input('thumbnail_large') && $request->input('thumbnail_large') != null && $request->input('thumbnail_large') != ''){
+                $destinationPath = 'uploads/thumbnails/large/' . $topic->url;
+                $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_large')));
+                file_put_contents($destinationPath, $data);
+            }
+
+
             if ($at) $at->artefacts()->save($topic);
-            else throw new Exception('File is not a valid image or PDF.');
+            else throw new Exception('Selected file is not a valid image or PDF.');
             // Einde inhoud verwerken en type bepalen
             
             // Bijlage verwerken
@@ -542,7 +613,7 @@ class BmoocController extends Controller {
 
     public function getImage($id){
         $a = Artefact::find($id);
-        $path = base_path().'/../uploads/thumbnails'.$a->url.'_1000.jpg';
+        $path = base_path().'/../uploads/thumbnails/large/'.$a->url;
         if (file_exists($path)) {
             $filetype = File::type( $path );
             $response = Response::make( File::get( $path ) , 200 );
@@ -555,7 +626,7 @@ class BmoocController extends Controller {
     public function getImageThumbnail($id){
         // get url from id
         $a = Artefact::find($id);
-        $path = base_path().'/../uploads/thumbnails/'.$a->url.'_100.jpg';
+        $path = base_path().'/../uploads/thumbnails/small/'.$a->url;
         // check if the artefact has a thumbnail based on id
         if (file_exists($path)) {
             $filetype = File::type( $path );
