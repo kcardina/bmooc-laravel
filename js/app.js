@@ -330,6 +330,7 @@ var Thumbnail = (function(){
         this.el = el;
         this.size = size;
         this.hasData = false;
+        this.file = null;
     }
 
     /**
@@ -339,7 +340,8 @@ var Thumbnail = (function(){
     Thumbnail.prototype.generate = function(){
         var support = browserSupport.call(this);
         if(support.isSupported){
-            readFile.call(this);
+            this.file = this.el.files[0];
+            this.readFile();
         } else {
             this.dfd.reject(support.msg);
         }
@@ -357,33 +359,36 @@ var Thumbnail = (function(){
     /**
      * Read the input file and call the appropriate render method
      */
-    function readFile(){
-        var file = this.el.files[0];
+    Thumbnail.prototype.readFile = function(){
         var fr = new FileReader();
         var pointer = this;
         fr.onload = function(e){
-            if(file.type.match('image.*')){
+            if(pointer.file.type.match('image.*')){
                 var img = new Image();
                 img.onload = function(){
-                    render.call(pointer, img);
+                    pointer.render(img);
                 }
                 img.src = event.target.result;
-            } else if(file.type.match('application/pdf') || file.type.match('application/x-pdf')){
+            } else if(pointer.file.type.match('application/pdf') || pointer.file.type.match('application/x-pdf')){
                 var pdfAsArray = convertDataURIToBinary(event.target.result);
-                renderPDF.call(pointer, pdfAsArray);
+                pointer.renderPDF(pdfAsArray);
             } else {
                 pointer.dfd.reject("The uploaded file was not an image, nor a pdf");
             }
         }
 
-        fr.readAsDataURL(file);
+        fr.onerror = function(e){
+            pointer.dfd.reject("Failed to read the file");
+        }
+
+        fr.readAsDataURL(pointer.file);
     }
 
     /**
      * Render a thumbnail given an image.
      * @param {Image} img - The original image
      */
-    function render(img){
+    Thumbnail.prototype.render = function(img){
         var ratio = img.height/img.width;
         if(ratio > 1){ // portrait
             if(img.height < this.size){ this.dfd.resolve(); return;}
@@ -404,7 +409,7 @@ var Thumbnail = (function(){
      * Render a thumbnail given a pdf.
      * @param {Uint8Array} url - The original pdf, encoded as a Uint8Array
      */
-    function renderPDF(url){
+    Thumbnail.prototype.renderPDF = function(url){
         var pointer = this;
         PDFJS.workerSrc = '/js/pdf.worker.js';
 

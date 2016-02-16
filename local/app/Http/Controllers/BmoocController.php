@@ -615,7 +615,7 @@ class BmoocController extends Controller {
         $a = Artefact::find($id);
         $path = base_path().'/../uploads/thumbnails/large/'.$a->url;
         if (file_exists($path)) {
-            $filetype = File::type( $path );
+            $filetype = mime_content_type( $path );
             $response = Response::make( File::get( $path ) , 200 );
             $response->header('Content-Type', $filetype);
             return $response;
@@ -629,7 +629,7 @@ class BmoocController extends Controller {
         $path = base_path().'/../uploads/thumbnails/small/'.$a->url;
         // check if the artefact has a thumbnail based on id
         if (file_exists($path)) {
-            $filetype = File::type( $path );
+            $filetype = mime_content_type( $path );
             $response = Response::make( File::get( $path ) , 200 );
             $response->header('Content-Type', $filetype);
             return $response;
@@ -642,7 +642,7 @@ class BmoocController extends Controller {
         $a = Artefact::find($id);
         $path = base_path().'/../uploads/'.$a->url;
         if (file_exists($path)) {
-            $filetype = File::type( $path );
+            $filetype = mime_content_type( $path );
             $response = Response::make( File::get( $path ) , 200 );
             $response->header('Content-Type', $filetype);
             return $response;

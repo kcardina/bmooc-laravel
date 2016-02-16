@@ -11,6 +11,8 @@
     </form>
 
     {!! HTML::script('js/vendor/jquery.js') !!}
+    {!! HTML::script('js/foundation.min.js') !!}
+    {!! HTML::script('js/app.js') !!}
     {!! HTML::script('js/pdf.js') !!}
     <script>
         $(document).ready(function(){
@@ -31,7 +33,7 @@
                 });
             });
         });
-
+    /*
         var Thumbnail = (function(){
 
             var BASE64_MARKER = ';base64,';
@@ -184,7 +186,7 @@
             return Thumbnail;
 
         })();
-
+*/
     </script>
 
 </body>
