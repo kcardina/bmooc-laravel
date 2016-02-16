@@ -98,7 +98,7 @@
     {!! HTML::script('js/vendor/jquery.js') !!}
     {!! HTML::script('js/foundation.min.js') !!}
     {!! HTML::script('//d3js.org/d3.v3.min.js') !!}
-    {!! HTML::script('js/d3.textwrap.js') !!}
+    {!! HTML::script('js/d3plus.min.js') !!}
     <script>
 		var host = "{{ URL::to('/') }}";
 		$(document).foundation();
