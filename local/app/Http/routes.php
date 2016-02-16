@@ -38,6 +38,6 @@ Route::get('logout', 'Auth\AuthController@getLogout');
 
 Route::post('feedback', 'BmoocController@feedback');
 
-Route::get('canvas', function(){
-    return view('canvas');
-});
+Route::get('admin', 'AdminController@index');
+Route::get('admin/thumbnails', 'AdminController@getThumbnails');
+Route::post('admin/thumbnails', 'AdminController@postThumbnails');
