@@ -287,9 +287,10 @@ a.emphasis:hover, .text a:hover{
     }
 } /* min-width 1025px, large screens */
 
-.item .antwoorden {
+.item .tree {
     /*white-space:nowrap;
     overflow: hidden;*/
+    height: 100px;
 }
 
 .item .antwoorden a{
@@ -320,6 +321,22 @@ a.emphasis:hover, .text a:hover{
 .item .extra, .item.hide_tag, .item.hide_author{
     display: none;
 }
+
+/* DATAVIS */
+.node rect{
+    fill: #282828;
+    stroke: none;
+}
+
+.node text {
+     fill: #d9d9d9;
+}
+
+.link {
+   fill: none;
+   stroke: #333;
+   stroke-width: 2px;
+ }
 
 /* TOPIC PAGINA */
 .fullflex .columns {

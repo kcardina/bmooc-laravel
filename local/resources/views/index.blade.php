@@ -129,56 +129,57 @@
 					foreach ($topic->tags as $tag) $t[] = '"'.$tag->tag.'"';
 				?>
     	
-    		<div class="row item" data-id="{{ $topic->id }}">
-            <div class="large-5 columns">
-                <h2>{{ $topic->title }}</h2>
-                <div class="extra laatste_wijziging">
-                   initiated by
-                    <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span><br />
+        <div class="item" data-id="{{ $topic->id }}">
+           <div class="row">
+                <div class="large-5 columns">
+                    <h2>{{ $topic->title }}</h2>
+                    <div class="extra laatste_wijziging">
+                       initiated by
+                        <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span><br />
+                    </div>
                 </div>
-            </div>
-            <div class="info">
-                <div class="large-3 columns laatste_wijziging">
-                   last addition
-                   @if (isset($topic->last_modified))
-                        <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }}</span>
-                        by
-                    <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ isset($topic->last_modifier) ? $topic->last_modifier->id : $topic->the_author->id}}">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</a></span>
-                    @else
-                        <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->created_at)) }}</span>
-                        by
-                    <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span>
-                    @endif
-                </div>
-                <div class="large-1 columns antwoorden">
-                		@foreach ($aantalAntwoorden as $aantal)
-                			@if ($aantal->thread == $topic->thread)
-                			 <strong>{{ $aantal->aantal_antwoorden }}</strong>
-                                 @if ($aantal->aantal_antwoorden == 1)
-                                     addition
-                                 @else
-                                     additions
+                <div class="info">
+                    <div class="large-3 columns laatste_wijziging">
+                       last addition
+                       @if (isset($topic->last_modified))
+                            <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }}</span>
+                            by
+                        <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ isset($topic->last_modifier) ? $topic->last_modifier->id : $topic->the_author->id}}">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</a></span>
+                        @else
+                            <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->created_at)) }}</span>
+                            by
+                        <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span>
+                        @endif
+                    </div>
+                    <div class="large-1 columns antwoorden">
+                            @foreach ($aantalAntwoorden as $aantal)
+                                @if ($aantal->thread == $topic->thread)
+                                 <strong>{{ $aantal->aantal_antwoorden }}</strong>
+                                     @if ($aantal->aantal_antwoorden == 1)
+                                         addition
+                                     @else
+                                         additions
+                                     @endif
                                  @endif
-                			 @endif
-                		@endforeach
-                </div>
-                <div class="large-2 columns">
-                    tags:
-                    <ul class="inline slash">
-                    @foreach ($topic->tags as $tag)
-                        <li><a href="{{ URL::to('/') }}/search/all/{{$tag->id}}">{{$tag->tag}}</a></li>
-                    @endforeach
-                    </ul>
-                </div>
-                <div class="large-1 columns instruction text-right">
-                    @if (isset($topic->active_instruction))
-                        <button class="small information" data-instruction-id="{{ $topic->active_instruction->id }}" data-instruction-added="{{ $topic->active_instruction->active_from }}" data-instruction-author="{{ $topic->active_instruction->name }}" data-instruction-title="{{ $topic->active_instruction->title }}" data-reveal-id="instruction" data-help="topic" data-help-id="details">Instruction</button>
-                    @endif
+                            @endforeach
+                    </div>
+                    <div class="large-2 columns">
+                        tags:
+                        <ul class="inline slash">
+                        @foreach ($topic->tags as $tag)
+                            <li><a href="{{ URL::to('/') }}/search/all/{{$tag->id}}">{{$tag->tag}}</a></li>
+                        @endforeach
+                        </ul>
+                    </div>
+                    <div class="large-1 columns instruction text-right">
+                        @if (isset($topic->active_instruction))
+                            <button class="small information" data-instruction-id="{{ $topic->active_instruction->id }}" data-instruction-added="{{ $topic->active_instruction->active_from }}" data-instruction-author="{{ $topic->active_instruction->name }}" data-instruction-title="{{ $topic->active_instruction->title }}" data-reveal-id="instruction" data-help="topic" data-help-id="details">Instruction</button>
+                        @endif
+                    </div>
                 </div>
             </div>
-            <div class="extra">
-                <div class="large-10 columns antwoorden">
-                    <ul class="inline"></ul>
+            <div class="row extra">
+                <div class="small-12 columns tree">
                 </div>
             </div>
         </div>
@@ -456,6 +457,8 @@
     {!! HTML::script('js/imagesloaded.min.js') !!}
     {!! HTML::script('js/jquery.form.min.js') !!}
     {!! HTML::script('js/pdf.js') !!}
+    {!! HTML::script('//d3js.org/d3.v3.min.js') !!}
+    {!! HTML::script('js/d3plus.min.js') !!}
     <script>
         var host = "{{ URL::to('/') }}";
         $(document).foundation();
@@ -520,14 +523,14 @@
                     $(".item .extra").hide();
                     // show new one
                     $(this).toggleClass("active");
-                    /*
+                    // maak grootte van scherm
+                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+                    $('.tree', this).height(h - $('header').height());
                     // scroll naar boven
                     // maak info grootte van scherm
-                    $(".extra", this).height('1000px');
                     $('html,body').animate({
-                        scrollTop: $(".extra", this).offset().top},
+                        scrollTop: $(this).offset().top},
                     'slow');
-                    */
                     $(".extra", this).slideToggle();
                 }
             });
@@ -539,17 +542,10 @@
                 $(this).unbind(e);
                 var data = $(this).data();
                 var $this = $(this);
-                $(".antwoorden ul", this).append('<li id="li_loader"><img class="loader" src="{{ asset("img/loader.gif") }}" alt="antwoorden worden geladen..."/></li>');
                 $.getJSON(host + '/json/topic/' + data['id'] + '/answers', function(data) {
-                    $('#li_loader').remove();
-                    for(var i = 0; i < data.length; i++){
-                        var answer = data[i];
-                        // voor UX: voeg een loading-spinner toe
-                        var url = answer.url;
-                        var alt = "afbeelding " + i;
-                        // plaats de afbeelding
-                        $(".antwoorden ul", $this).append('<a href="' + "{{ URL::to('/topic/') }}/" + answer.id + '"><li>'+ displayAnswer(answer.type.description, answer) +'</li></a>');
-                    }
+                   var tree = new Tree($('.tree', $this).get(0), data);
+                    tree.draw();
+                    tree.resize();
                 });
             }
 
@@ -612,6 +608,124 @@
             theme: 'snow'
         });
         @endif
+
+        var Tree = (function(){
+
+            var IMAGE_SIZE = 100;
+            var MARGIN = {
+                top: IMAGE_SIZE/2,
+                right: IMAGE_SIZE/2,
+                bottom: IMAGE_SIZE/2,
+                left: IMAGE_SIZE/2
+            };
+            var TEXTBOUNDS = {
+                width: IMAGE_SIZE,
+                height: IMAGE_SIZE,
+                resize: true
+            }
+
+            function Tree(el, data){
+                this.data = data;
+                this.el = el;
+                this.width = el.offsetWidth;
+                this.height = el.offsetHeight;
+                this.tree = d3.layout.tree()
+                    .nodeSize([IMAGE_SIZE, IMAGE_SIZE]);
+                this.diagonal = d3.svg.diagonal()
+                    .projection(function(d) { return [d.y, d.x]; });
+                this.svg = d3.select(this.el).append("svg")
+                    .attr("width", this.width)
+                    .attr("height", this.height)
+                    .append("g");
+                this.g = this.svg.append("g");
+            }
+
+            Tree.prototype.resize = function(){
+                var t = [0,0],
+                    s = 1,
+                    w = this.g.node().getBBox().width,
+                    h = this.g.node().getBBox().height;
+
+                if(w > this.width) s = this.width/w;
+                if(h > this.height && this.height/h < s) s = this.height/h;
+                t = [((this.width-w*s)/2)/s, -this.g.node().getBBox().y + (this.height-h*s)/2];
+
+                d3.select(this.g.node().parentNode).attr("transform", "scale(" + s + ")");
+                this.g.attr("transform", "translate(" + t + ")");
+            }
+
+            Tree.prototype.draw = function(){
+
+                // Compute the new tree layout.
+                var nodes = this.tree.nodes(this.data);//.reverse()
+                var links = this.tree.links(nodes);
+
+                // horizontal spacing of the nodes (depth of the node * x)
+                nodes.forEach(function(d) { d.y = d.depth * (IMAGE_SIZE + IMAGE_SIZE/10) });
+
+                // Declare the nodes.
+                var node = this.g.selectAll("g.node")
+                    .data(nodes);
+
+
+                // Enter the nodes.
+                var nodeEnter = node.enter().append("g")
+                    .attr("class", "node")
+                    .attr("transform", function(d) {
+                        return "translate(" + d.y + "," + d.x + ")";
+                    });
+
+                //img
+                nodeEnter.filter(function(d) { return d.url; }).append("image")
+                    .attr("xlink:href", function(d) {
+                        if (d.url.indexOf('//') > -1 ) {
+                            if(d.url.indexOf('youtu') > -1) {
+                                var thumbnail = d.url.replace('www.youtube.com/embed', 'img.youtube.com/vi');
+                                return thumbnail +'/0.jpg';
+                            } else {
+                                return d.url
+                            }
+                        } else {
+                            return "/artefact/" + d.id + "/thumbnail/"
+                        }
+                    })
+                    .attr('y', -IMAGE_SIZE/2)
+                    .attr('width', IMAGE_SIZE)
+                    .attr('height', IMAGE_SIZE);
+
+                //text
+                nodeEnter.filter(function(d) { return d.contents })
+                    .append("rect")
+                    .attr('width', IMAGE_SIZE)
+                    .attr('height', IMAGE_SIZE)
+                    .attr('y', -IMAGE_SIZE/2);
+                nodeEnter.filter(function(d) { return d.contents })
+                    .append("text")
+                    .attr('y', -IMAGE_SIZE/2)
+                    .text(function(d) { return d.title; })
+                    .each(function(d){
+                        d3plus.textwrap()
+                            .config(TEXTBOUNDS)
+                            .valign('middle')
+                            .align('center')
+                            .container(d3.select(this))
+                            .draw();
+                    });
+
+                // Declare the links
+                var link = this.g.selectAll("path.link")
+                .data(links, function(d) { return d.target.id; });
+
+                // Enter the links.
+                link.enter().insert("path", "g")
+                    .attr("class", "link")
+                    .attr("d", this.diagonal);
+            }
+
+            return Tree;
+
+        })();
+
     </script>
   </body>
 </html>

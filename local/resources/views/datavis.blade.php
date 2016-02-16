@@ -48,6 +48,12 @@
             padding-bottom: 2rem;
             margin-bottom: 2rem;
         }
+
+        .vis{
+            width: 100%;
+            height: 50vh;
+        }
+
     </style>
 
   </head>
@@ -81,7 +87,7 @@
 
    <div class="datavis">
        <div class="row">
-           <div class="small-12 columns"></div>
+           <div class="small-12 columns vis"></div>
        </div>
    </div>
 
@@ -105,11 +111,130 @@
 		$(document).ready(function(){
 
             $.getJSON(host + '/json/topic/24/answers', function(data) {
-                drawTree(data);
-                resize();
+                var tree = new Tree('.datavis .columns', data);
+                tree.draw();
+                tree.resize();
             });
         });
 
+        var Tree = (function(){
+
+            var IMAGE_SIZE = 100;
+            var MARGIN = {
+                top: IMAGE_SIZE/2,
+                right: IMAGE_SIZE/2,
+                bottom: IMAGE_SIZE/2,
+                left: IMAGE_SIZE/2
+            };
+            var TEXTBOUNDS = {
+                width: IMAGE_SIZE,
+                height: IMAGE_SIZE,
+                resize: true
+            }
+
+            function Tree(el, data){
+                this.data = data;
+                this.el = el;
+                this.width = document.querySelectorAll(el)[0].offsetWidth;
+                this.height = document.querySelectorAll(el)[0].offsetHeight;
+                this.tree = d3.layout.tree()
+                    .nodeSize([IMAGE_SIZE, IMAGE_SIZE]);
+                this.diagonal = d3.svg.diagonal()
+                    .projection(function(d) { return [d.y, d.x]; });
+                this.svg = d3.select(this.el).append("svg")
+                    .attr("width", this.width)
+                    .attr("height", this.height)
+                    .append("g");
+                this.g = this.svg.append("g");
+                console.log(this.height);
+            }
+
+            Tree.prototype.resize = function(){
+                var t = [0,0],
+                    s = 1,
+                    w = this.g.node().getBBox().width,
+                    h = this.g.node().getBBox().height;
+
+                if(w > this.width) s = this.width/w;
+                if(h > this.height && this.height/h < s) s = this.height/h;
+                t = [((this.width-w*s)/2)/s, -this.g.node().getBBox().y + (this.height-h*s)/2];
+
+                d3.select(this.g.node().parentNode).attr("transform", "scale(" + s + ")");
+                this.g.attr("transform", "translate(" + t + ")");
+            }
+
+            Tree.prototype.draw = function(){
+
+                // Compute the new tree layout.
+                var nodes = this.tree.nodes(this.data);//.reverse()
+                var links = this.tree.links(nodes);
+
+                // horizontal spacing of the nodes (depth of the node * x)
+                nodes.forEach(function(d) { d.y = d.depth * (IMAGE_SIZE + IMAGE_SIZE/10) });
+
+                // Declare the nodes.
+                var node = this.g.selectAll("g.node")
+                    .data(nodes);
+
+
+                // Enter the nodes.
+                var nodeEnter = node.enter().append("g")
+                    .attr("class", "node")
+                    .attr("transform", function(d) {
+                        return "translate(" + d.y + "," + d.x + ")";
+                    });
+
+                //img
+                nodeEnter.filter(function(d) { return d.url; }).append("image")
+                    .attr("xlink:href", function(d) {
+                        if (d.url.indexOf('//') > -1 ) {
+                            if(d.url.indexOf('youtu') > -1) {
+                                var thumbnail = d.url.replace('www.youtube.com/embed', 'img.youtube.com/vi');
+                                return thumbnail +'/0.jpg';
+                            } else {
+                                return d.url
+                            }
+                        } else {
+                            return "/uploads/" + d.url
+                        }
+                    })
+                    .attr('y', -IMAGE_SIZE/2)
+                    .attr('width', IMAGE_SIZE)
+                    .attr('height', IMAGE_SIZE);
+
+                //text
+                nodeEnter.filter(function(d) { return d.contents })
+                    .append("rect")
+                    .attr('width', IMAGE_SIZE)
+                    .attr('height', IMAGE_SIZE)
+                    .attr('y', -IMAGE_SIZE/2);
+                nodeEnter.filter(function(d) { return d.contents })
+                    .append("text")
+                    .attr('y', -IMAGE_SIZE/2)
+                    .text(function(d) { return d.title; })
+                    .each(function(d){
+                        d3plus.textwrap()
+                            .config(TEXTBOUNDS)
+                            .valign('middle')
+                            .align('center')
+                            .container(d3.select(this))
+                            .draw();
+                    });
+
+                // Declare the links
+                var link = this.g.selectAll("path.link")
+                .data(links, function(d) { return d.target.id; });
+
+                // Enter the links.
+                link.enter().insert("path", "g")
+                    .attr("class", "link")
+                    .attr("d", this.diagonal);
+            }
+
+            return Tree;
+
+        })();
+/*
         var imageSize = 100;
         var margin = {
             top: imageSize/2,
@@ -118,7 +243,7 @@
             left: imageSize/2
         };
         var width = 1000;
-        var height = 1000;
+        var height = 300;
         var textbounds = {
           width: imageSize,
           height: imageSize,
@@ -160,17 +285,19 @@
         function resize(){
             var t = [0,0],
                 s = 1,
-                w = g.node().getBoundingClientRect().width,
-                h = g.node().getBoundingClientRect().height;
+                w = g.node().getBBox().width,
+                h = g.node().getBBox().height;
             console.log(g.node().parentNode.getBoundingClientRect());
             console.log(g.node().getBoundingClientRect());
+            console.log(g.node().getBBox());
+
 
             if(w > width) s = width/w;
             if(h > height && height/h < s) s = height/h;
-            t = [-w/2, 0]
+            t = [((width-w*s)/2)/s, -g.node().getBBox().y + (height-h*s)/2];
 
-            //d3.select(g.node().parentNode).attr("transform", "scale(" + s + ")");
-            //g.attr("transform", "translate(" + t + ")");
+            d3.select(g.node().parentNode).attr("transform", "scale(" + s + ")");
+            g.attr("transform", "translate(" + t + ")");
         }
 
         function drawTree(source) {
@@ -238,7 +365,7 @@
           link.enter().insert("path", "g")
            .attr("class", "link")
            .attr("d", diagonal);
-        }
+        }*/
     </script>
   </body>
 </html>
