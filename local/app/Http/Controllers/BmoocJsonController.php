@@ -24,7 +24,7 @@ class BmoocJsonController extends Controller
 	
 	public function discussion($id) {
 		$artefact = Artefact::with(['type', 'the_author', 'last_modifier', 'active_instruction'])->find($id);
-		$antwoorden = $artefact->answers;
+		$antwoorden = $artefact->children;
 		$tags = $artefact->tags;
 		$instruction = Instruction::with(['available_types', 'instruction_type', 'the_author'])->where('thread', $artefact->thread)->where('active_from', '<=', date('Y-m-d H:i:s'))->where(function($q) { $q->whereNull('active_until')->orWhere('active_until', '>=', date('Y-m-d H:i:s')); })->get();
 		$taglist = array();

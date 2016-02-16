@@ -14,7 +14,7 @@ class Artefact extends Model {
         return $this->belongsTo('App\User', 'last_contributor');
     }
 
-    public function answers() {
+    public function children() {
         return $this->hasMany('App\Artefact', 'parent_id', 'id');
     }
 

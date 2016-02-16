@@ -226,7 +226,7 @@ class BmoocController extends Controller {
 
                 if ($request->input('answer_parent')) {
                     $vader = Artefact::find($request->input('answer_parent'));
-                    $vader->answers()->save($comment);
+                    $vader->children()->save($comment);
 
                     $comment->thread = $vader->thread;
                 } else {
