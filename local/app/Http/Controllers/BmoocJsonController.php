@@ -45,22 +45,26 @@ class BmoocJsonController extends Controller
 		return response()->json($instruction);
 	}
 	
-	public function answers($id) {
-        $parent = Artefact::with(['answers', 'type'])->find($id);
-        $answers = array();
-        array_push($answers, $parent);
-        $answers = array_merge($answers, BmoocJsonController::buildList($parent));
-        return response()->json($answers);
+    public function answers($id) {
+		$parent = Artefact::all()->find($id);
+        $tree = $parent;
+        $parent->children = BmoocJsonController::buildTree($parent->children, $parent->id);
+        return response()->json($tree);
 	}
 
-    private function buildList($parent){
-        $list = array();
-        foreach($parent->answers as $child){
-            $child = Artefact::with(['answers', 'type'])->find($child->id);
-            array_push($list, $child);
-            $list = array_merge($list, BmoocJsonController::buildList($child));
+    function buildTree($elements, $parentId = 0) {
+        $branch = array();
+        foreach ($elements as $element) {
+            if ($element['parent_id'] == $parentId) {
+                $children = BmoocJsonController::buildTree($element->children, $element['id']);
+                if ($children) {
+                    //$element['children'] = $children;
+                }
+                $branch[] = $element;
+            }
         }
-        return $list;
+
+        return $branch;
     }
 	
 

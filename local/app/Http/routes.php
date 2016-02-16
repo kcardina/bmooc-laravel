@@ -41,3 +41,5 @@ Route::post('feedback', 'BmoocController@feedback');
 Route::get('admin', 'AdminController@index');
 Route::get('admin/thumbnails', 'AdminController@getThumbnails');
 Route::post('admin/thumbnails', 'AdminController@postThumbnails');
+
+Route::get('datavis', 'BmoocController@datavis');

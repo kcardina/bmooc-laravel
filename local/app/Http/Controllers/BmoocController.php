@@ -611,6 +611,19 @@ class BmoocController extends Controller {
         } // End if ($user)
     }
 
+    public function datavis(Request $request) {
+		//$user = Auth::user();
+		$user = $request->user();
+		//dd($request);
+		$topics = Artefact::with(['the_author', 'tags', 'last_modifier'])->whereNull('parent_id')->orderBy('created_at', 'desc')->orderBy('last_modified', 'desc')->get();
+		$auteurs = DB::table('users')->select('id', 'name')->distinct()->get();
+		$tags = Tags::orderBy('tag')->get();
+
+		$aantalAntwoorden = DB::table('artefacts')->select(DB::raw('count(*) as aantal_antwoorden, thread'))
+                     ->groupBy('thread')->get();
+		return view('datavis', ['topic'=>$topics, 'user'=>$user, 'auteurs' => $auteurs, 'tags' => $tags, 'aantalAntwoorden'=>$aantalAntwoorden]);
+	}
+
     public function getImage($id){
         $a = Artefact::find($id);
         $path = base_path().'/../uploads/thumbnails/large/'.$a->url;
