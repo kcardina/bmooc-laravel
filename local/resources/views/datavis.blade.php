@@ -105,25 +105,20 @@
 		$(document).ready(function(){
 
             $.getJSON(host + '/json/topic/24/answers', function(data) {
-                var div = $(".datavis .columns");
-
-                // start building from the start
-                update1(data);
-                update2(data);
-                update3(data);
-                update4(data);
+                drawTree(data);
+                resize();
             });
         });
 
-        var imageSize = 50;
+        var imageSize = 100;
         var margin = {
             top: imageSize/2,
             right: imageSize/2,
             bottom: imageSize/2,
             left: imageSize/2
         };
-        var width = 960 - margin.right - margin.left;
-        var height = 500 - margin.top - margin.bottom;
+        var width = 1000;
+        var height = 1000;
         var textbounds = {
           width: imageSize,
           height: imageSize,
@@ -133,179 +128,52 @@
 
         //tree
         var tree = d3.layout.tree()
-            //.size([height, width])
-            //.separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) });
             .nodeSize([imageSize, imageSize]);
-        //or cluster
-        /*var tree = d3.layout.cluster()
-            .size([height, width]);*/
 
         // to draw a smooth curved line between points
         var diagonal = d3.svg.diagonal()
             .projection(function(d) { return [d.y, d.x]; });
 
-        var zoomListener = d3.behavior.zoom()
-            .scaleExtent([0,3])
-            .on("zoom", zoomHandler);
+        var zoom = d3.behavior.zoom()
+            .scaleExtent([0.1,1])
+            .on("zoom", zoomed);
 
-        var n = 4;
-        var svg = [];
-
-        // add svg and create a group object
-        for(i = 0; i < n; i++){
-            svg.push(
-                d3.select(".datavis .columns").append("svg")
-                    .attr("width", width + margin.right + margin.left)
-                    .attr("height", height + margin.top + margin.bottom)
+        var svg = d3.select(".datavis .columns").append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
                     .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + height/2 +  ")")
-                    .call(zoomListener)
-            );
+                    //.attr("transform", "translate(" + width/2 + "," + height/2 +  ")")
+                    //.call(zoom)
+
+        var g = svg.append("g");
+
+        function zoomed() {
+            var t = d3.event.translate,
+                s = d3.event.scale,
+                w = g.node().getBoundingClientRect().width,
+                h = g.node().getBoundingClientRect().height;
+
+            zoom.translate(t);
+            g.attr("transform", "translate(" + t + ")scale(" + s + ")");
         }
 
-        function redraw(i) {
-          //console.log("here", d3.event.translate, d3.event.scale);
-          svg[i].attr("transform",
-              "translate(" + d3.event.translate + ")"
-              + " scale(" + d3.event.scale + ")");
+        function resize(){
+            var t = [0,0],
+                s = 1,
+                w = g.node().getBoundingClientRect().width,
+                h = g.node().getBoundingClientRect().height;
+            console.log(g.node().parentNode.getBoundingClientRect());
+            console.log(g.node().getBoundingClientRect());
+
+            if(w > width) s = width/w;
+            if(h > height && height/h < s) s = height/h;
+            t = [-w/2, 0]
+
+            //d3.select(g.node().parentNode).attr("transform", "scale(" + s + ")");
+            //g.attr("transform", "translate(" + t + ")");
         }
 
-        function zoomHandler() {
-            svg[3].attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-        }
-
-        function update1(source) {
-
-          // Compute the new tree layout.
-          var nodes = tree.nodes(source);//.reverse()
-          var links = tree.links(nodes);
-
-          // horizontal spacing of the nodes (depth of the node * x)
-          nodes.forEach(function(d) { d.y = d.depth * imageSize; });
-
-          // Declare the nodes.
-          var node = svg[0].selectAll("g.node")
-           .data(nodes);
-
-          // Enter the nodes.
-          var nodeEnter = node.enter().append("g")
-           .attr("class", "node")
-           .attr("transform", function(d) {
-            return "translate(" + d.y + "," + d.x + ")"; });
-
-          // circle
-          nodeEnter.append("circle")
-           .attr("r", 10)
-           .style("fill", "#fff");
-
-            //img
-            /*
-            nodeEnter.append("image")
-                .attr("xlink:href","img.png")
-                .attr('width', 100)
-                .attr('height', 100);*/
-
-          // text
-          nodeEnter.append("text")
-           .text(function(d) { return d.id; })
-           .style("fill-opacity", 1);
-
-          // Declare the links
-          var link = svg[0].selectAll("path.link")
-           .data(links, function(d) { return d.target.id; });
-
-          // Enter the links.
-          link.enter().insert("path", "g")
-           .attr("class", "link")
-           .attr("d", diagonal);
-
-        }
-
-        function update2(source) {
-
-          // Compute the new tree layout.
-          var nodes = tree.nodes(source);//.reverse()
-          var links = tree.links(nodes);
-
-          // horizontal spacing of the nodes (depth of the node * x)
-          nodes.forEach(function(d) { d.y = d.depth * 100; });
-
-          // Declare the nodes.
-          var node = svg[1].selectAll("g.node")
-           .data(nodes);
-
-          // Enter the nodes.
-          var nodeEnter = node.enter().append("g")
-           .attr("class", "node")
-           .attr("transform", function(d) {
-            return "translate(" + d.y + "," + d.x + ")"; });
-
-          // Declare the links
-          var link = svg[1].selectAll("path.link")
-           .data(links, function(d) { return d.target.id; });
-
-          // Enter the links.
-          link.enter().insert("path", "g")
-           .attr("class", "link")
-           .attr("d", diagonal);
-
-        }
-
-        function update3(source) {
-
-          // Compute the new tree layout.
-          var nodes = tree.nodes(source);//.reverse()
-          var links = tree.links(nodes);
-
-          // horizontal spacing of the nodes (depth of the node * x)
-          nodes.forEach(function(d) { d.y = d.depth * 200; });
-
-          // Declare the nodes.
-          var node = svg[2].selectAll("g.node")
-           .data(nodes);
-
-          // Enter the nodes.
-          var nodeEnter = node.enter().append("g")
-           .attr("class", "node")
-           .attr("transform", function(d) {
-            return "translate(" + d.y + "," + d.x + ")"; });
-
-            //img
-            nodeEnter.append(function(d) { return getThumb(d) } );
-                /*.attr("xlink:href", function(d) { return getThumb(d) })
-                .attr('x', -50)
-                .attr('y', -50)
-                .attr('width', 100)
-                .attr('height', 100);*/
-
-          // Declare the links
-          var link = svg[2].selectAll("path.link")
-           .data(links, function(d) { return d.target.id; });
-
-          // Enter the links.
-          link.enter().insert("path", "g")
-           .attr("class", "link")
-           .attr("d", diagonal);
-
-        }
-
-        function getThumb(d){
-            var e;
-            if(d.url != null){
-                e = document.createElement("image");
-                e.setAttribute("href", "/uploads/" + d.url);
-                e.setAttribute('x', -25);
-                e.setAttribute('y', -25);
-                e.setAttribute('width', 50)
-                e.setAttribute('height', 50);
-            } else if (d.contents != null){
-                e = document.createElement("text");
-                e.innerHTML = d.contents;
-            }
-            return e;
-        }
-
-        function update4(source) {
+        function drawTree(source) {
 
           // Compute the new tree layout.
           var nodes = tree.nodes(source);//.reverse()
@@ -315,7 +183,7 @@
           nodes.forEach(function(d) { d.y = d.depth * (imageSize + imageSize/10) });
 
           // Declare the nodes.
-          var node = svg[3].selectAll("g.node")
+          var node = g.selectAll("g.node")
            .data(nodes);
 
 
@@ -324,14 +192,6 @@
            .attr("class", "node")
            .attr("transform", function(d) {
             return "translate(" + d.y + "," + d.x + ")"; });
-
-            /*
-            // border
-            nodeEnter.append("rect")
-                .attr('width', imageSize)
-                .attr('height', imageSize)
-                .attr('y', -imageSize/2)
-            */
 
             //img
             nodeEnter.filter(function(d) { return d.url; }).append("image")
@@ -371,7 +231,7 @@
                 });
 
             // Declare the links
-          var link = svg[3].selectAll("path.link")
+          var link = g.selectAll("path.link")
            .data(links, function(d) { return d.target.id; });
 
           // Enter the links.
