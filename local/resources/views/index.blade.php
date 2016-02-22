@@ -173,7 +173,7 @@
                     </div>
                     <div class="large-1 columns instruction text-right">
                         @if (isset($topic->active_instruction))
-                            <button class="small information" data-instruction-id="{{ $topic->active_instruction->id }}" data-instruction-added="{{ $topic->active_instruction->active_from }}" data-instruction-author="{{ $topic->active_instruction->name }}" data-instruction-title="{{ $topic->active_instruction->title }}" data-reveal-id="instruction" data-help="topic" data-help-id="details">Instruction</button>
+                            <button class="small information" data-instruction-id="{{ $topic->active_instruction->id }}" data-instruction-added="{{ $topic->active_instruction->active_from }}" data-instruction-author="{{ $topic->active_instruction->name }}" data-instruction-title="{{ $topic->active_instruction->title }}" data-reveal-id="instruction" data-help="topic" data-help-id="details"></button>
                         @endif
                     </div>
                 </div>
@@ -505,7 +505,7 @@
                 $("#instruction .data-added").html(parseDate($(this).data('instruction-added')));
                 $("#instruction .data-author").html($(this).data('instruction-author'));
 
-                var data = $(this).parents(".row.item").data();
+                var data = $(this).parents(".item").data();
                 $.getJSON(host + '/json/topic/' + data['id'], function(data){
                     render($('#instruction'), data.instruction[0].instruction_type.description, data.instruction[0]);
                 });
@@ -538,7 +538,9 @@
             //bind an event listener to every item.
             // on first click: make an ajax call to load all the images & unbind the event listener
             $(".item").bind('click', loadAnswers);
+
             function loadAnswers(e){
+                console.log(e);
                 $(this).unbind(e);
                 var data = $(this).data();
                 var $this = $(this);
@@ -608,123 +610,6 @@
             theme: 'snow'
         });
         @endif
-
-        var Tree = (function(){
-
-            var IMAGE_SIZE = 100;
-            var MARGIN = {
-                top: IMAGE_SIZE/2,
-                right: IMAGE_SIZE/2,
-                bottom: IMAGE_SIZE/2,
-                left: IMAGE_SIZE/2
-            };
-            var TEXTBOUNDS = {
-                width: IMAGE_SIZE,
-                height: IMAGE_SIZE,
-                resize: true
-            }
-
-            function Tree(el, data){
-                this.data = data;
-                this.el = el;
-                this.width = el.offsetWidth;
-                this.height = el.offsetHeight;
-                this.tree = d3.layout.tree()
-                    .nodeSize([IMAGE_SIZE, IMAGE_SIZE]);
-                this.diagonal = d3.svg.diagonal()
-                    .projection(function(d) { return [d.y, d.x]; });
-                this.svg = d3.select(this.el).append("svg")
-                    .attr("width", this.width)
-                    .attr("height", this.height)
-                    .append("g");
-                this.g = this.svg.append("g");
-            }
-
-            Tree.prototype.resize = function(){
-                var t = [0,0],
-                    s = 1,
-                    w = this.g.node().getBBox().width,
-                    h = this.g.node().getBBox().height;
-
-                if(w > this.width) s = this.width/w;
-                if(h > this.height && this.height/h < s) s = this.height/h;
-                t = [((this.width-w*s)/2)/s, -this.g.node().getBBox().y + (this.height-h*s)/2];
-
-                d3.select(this.g.node().parentNode).attr("transform", "scale(" + s + ")");
-                this.g.attr("transform", "translate(" + t + ")");
-            }
-
-            Tree.prototype.draw = function(){
-
-                // Compute the new tree layout.
-                var nodes = this.tree.nodes(this.data);//.reverse()
-                var links = this.tree.links(nodes);
-
-                // horizontal spacing of the nodes (depth of the node * x)
-                nodes.forEach(function(d) { d.y = d.depth * (IMAGE_SIZE + IMAGE_SIZE/10) });
-
-                // Declare the nodes.
-                var node = this.g.selectAll("g.node")
-                    .data(nodes);
-
-
-                // Enter the nodes.
-                var nodeEnter = node.enter().append("g")
-                    .attr("class", "node")
-                    .attr("transform", function(d) {
-                        return "translate(" + d.y + "," + d.x + ")";
-                    });
-
-                //img
-                nodeEnter.filter(function(d) { return d.url; }).append("image")
-                    .attr("xlink:href", function(d) {
-                        if (d.url.indexOf('//') > -1 ) {
-                            if(d.url.indexOf('youtu') > -1) {
-                                var thumbnail = d.url.replace('www.youtube.com/embed', 'img.youtube.com/vi');
-                                return thumbnail +'/0.jpg';
-                            } else {
-                                return d.url
-                            }
-                        } else {
-                            return "/artefact/" + d.id + "/thumbnail/"
-                        }
-                    })
-                    .attr('y', -IMAGE_SIZE/2)
-                    .attr('width', IMAGE_SIZE)
-                    .attr('height', IMAGE_SIZE);
-
-                //text
-                nodeEnter.filter(function(d) { return d.contents })
-                    .append("rect")
-                    .attr('width', IMAGE_SIZE)
-                    .attr('height', IMAGE_SIZE)
-                    .attr('y', -IMAGE_SIZE/2);
-                nodeEnter.filter(function(d) { return d.contents })
-                    .append("text")
-                    .attr('y', -IMAGE_SIZE/2)
-                    .text(function(d) { return d.title; })
-                    .each(function(d){
-                        d3plus.textwrap()
-                            .config(TEXTBOUNDS)
-                            .valign('middle')
-                            .align('center')
-                            .container(d3.select(this))
-                            .draw();
-                    });
-
-                // Declare the links
-                var link = this.g.selectAll("path.link")
-                .data(links, function(d) { return d.target.id; });
-
-                // Enter the links.
-                link.enter().insert("path", "g")
-                    .attr("class", "link")
-                    .attr("d", this.diagonal);
-            }
-
-            return Tree;
-
-        })();
 
     </script>
   </body>
