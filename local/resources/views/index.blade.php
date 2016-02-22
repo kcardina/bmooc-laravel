@@ -452,7 +452,7 @@
     {!! HTML::script('js/vendor/jquery.js') !!}
     {!! HTML::script('js/foundation.min.js') !!}
     {!! HTML::script('js/help.js') !!}
-    {!! HTML::script('js/app.js') !!}
+    {!! HTML::script('js/app.js?v=0.4') !!}
     {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
     {!! HTML::script('js/imagesloaded.min.js') !!}
     {!! HTML::script('js/jquery.form.min.js') !!}
