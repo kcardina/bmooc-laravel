@@ -45,18 +45,20 @@ class BmoocJsonController extends Controller
 		return response()->json($instruction);
 	}
 	
-    public function answers($id) {
+    public function answers($id, $author = null, $tag = null, $keyword = null) {
 		$parent = Artefact::all()->find($id);
+        $parent = BmoocJsonController::search($parent, $author, $tag, $keyword);
         $tree = $parent;
-        $parent->children = BmoocJsonController::buildTree($parent->children, $parent->id);
+        $parent->children = BmoocJsonController::buildTree($parent->children, $parent->id, $author, $tag, $keyword);
         return response()->json($tree);
 	}
 
-    function buildTree($elements, $parentId = 0) {
+    private function buildTree($elements, $parentId = 0, $author = null, $tag = null, $keyword = null) {
         $branch = array();
         foreach ($elements as $element) {
+            $element = BmoocJsonController::search($element, $author, $tag, $keyword);
             if ($element['parent_id'] == $parentId) {
-                $children = BmoocJsonController::buildTree($element->children, $element['id']);
+                $children = BmoocJsonController::buildTree($element->children, $element['id'], $author, $tag, $keyword);
                 if ($children) {
                     //$element['children'] = $children;
                 }
@@ -65,6 +67,31 @@ class BmoocJsonController extends Controller
         }
 
         return $branch;
+    }
+
+    private function search($element, $author, $tag, $keyword){
+        if(isset($author) && $author != 'all'){
+            if($element->author != $author) $element->hidden = true;
+        }
+        if(isset($tag) && $tag != 'all'){
+            if(count($element->tags) <= 0){
+                $element->hidden = true;
+                break;
+            }
+            foreach($element->tags as $t){
+                if($t->id == $tag){
+                    $element->hidden = null;
+                    break;
+                }
+                if($t->id != $tag) $element->hidden = true;
+            }
+        }
+        if(isset($keyword)){
+            if(stripos($element->title, $keyword) === false && stripos($element->contents, $keyword) === false){
+                $element->hidden = true;
+            }
+        }
+        return $element;
     }
 	
 

@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Artefact extends Model {
 
+    //Add extra attribute
+    protected $attributes = ['hidden'];
+    protected $appends = ['hidden'];
+
     public function the_author() {
         return $this->belongsTo('App\User', 'author');
     }
@@ -34,5 +38,15 @@ class Artefact extends Model {
         return $this->belongsTo('App\Instruction', 'thread', 'thread')
             ->join('users', 'users.id', '=', 'instructions.author');;
     }
+
+    public function getHiddenAttribute() {
+        if(isset($this->attributes['hidden'])) return $this->attributes['hidden'];
+        else return null;
+    }
+
+    public function setHiddenAttribute($value) {
+        $this->attributes['hidden'] = $value;
+    }
+
 
 }

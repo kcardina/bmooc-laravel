@@ -131,7 +131,7 @@
     	
         <div class="item" data-id="{{ $topic->id }}">
            <div class="row">
-                <div class="large-5 columns">
+                <div class="small-11 large-5 columns">
                     <h2>{{ $topic->title }}</h2>
                     <div class="extra laatste_wijziging">
                        initiated by
@@ -139,7 +139,7 @@
                     </div>
                 </div>
                 <div class="info">
-                    <div class="large-3 columns laatste_wijziging">
+                    <div class="small-11 large-3 columns laatste_wijziging">
                        last addition
                        @if (isset($topic->last_modified))
                             <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }}</span>
@@ -151,7 +151,7 @@
                         <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span>
                         @endif
                     </div>
-                    <div class="large-1 columns antwoorden">
+                    <div class="small-11 large-1 columns antwoorden">
                             @foreach ($aantalAntwoorden as $aantal)
                                 @if ($aantal->thread == $topic->thread)
                                  <strong>{{ $aantal->aantal_antwoorden }}</strong>
@@ -163,7 +163,7 @@
                                  @endif
                             @endforeach
                     </div>
-                    <div class="large-2 columns">
+                    <div class="small-11 large-2 columns">
                         tags:
                         <ul class="inline slash">
                         @foreach ($topic->tags as $tag)
@@ -171,7 +171,7 @@
                         @endforeach
                         </ul>
                     </div>
-                    <div class="large-1 columns instruction text-right">
+                    <div class="small-1 columns instruction text-right">
                         @if (isset($topic->active_instruction))
                             <button class="small information" data-instruction-id="{{ $topic->active_instruction->id }}" data-instruction-added="{{ $topic->active_instruction->active_from }}" data-instruction-author="{{ $topic->active_instruction->name }}" data-instruction-title="{{ $topic->active_instruction->title }}" data-reveal-id="instruction" data-help="topic" data-help-id="details"></button>
                         @endif
@@ -525,7 +525,7 @@
                     $(this).toggleClass("active");
                     // maak grootte van scherm
                     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-                    $('.tree', this).height(h - $('header').height());
+                    $('.tree', this).height(h - document.getElementsByTagName('header')[0].offsetHeight);
                     // scroll naar boven
                     // maak info grootte van scherm
                     $('html,body').animate({
@@ -540,11 +540,13 @@
             $(".item").bind('click', loadAnswers);
 
             function loadAnswers(e){
-                console.log(e);
                 $(this).unbind(e);
                 var data = $(this).data();
                 var $this = $(this);
-                $.getJSON(host + '/json/topic/' + data['id'] + '/answers', function(data) {
+                var author = $("nav select#auteurs").val();
+                var tag = $("nav select#tags").val();
+                var keyword = $("nav input#zoek").val();
+                $.getJSON(host + '/json/topic/' + data['id'] + '/answers/search/' + author + '/' + tag + '/' + keyword, function(data) {
                    var tree = new Tree($('.tree', $this).get(0), data);
                     tree.draw();
                     tree.resize();

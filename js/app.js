@@ -203,7 +203,6 @@ $(function(){
 
         $.when(t_100.generate(), t_1000.generate()).done(function(){
             if(t_100.hasData) {
-                console.log(t_100.get());
                 $('<input>', {
                     type: 'hidden',
                     id: 'thumbnail_small',
@@ -529,7 +528,7 @@ var Tree = (function(){
     function Tree(el, data){
         this.data = data;
         this.el = el;
-        this.width = el.offsetWidth;
+        this.width = el.offsetWidth - 30;
         this.height = el.offsetHeight;
         this.tree = d3.layout.tree()
             .nodeSize([IMAGE_SIZE, IMAGE_SIZE]);
@@ -584,7 +583,24 @@ var Tree = (function(){
             });
 
         //img
-        nodeEnter.filter(function(d) { return d.url; }).append("image")
+        nodeEnter.filter(function(d) { return d.hidden; })
+            .append("a")
+            .attr("xlink:href", function(d) {
+                return "/topic/"+d.id;
+            })
+            .append("circle")
+            .attr("cx", 5)
+            .attr("cy", 0)
+            .attr("r", 5);
+
+        //img
+        nodeEnter.filter(function(d) { return d.url; })
+            .filter(function(d) { return !d.hidden })
+            .append("a")
+            .attr("xlink:href", function(d) {
+                return "/topic/"+d.id;
+            })
+            .append("image")
             .attr("xlink:href", function(d) {
                 if (d.url.indexOf('//') > -1 ) {
                     if(d.url.indexOf('youtu') > -1) {
@@ -603,11 +619,17 @@ var Tree = (function(){
 
         //text
         nodeEnter.filter(function(d) { return d.contents })
+            .filter(function(d) { return !d.hidden })
             .append("rect")
             .attr('width', IMAGE_SIZE)
             .attr('height', IMAGE_SIZE)
             .attr('y', -IMAGE_SIZE/2);
         nodeEnter.filter(function(d) { return d.contents })
+            .filter(function(d) { return !d.hidden })
+            .append("a")
+            .attr("xlink:href", function(d) {
+                return "/topic/"+d.id;
+            })
             .append("text")
             .attr('y', -IMAGE_SIZE/2)
             .text(function(d) { return d.title; })
