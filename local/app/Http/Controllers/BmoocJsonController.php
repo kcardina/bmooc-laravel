@@ -76,14 +76,14 @@ class BmoocJsonController extends Controller
         if(isset($tag) && $tag != 'all'){
             if(count($element->tags) <= 0){
                 $element->hidden = true;
-                break;
-            }
-            foreach($element->tags as $t){
-                if($t->id == $tag){
-                    $element->hidden = null;
-                    break;
+            } else {
+                foreach($element->tags as $t){
+                    if($t->id == $tag){
+                        $element->hidden = null;
+                        break;
+                    }
+                    if($t->id != $tag) $element->hidden = true;
                 }
-                if($t->id != $tag) $element->hidden = true;
             }
         }
         if(isset($keyword)){

@@ -166,6 +166,8 @@ class BmoocController extends Controller {
                             } elseif (strpos($url, 'vimeo.com') !== false) { // Vimeo video
                                 $comment->url = '//player.vimeo.com/video/'.substr($url, strpos($url, 'vimeo.com/') + 10);
                                 $at = ArtefactType::where('description', 'video_vimeo')->first();
+                            } else {
+                                throw new Exception('The URL you entered is not a valid link to a YouTube or Vimeo video.');
                             }
                         } else { // Kan niet voorkomen, maar voor de veiligheid wel fout opwerpen
                             //$topic->url = 'https://www.youtube.com/embed/YecyKnQUcBY'; // Dummy video
@@ -332,6 +334,8 @@ class BmoocController extends Controller {
                             } elseif (strpos($url, 'vimeo.com') !== false) { // Vimeo video
                                 $instruction->url = '//player.vimeo.com/video/' . substr($url, strpos($url, 'vimeo.com/') + 10);
                                 $at = ArtefactType::where('description', 'video_vimeo')->first();
+                            } else {
+                                throw new Exception('The URL you entered is not a valid link to a YouTube or Vimeo video.');
                             }
                         } else { // Kan niet voorkomen, maar voor de veiligheid wel fout opwerpen
                             //$topic->url = 'https://www.youtube.com/embed/YecyKnQUcBY'; // Dummy video
@@ -503,6 +507,8 @@ class BmoocController extends Controller {
                         } elseif (strpos($url, 'vimeo.com') !== false) { // Vimeo video
                             $topic->url = '//player.vimeo.com/video/'.substr($url, strpos($url, 'vimeo.com/') + 10);
                             $at = ArtefactType::where('description', 'video_vimeo')->first();
+                        } else {
+                            throw new Exception('The URL you entered is not a valid link to a YouTube or Vimeo video.');
                         }
                     } else { // Kan niet voorkomen, maar voor de veiligheid wel fout opwerpen
                         //$topic->url = 'https://www.youtube.com/embed/YecyKnQUcBY'; // Dummy video
