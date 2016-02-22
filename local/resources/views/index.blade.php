@@ -573,35 +573,6 @@
             }
         });
 
-        function displayAnswer(type, data) {
-            switch (type) {
-            case 'text':
-                return '<p style="width: 100px; font-size: 0.8rem; overflow:hidden; display: inline-block">' + data.title + '</p>';
-                break;
-            case 'local_image':
-                return '<img src="'+host+'/artefact/'+data.id+'/thumbnail"/>';
-                break;
-            case 'remote_image':
-                return '<img src="'+data.url+'"/>';
-                break;
-            case 'video_youtube':
-                //return '<iframe  src="'+data.url+'?autoplay=0" style="width: 100px; height: 100px; vertical-align: middle" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-                var thumbnail = data.url.replace('www.youtube.com/embed', 'img.youtube.com/vi');
-                return '<img src="'+ thumbnail +'/0.jpg"/>';
-                break;
-            case 'video_vimeo':
-                return '<iframe src="'+data.url+'" style="width: 100px; height: 100px; vertical-align: middle" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-                break;
-            case 'local_pdf':
-                return '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>';
-
-                //return 'Please, <a href="'+ host + "/uploads/"+ data.url +'" target="_new">download</a> the document to open...';
-                break;
-            case 'remote_pdf':
-                return 'Please, <a href="'+ data.url +'" target="_new">download</a> the document to open...';
-                break;
-            }
-        }
         @if (isset($user))
         // editor
         var quill = new Quill('.ql_editor', {

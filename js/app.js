@@ -602,16 +602,7 @@ var Tree = (function(){
             })
             .append("image")
             .attr("xlink:href", function(d) {
-                if (d.url.indexOf('//') > -1 ) {
-                    if(d.url.indexOf('youtu') > -1) {
-                        var thumbnail = d.url.replace('www.youtube.com/embed', 'img.youtube.com/vi');
-                        return thumbnail +'/0.jpg';
-                    } else {
-                        return d.url
-                    }
-                } else {
-                    return "/artefact/" + d.id + "/thumbnail/"
-                }
+                return "/artefact/" + d.id + "/thumbnail/"
             })
             .attr('y', -IMAGE_SIZE/2)
             .attr('width', IMAGE_SIZE)
