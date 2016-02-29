@@ -63,13 +63,13 @@ html, body{
 }
 
 /* IE support */
-.no-flexboxlegacy #container{
+.no-flexboxlegacy #container, .no-flexbox #container{
     display: block;
-    height: 65%;
+    height: 50%;
 }
 
 /* IE support */
-.no-flexboxlegacy #container .topic{
+.no-flexboxlegacy #container .topic, .no-flexbox #container .topic{
     display: block;
     height: 100%;
 }
