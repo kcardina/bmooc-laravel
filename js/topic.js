@@ -111,6 +111,7 @@ function hideDiv(div) {
 }
 
 function displayDiv(type, div, data) {
+    console.log(data);
     if (div.attr("data-reveal-id")) {
         // load metadata
         var lb = div.attr("data-reveal-id");
