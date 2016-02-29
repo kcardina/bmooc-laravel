@@ -1,4 +1,10 @@
-/local/config/services.php
-/local/config/app.php
 /local/vendor/
 /uploads/
+.settings
+.project
+.DS_Store
+.buildpath
+.env
+Thumbs.db
+.env.*.php
+.env.php
