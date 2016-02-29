@@ -166,6 +166,8 @@ class BmoocController extends Controller {
                             } elseif (strpos($url, 'vimeo.com') !== false) { // Vimeo video
                                 $comment->url = '//player.vimeo.com/video/'.substr($url, strpos($url, 'vimeo.com/') + 10);
                                 $at = ArtefactType::where('description', 'video_vimeo')->first();
+                            } else {
+                                throw new Exception('The URL you entered is not a valid link to a YouTube or Vimeo video.');
                             }
                         } else { // Kan niet voorkomen, maar voor de veiligheid wel fout opwerpen
                             //$topic->url = 'https://www.youtube.com/embed/YecyKnQUcBY'; // Dummy video
@@ -226,7 +228,7 @@ class BmoocController extends Controller {
 
                 if ($request->input('answer_parent')) {
                     $vader = Artefact::find($request->input('answer_parent'));
-                    $vader->answers()->save($comment);
+                    $vader->children()->save($comment);
 
                     $comment->thread = $vader->thread;
                 } else {
@@ -332,6 +334,8 @@ class BmoocController extends Controller {
                             } elseif (strpos($url, 'vimeo.com') !== false) { // Vimeo video
                                 $instruction->url = '//player.vimeo.com/video/' . substr($url, strpos($url, 'vimeo.com/') + 10);
                                 $at = ArtefactType::where('description', 'video_vimeo')->first();
+                            } else {
+                                throw new Exception('The URL you entered is not a valid link to a YouTube or Vimeo video.');
                             }
                         } else { // Kan niet voorkomen, maar voor de veiligheid wel fout opwerpen
                             //$topic->url = 'https://www.youtube.com/embed/YecyKnQUcBY'; // Dummy video
@@ -503,6 +507,8 @@ class BmoocController extends Controller {
                         } elseif (strpos($url, 'vimeo.com') !== false) { // Vimeo video
                             $topic->url = '//player.vimeo.com/video/'.substr($url, strpos($url, 'vimeo.com/') + 10);
                             $at = ArtefactType::where('description', 'video_vimeo')->first();
+                        } else {
+                            throw new Exception('The URL you entered is not a valid link to a YouTube or Vimeo video.');
                         }
                     } else { // Kan niet voorkomen, maar voor de veiligheid wel fout opwerpen
                         //$topic->url = 'https://www.youtube.com/embed/YecyKnQUcBY'; // Dummy video
@@ -611,6 +617,19 @@ class BmoocController extends Controller {
         } // End if ($user)
     }
 
+    public function datavis(Request $request) {
+		//$user = Auth::user();
+		$user = $request->user();
+		//dd($request);
+		$topics = Artefact::with(['the_author', 'tags', 'last_modifier'])->whereNull('parent_id')->orderBy('created_at', 'desc')->orderBy('last_modified', 'desc')->get();
+		$auteurs = DB::table('users')->select('id', 'name')->distinct()->get();
+		$tags = Tags::orderBy('tag')->get();
+
+		$aantalAntwoorden = DB::table('artefacts')->select(DB::raw('count(*) as aantal_antwoorden, thread'))
+                     ->groupBy('thread')->get();
+		return view('datavis', ['topic'=>$topics, 'user'=>$user, 'auteurs' => $auteurs, 'tags' => $tags, 'aantalAntwoorden'=>$aantalAntwoorden]);
+	}
+
     public function getImage($id){
         $a = Artefact::find($id);
         $path = base_path().'/../uploads/thumbnails/large/'.$a->url;
@@ -645,6 +664,20 @@ class BmoocController extends Controller {
             $filetype = mime_content_type( $path );
             $response = Response::make( File::get( $path ) , 200 );
             $response->header('Content-Type', $filetype);
+            return $response;
+        } else if($a->artefact_type == 31){
+            $url = str_replace('www.youtube.com/embed', 'img.youtube.com/vi', $a->url);
+            $url .= '/0.jpg';
+            $response = Response::make( file_get_contents($url), 200 );
+            $response->header('Content-Type', 'image/jpeg');
+            return $response;
+        } else if($a->artefact_type == 32){
+            $oembed_endpoint = 'http://vimeo.com/api/oembed';
+            $url = $oembed_endpoint . '.json?url=' . rawurlencode($a->url);
+            $json = file_get_contents($url);
+            $obj = json_decode($json);
+            $response = Response::make( file_get_contents($obj->thumbnail_url), 200 );
+            $response->header('Content-Type', 'image/jpeg');
             return $response;
         }
         abort(404, 'Image not found');

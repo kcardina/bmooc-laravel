@@ -647,7 +647,7 @@
         {!! HTML::script('js/pointer-events-polyfill.js') !!}
         {!! HTML::script('https://www.youtube.com/iframe_api') !!}
         {!! HTML::script('js/help.js') !!}
-        {!! HTML::script('js/app.js') !!}
+        {!! HTML::script('js/app.js?v=0.4') !!}
         {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
         {!! HTML::script('js/jquery.form.min.js') !!}
         {!! HTML::script('js/pdf.js') !!}

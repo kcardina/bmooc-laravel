@@ -203,7 +203,6 @@ $(function(){
 
         $.when(t_100.generate(), t_1000.generate()).done(function(){
             if(t_100.hasData) {
-                console.log(t_100.get());
                 $('<input>', {
                     type: 'hidden',
                     id: 'thumbnail_small',
@@ -500,6 +499,154 @@ var Thumbnail = (function(){
     return Thumbnail;
 
 })();
+
+
+/********************************
+* RENDER TREES (uses 3dplus.js) *
+********************************/
+
+var Tree = (function(){
+
+    var IMAGE_SIZE = 100;
+    var MARGIN = {
+        top: IMAGE_SIZE/2,
+        right: IMAGE_SIZE/2,
+        bottom: IMAGE_SIZE/2,
+        left: IMAGE_SIZE/2
+    };
+    var TEXTBOUNDS = {
+        width: IMAGE_SIZE,
+        height: IMAGE_SIZE,
+        resize: true
+    }
+
+    /**
+     * Create a Tree.
+     * @param {dom element} el - The container for the Tree svg element.
+     * @param {JSON} data - A JSON-tree containing the data to visualize.
+     */
+    function Tree(el, data){
+        this.data = data;
+        this.el = el;
+        this.width = el.offsetWidth - 30;
+        this.height = el.offsetHeight;
+        this.tree = d3.layout.tree()
+            .nodeSize([IMAGE_SIZE, IMAGE_SIZE]);
+        this.diagonal = d3.svg.diagonal()
+            .projection(function(d) { return [d.y, d.x]; });
+        this.svg = d3.select(this.el).append("svg")
+            .attr("width", this.width)
+            .attr("height", this.height)
+            .append("g");
+        this.g = this.svg.append("g");
+    }
+
+    /**
+     * Automatically resize the tree to fit the container
+     */
+    Tree.prototype.resize = function(){
+        var t = [0,0],
+            s = 1,
+            w = this.g.node().getBBox().width,
+            h = this.g.node().getBBox().height;
+
+        if(w > this.width) s = this.width/w;
+        if(h > this.height && this.height/h < s) s = this.height/h;
+        t = [((this.width-w*s)/2)/s, -this.g.node().getBBox().y + (this.height-h*s)/2];
+
+        d3.select(this.g.node().parentNode).attr("transform", "scale(" + s + ")");
+        this.g.attr("transform", "translate(" + t + ")");
+    }
+
+    /**
+     * Generate and show the tree.
+     */
+    Tree.prototype.draw = function(){
+
+        // Compute the new tree layout.
+        var nodes = this.tree.nodes(this.data);//.reverse()
+        var links = this.tree.links(nodes);
+
+        // horizontal spacing of the nodes (depth of the node * x)
+        nodes.forEach(function(d) { d.y = d.depth * (IMAGE_SIZE + IMAGE_SIZE/10) });
+
+        // Declare the nodes.
+        var node = this.g.selectAll("g.node")
+            .data(nodes);
+
+
+        // Enter the nodes.
+        var nodeEnter = node.enter().append("g")
+            .attr("class", "node")
+            .attr("transform", function(d) {
+                return "translate(" + d.y + "," + d.x + ")";
+            });
+
+        //img
+        nodeEnter.filter(function(d) { return d.hidden; })
+            .append("a")
+            .attr("xlink:href", function(d) {
+                return "/topic/"+d.id;
+            })
+            .append("circle")
+            .attr("cx", 5)
+            .attr("cy", 0)
+            .attr("r", 5);
+
+        //img
+        nodeEnter.filter(function(d) { return d.url; })
+            .filter(function(d) { return !d.hidden })
+            .append("a")
+            .attr("xlink:href", function(d) {
+                return "/topic/"+d.id;
+            })
+            .append("image")
+            .attr("xlink:href", function(d) {
+                return "/artefact/" + d.id + "/thumbnail/"
+            })
+            .attr('y', -IMAGE_SIZE/2)
+            .attr('width', IMAGE_SIZE)
+            .attr('height', IMAGE_SIZE);
+
+        //text
+        nodeEnter.filter(function(d) { return d.contents })
+            .filter(function(d) { return !d.hidden })
+            .append("rect")
+            .attr('width', IMAGE_SIZE)
+            .attr('height', IMAGE_SIZE)
+            .attr('y', -IMAGE_SIZE/2);
+        nodeEnter.filter(function(d) { return d.contents })
+            .filter(function(d) { return !d.hidden })
+            .append("a")
+            .attr("xlink:href", function(d) {
+                return "/topic/"+d.id;
+            })
+            .append("text")
+            .attr('y', -IMAGE_SIZE/2)
+            .text(function(d) { return d.title; })
+            .each(function(d){
+                d3plus.textwrap()
+                    .config(TEXTBOUNDS)
+                    .valign('middle')
+                    .align('center')
+                    .container(d3.select(this))
+                    .draw();
+            });
+
+        // Declare the links
+        var link = this.g.selectAll("path.link")
+        .data(links, function(d) { return d.target.id; });
+
+        // Enter the links.
+        link.enter().insert("path", "g")
+            .attr("class", "link")
+            .attr("d", this.diagonal);
+    }
+
+    return Tree;
+
+})();
+
 
 /*******************
 * HELPER FUNCTIONS *

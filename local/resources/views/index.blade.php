@@ -129,56 +129,57 @@
 					foreach ($topic->tags as $tag) $t[] = '"'.$tag->tag.'"';
 				?>
     	
-    		<div class="row item" data-id="{{ $topic->id }}">
-            <div class="large-5 columns">
-                <h2>{{ $topic->title }}</h2>
-                <div class="extra laatste_wijziging">
-                   initiated by
-                    <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span><br />
+        <div class="item" data-id="{{ $topic->id }}">
+           <div class="row">
+                <div class="small-11 large-5 columns">
+                    <h2>{{ $topic->title }}</h2>
+                    <div class="extra laatste_wijziging">
+                       initiated by
+                        <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span><br />
+                    </div>
                 </div>
-            </div>
-            <div class="info">
-                <div class="large-3 columns laatste_wijziging">
-                   last addition
-                   @if (isset($topic->last_modified))
-                        <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }}</span>
-                        by
-                    <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ isset($topic->last_modifier) ? $topic->last_modifier->id : $topic->the_author->id}}">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</a></span>
-                    @else
-                        <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->created_at)) }}</span>
-                        by
-                    <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span>
-                    @endif
-                </div>
-                <div class="large-1 columns antwoorden">
-                		@foreach ($aantalAntwoorden as $aantal)
-                			@if ($aantal->thread == $topic->thread)
-                			 <strong>{{ $aantal->aantal_antwoorden }}</strong>
-                                 @if ($aantal->aantal_antwoorden == 1)
-                                     addition
-                                 @else
-                                     additions
+                <div class="info">
+                    <div class="small-11 large-3 columns laatste_wijziging">
+                       last addition
+                       @if (isset($topic->last_modified))
+                            <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->last_modified)) }}</span>
+                            by
+                        <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ isset($topic->last_modifier) ? $topic->last_modifier->id : $topic->the_author->id}}">{{ isset($topic->last_modifier) ? $topic->last_modifier->name : $topic->the_author->name}}</a></span>
+                        @else
+                            <span class="lightgrey">{{ date('d/m/Y', strtotime($topic->created_at)) }}</span>
+                            by
+                        <span class="lightgrey"><a href="{{ URL::to('/') }}/search/{{ $topic->the_author->id}}">{{ $topic->the_author->name}}</a></span>
+                        @endif
+                    </div>
+                    <div class="small-11 large-1 columns antwoorden">
+                            @foreach ($aantalAntwoorden as $aantal)
+                                @if ($aantal->thread == $topic->thread)
+                                 <strong>{{ $aantal->aantal_antwoorden }}</strong>
+                                     @if ($aantal->aantal_antwoorden == 1)
+                                         addition
+                                     @else
+                                         additions
+                                     @endif
                                  @endif
-                			 @endif
-                		@endforeach
-                </div>
-                <div class="large-2 columns">
-                    tags:
-                    <ul class="inline slash">
-                    @foreach ($topic->tags as $tag)
-                        <li><a href="{{ URL::to('/') }}/search/all/{{$tag->id}}">{{$tag->tag}}</a></li>
-                    @endforeach
-                    </ul>
-                </div>
-                <div class="large-1 columns instruction text-right">
-                    @if (isset($topic->active_instruction))
-                        <button class="small information" data-instruction-id="{{ $topic->active_instruction->id }}" data-instruction-added="{{ $topic->active_instruction->active_from }}" data-instruction-author="{{ $topic->active_instruction->name }}" data-instruction-title="{{ $topic->active_instruction->title }}" data-reveal-id="instruction" data-help="topic" data-help-id="details">Instruction</button>
-                    @endif
+                            @endforeach
+                    </div>
+                    <div class="small-11 large-2 columns">
+                        tags:
+                        <ul class="inline slash">
+                        @foreach ($topic->tags as $tag)
+                            <li><a href="{{ URL::to('/') }}/search/all/{{$tag->id}}">{{$tag->tag}}</a></li>
+                        @endforeach
+                        </ul>
+                    </div>
+                    <div class="small-1 columns instruction text-right">
+                        @if (isset($topic->active_instruction))
+                            <button class="small information" data-instruction-id="{{ $topic->active_instruction->id }}" data-instruction-added="{{ $topic->active_instruction->active_from }}" data-instruction-author="{{ $topic->active_instruction->name }}" data-instruction-title="{{ $topic->active_instruction->title }}" data-reveal-id="instruction" data-help="topic" data-help-id="details"></button>
+                        @endif
+                    </div>
                 </div>
             </div>
-            <div class="extra">
-                <div class="large-10 columns antwoorden">
-                    <ul class="inline"></ul>
+            <div class="row extra">
+                <div class="small-12 columns tree">
                 </div>
             </div>
         </div>
@@ -451,11 +452,13 @@
     {!! HTML::script('js/vendor/jquery.js') !!}
     {!! HTML::script('js/foundation.min.js') !!}
     {!! HTML::script('js/help.js') !!}
-    {!! HTML::script('js/app.js') !!}
+    {!! HTML::script('js/app.js?v=0.4') !!}
     {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
     {!! HTML::script('js/imagesloaded.min.js') !!}
     {!! HTML::script('js/jquery.form.min.js') !!}
     {!! HTML::script('js/pdf.js') !!}
+    {!! HTML::script('//d3js.org/d3.v3.min.js') !!}
+    {!! HTML::script('js/d3plus.min.js') !!}
     <script>
         var host = "{{ URL::to('/') }}";
         $(document).foundation();
@@ -502,7 +505,7 @@
                 $("#instruction .data-added").html(parseDate($(this).data('instruction-added')));
                 $("#instruction .data-author").html($(this).data('instruction-author'));
 
-                var data = $(this).parents(".row.item").data();
+                var data = $(this).parents(".item").data();
                 $.getJSON(host + '/json/topic/' + data['id'], function(data){
                     render($('#instruction'), data.instruction[0].instruction_type.description, data.instruction[0]);
                 });
@@ -520,14 +523,14 @@
                     $(".item .extra").hide();
                     // show new one
                     $(this).toggleClass("active");
-                    /*
+                    // maak grootte van scherm
+                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+                    $('.tree', this).height(h - document.getElementsByTagName('header')[0].offsetHeight);
                     // scroll naar boven
                     // maak info grootte van scherm
-                    $(".extra", this).height('1000px');
                     $('html,body').animate({
-                        scrollTop: $(".extra", this).offset().top},
+                        scrollTop: $(this).offset().top},
                     'slow');
-                    */
                     $(".extra", this).slideToggle();
                 }
             });
@@ -535,21 +538,18 @@
             //bind an event listener to every item.
             // on first click: make an ajax call to load all the images & unbind the event listener
             $(".item").bind('click', loadAnswers);
+
             function loadAnswers(e){
                 $(this).unbind(e);
                 var data = $(this).data();
                 var $this = $(this);
-                $(".antwoorden ul", this).append('<li id="li_loader"><img class="loader" src="{{ asset("img/loader.gif") }}" alt="antwoorden worden geladen..."/></li>');
-                $.getJSON(host + '/json/topic/' + data['id'] + '/answers', function(data) {
-                    $('#li_loader').remove();
-                    for(var i = 0; i < data.length; i++){
-                        var answer = data[i];
-                        // voor UX: voeg een loading-spinner toe
-                        var url = answer.url;
-                        var alt = "afbeelding " + i;
-                        // plaats de afbeelding
-                        $(".antwoorden ul", $this).append('<a href="' + "{{ URL::to('/topic/') }}/" + answer.id + '"><li>'+ displayAnswer(answer.type.description, answer) +'</li></a>');
-                    }
+                var author = $("nav select#auteurs").val();
+                var tag = $("nav select#tags").val();
+                var keyword = $("nav input#zoek").val();
+                $.getJSON(host + '/json/topic/' + data['id'] + '/answers/search/' + author + '/' + tag + '/' + keyword, function(data) {
+                   var tree = new Tree($('.tree', $this).get(0), data);
+                    tree.draw();
+                    tree.resize();
                 });
             }
 
@@ -573,35 +573,6 @@
             }
         });
 
-        function displayAnswer(type, data) {
-            switch (type) {
-            case 'text':
-                return '<p style="width: 100px; font-size: 0.8rem; overflow:hidden; display: inline-block">' + data.title + '</p>';
-                break;
-            case 'local_image':
-                return '<img src="'+host+'/artefact/'+data.id+'/thumbnail"/>';
-                break;
-            case 'remote_image':
-                return '<img src="'+data.url+'"/>';
-                break;
-            case 'video_youtube':
-                //return '<iframe  src="'+data.url+'?autoplay=0" style="width: 100px; height: 100px; vertical-align: middle" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-                var thumbnail = data.url.replace('www.youtube.com/embed', 'img.youtube.com/vi');
-                return '<img src="'+ thumbnail +'/0.jpg"/>';
-                break;
-            case 'video_vimeo':
-                return '<iframe src="'+data.url+'" style="width: 100px; height: 100px; vertical-align: middle" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-                break;
-            case 'local_pdf':
-                return '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>';
-
-                //return 'Please, <a href="'+ host + "/uploads/"+ data.url +'" target="_new">download</a> the document to open...';
-                break;
-            case 'remote_pdf':
-                return 'Please, <a href="'+ data.url +'" target="_new">download</a> the document to open...';
-                break;
-            }
-        }
         @if (isset($user))
         // editor
         var quill = new Quill('.ql_editor', {
@@ -612,6 +583,7 @@
             theme: 'snow'
         });
         @endif
+
     </script>
   </body>
 </html>

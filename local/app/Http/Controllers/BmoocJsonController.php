@@ -24,7 +24,7 @@ class BmoocJsonController extends Controller
 	
 	public function discussion($id) {
 		$artefact = Artefact::with(['type', 'the_author', 'last_modifier', 'active_instruction'])->find($id);
-		$antwoorden = $artefact->answers;
+		$antwoorden = $artefact->children;
 		$tags = $artefact->tags;
 		$instruction = Instruction::with(['available_types', 'instruction_type', 'the_author'])->where('thread', $artefact->thread)->where('active_from', '<=', date('Y-m-d H:i:s'))->where(function($q) { $q->whereNull('active_until')->orWhere('active_until', '>=', date('Y-m-d H:i:s')); })->get();
 		$taglist = array();
@@ -45,22 +45,53 @@ class BmoocJsonController extends Controller
 		return response()->json($instruction);
 	}
 	
-	public function answers($id) {
-        $parent = Artefact::with(['answers', 'type'])->find($id);
-        $answers = array();
-        array_push($answers, $parent);
-        $answers = array_merge($answers, BmoocJsonController::buildList($parent));
-        return response()->json($answers);
+    public function answers($id, $author = null, $tag = null, $keyword = null) {
+		$parent = Artefact::all()->find($id);
+        $parent = BmoocJsonController::search($parent, $author, $tag, $keyword);
+        $tree = $parent;
+        $parent->children = BmoocJsonController::buildTree($parent->children, $parent->id, $author, $tag, $keyword);
+        return response()->json($tree);
 	}
 
-    private function buildList($parent){
-        $list = array();
-        foreach($parent->answers as $child){
-            $child = Artefact::with(['answers', 'type'])->find($child->id);
-            array_push($list, $child);
-            $list = array_merge($list, BmoocJsonController::buildList($child));
+    private function buildTree($elements, $parentId = 0, $author = null, $tag = null, $keyword = null) {
+        $branch = array();
+        foreach ($elements as $element) {
+            $element = BmoocJsonController::search($element, $author, $tag, $keyword);
+            if ($element['parent_id'] == $parentId) {
+                $children = BmoocJsonController::buildTree($element->children, $element['id'], $author, $tag, $keyword);
+                if ($children) {
+                    //$element['children'] = $children;
+                }
+                $branch[] = $element;
+            }
         }
-        return $list;
+
+        return $branch;
+    }
+
+    private function search($element, $author, $tag, $keyword){
+        if(isset($author) && $author != 'all'){
+            if($element->author != $author) $element->hidden = true;
+        }
+        if(isset($tag) && $tag != 'all'){
+            if(count($element->tags) <= 0){
+                $element->hidden = true;
+            } else {
+                foreach($element->tags as $t){
+                    if($t->id == $tag){
+                        $element->hidden = null;
+                        break;
+                    }
+                    if($t->id != $tag) $element->hidden = true;
+                }
+            }
+        }
+        if(isset($keyword)){
+            if(stripos($element->title, $keyword) === false && stripos($element->contents, $keyword) === false){
+                $element->hidden = true;
+            }
+        }
+        return $element;
     }
 	
 

@@ -18,6 +18,7 @@ Route::get('artefact/{id}/original', 'BmoocController@getImageOriginal');
 
 Route::get('json/instruction/{thread}', 'BmoocJsonController@instruction');
 Route::get('json/topic/{id}/answers', 'BmoocJsonController@answers');
+Route::get('json/topic/{id}/answers/search/{author?}/{tag?}/{keyword?}', 'BmoocJsonController@answers');
 Route::get('json/topic/{id}', 'BmoocJsonController@discussion');
 
 //Route::get('login/{provider?}', ['uses'=>'Auth\AuthController@login', 'as' => 'login']);
@@ -41,3 +42,5 @@ Route::post('feedback', 'BmoocController@feedback');
 Route::get('admin', 'AdminController@index');
 Route::get('admin/thumbnails', 'AdminController@getThumbnails');
 Route::post('admin/thumbnails', 'AdminController@postThumbnails');
+
+Route::get('datavis', 'BmoocController@datavis');
