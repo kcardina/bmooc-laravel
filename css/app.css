@@ -65,7 +65,7 @@ html, body{
 /* IE support */
 .no-flexboxlegacy #container, .no-flexbox #container{
     display: block;
-    height: 65%;
+    height: 50%;
 }
 
 /* IE support */
