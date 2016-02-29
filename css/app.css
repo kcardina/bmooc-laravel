@@ -52,7 +52,12 @@ html, body{
 }
 
 #container {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
 	display: flex;
+    -webkit-flex-flow: column;
+    -ms-flex-flow: column;
     flex-flow: column;
     height: 100%;
 }
@@ -135,6 +140,9 @@ p{
 
 header{
     padding: 10px 0 10px 0;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 1 auto;
+    -ms-flex: 0 1 auto;
     flex: 0 1 auto;
 }
 
@@ -352,6 +360,9 @@ a.emphasis:hover, .text a:hover{
 }
 
 .topic{
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
     flex: 1 1 auto;
     position: relative;
     margin: 5rem;
@@ -371,6 +382,7 @@ a.emphasis:hover, .text a:hover{
     max-height: 100%;
     display: block;
     position: relative;
+    -webkit-transition: background-color 0.5s ease;
     transition: background-color 0.5s ease;
 }
 
@@ -410,6 +422,7 @@ a.emphasis:hover, .text a:hover{
 
 .topic .artefact:hover, .topic .artefact a:hover, .topic .artefact object:hover, .topic .artefact iframe:hover{
     cursor: pointer;
+    cursor: -webkit-zoom-in;
     cursor: zoom-in;
 }
 
@@ -551,9 +564,6 @@ fieldset.error input{
     border: 1px solid #751e82;
     font-weight: inherit;
     height: auto;
-    
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
     border-radius: 8px;
     
     padding: 3px 3px 3px 15px;
