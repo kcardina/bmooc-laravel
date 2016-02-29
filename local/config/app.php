@@ -27,7 +27,7 @@ return [
     */
 
     //'url' => 'http://bmooc.local',
-    'url' => 'http://localhost/bmooc-laravel',
+    'url' => env('APP_URL', 'bmooc.be'),
 
     /*
     |--------------------------------------------------------------------------

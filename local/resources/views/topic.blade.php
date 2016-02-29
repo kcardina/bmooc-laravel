@@ -633,7 +633,9 @@
         <div id="progress" class="reveal-modal small" data-reveal aria-hidden="true" role="dialog">
            <div class="row">
                <div class="columns small-12 text-center">
-                    <div class="loader">&nbsp;</div>
+                    <div class="loader"><br /><br /><br />
+                        {!! HTML::image(asset("img/loader_overlay_big.gif"), 'loading...') !!}
+                    </div>
                     <p class="message">Loading...</p>
                </div>
            </div>
