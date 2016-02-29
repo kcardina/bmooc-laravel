@@ -8,3 +8,4 @@
 Thumbs.db
 .env.*.php
 .env.php
+*.env
