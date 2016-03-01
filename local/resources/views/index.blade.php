@@ -309,9 +309,20 @@
                         <div class="row type_input input_file" id="topic_input_upload" style="display: none;"> <!-- Div om file upload mogelijk te maken -->
                             <div class="small-12 columns">
                                 <label for="topic_upload">
-                                    <span class="filetype_label">Select a file to upload <small>(&lt;5MB)</small></span>:
-                                    <input data-abide-validator="filesize" type="file" id="topic_upload" name="topic_upload"/>
-                                </label>
+                                           <span class="filetype_label">Select a file to upload <small>(&lt;5MB)</small></span>:
+                                            <input data-abide-validator="filesize" type="file" id="topic_upload" name="topic_upload" class="inputfile"/>
+                                            <div>
+                                               <span class="file_reset">
+                                                    remove
+                                                </span>
+                                                <span>
+                                                    <span class="file_label">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg>
+                                                    Choose file</span>
+                                                    <span class="file_filename"></span>
+                                                </span>
+                                            </div>
+                                    </label>
                                 <small class="error">The document is too large (> 5MB).</small>
                             </div>
                         </div>
@@ -336,9 +347,21 @@
                 </fieldset>
                 <fieldset><!-- EXTRA INFO topic_copyright, topic_attachment -->
                     <h3>Extra information (optional)</h3>
-                    <label>You can attach an extra JPG, PNG, GIF or PDF file to your contribution:
-                        <input type="file" data-abide-validator="filesize" id="attachment" name="topic_attachment"/>
-                    </label>
+                    <label for="attachment">
+                            <span class="filetype_label">You can attach an extra JPG, PNG, GIF or PDF file to your contribution:</span>
+                                <input data-abide-validator="filesize" type="file" id="attachment" name="answer_attachment" class="inputfile"/>
+                                <div>
+                                   <span class="file_reset">
+                                        remove
+                                    </span>
+                                    <span>
+                                        <span class="file_label">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg>
+                                        Choose file</span>
+                                        <span class="file_filename"></span>
+                                    </span>
+                                </div>
+                        </label>
                     <small class="error">The attachment is too large (> 5MB).</small>
                 </fieldset>
                 <input type="submit" class="full purple" value="Add topic"/>
@@ -358,10 +381,8 @@
                         <dd class="data-added">dd/mm/yy hh:mm</dd>
                         <dt>By</dt>
                         <dd class="data-author"><a href="#">Author</a></dd>
-                        <!--
-                        <dt>Accepted answer types</dt>
-                        <dd class="data-answer-types"></dd>
-                        -->
+                        <!--<dt>Accepted answer types</dt>
+                        <dd class="data-answer-types"></dd>-->
                     </dl>
                     <!--
                     @if (isset($user) && $user->role == 'editor')
@@ -503,10 +524,16 @@
 
             $('button[data-reveal-id="instruction"]').click(function(e){
                 e.stopImmediatePropagation();
-                $('#instruction').foundation('reveal', 'open');
+
                 $("#instruction .data-title").html($(this).data('instruction-title'));
                 $("#instruction .data-added").html(parseDate($(this).data('instruction-added')));
                 $("#instruction .data-author").html($(this).data('instruction-author'));
+                $("#instruction .artefact").hide();
+                $("#instruction .loader").show();
+
+                $('#instruction').foundation('reveal', 'open');
+
+
 
                 var data = $(this).parents(".item").data();
                 $.getJSON(host + '/json/topic/' + data['id'], function(data){
