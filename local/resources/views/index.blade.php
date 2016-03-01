@@ -526,10 +526,16 @@
 
             $('button[data-reveal-id="instruction"]').click(function(e){
                 e.stopImmediatePropagation();
-                $('#instruction').foundation('reveal', 'open');
+
                 $("#instruction .data-title").html($(this).data('instruction-title'));
                 $("#instruction .data-added").html(parseDate($(this).data('instruction-added')));
                 $("#instruction .data-author").html($(this).data('instruction-author'));
+                $("#instruction .artefact").hide();
+                $("#instruction .loader").show();
+
+                $('#instruction').foundation('reveal', 'open');
+
+
 
                 var data = $(this).parents(".item").data();
                 $.getJSON(host + '/json/topic/' + data['id'], function(data){
