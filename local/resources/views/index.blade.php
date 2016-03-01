@@ -381,10 +381,8 @@
                         <dd class="data-added">dd/mm/yy hh:mm</dd>
                         <dt>By</dt>
                         <dd class="data-author"><a href="#">Author</a></dd>
-                        <!--
-                        <dt>Accepted answer types</dt>
-                        <dd class="data-answer-types"></dd>
-                        -->
+                        <!--<dt>Accepted answer types</dt>
+                        <dd class="data-answer-types"></dd>-->
                     </dl>
                     <!--
                     @if (isset($user) && $user->role == 'editor')

@@ -278,6 +278,7 @@ function filetypesToIcons(f){
     // get icons
     $.each(f, function(key, value){
         var icon = filetypeToIcon(parseInt(value.id), value.description);
+        console.log(r);
         if($.inArray(icon, r) != 0){
             r.push(icon);
         }
@@ -288,23 +289,23 @@ function filetypesToIcons(f){
 function filetypeToIcon(f, msg){
     switch(f){
         case 28: //text
-            return "<i title=\""+msg+"\" class=\"fa fa-align-justify\"></i>";
+            return "<i title=\"text\" class=\"fa fa-align-justify\"></i>";
         case 29: //text
-            return "<i title=\""+msg+"\" class=\"fa fa-camera\"></i>";
+            return "<i title=\"image\" class=\"fa fa-camera\"></i>";
         case 30: //text
-            return "<i title=\""+msg+"\" class=\"fa fa-camera\"></i>";
+            return "<i title=\"image\" class=\"fa fa-camera\"></i>";
         case 31: //text
-            return "<i title=\""+msg+"\" class=\"fa fa-video-camera\"></i>";
+            return "<i title=\"video\" class=\"fa fa-video-camera\"></i>";
         case 32: //text
-            return "<i title=\""+msg+"\" class=\"fa fa-video-camera\"></i>";
+            return "<i title=\"video\" class=\"fa fa-video-camera\"></i>";
         case 33: //text
-            return "<i title=\""+msg+"\" class=\"fa fa-file\"></i>";
+            return "<i title=\"file\" class=\"fa fa-file\"></i>";
         case 34: //text
-            return "<i title=\""+msg+"\" class=\"fa fa-file\"></i>";
+            return "<i title=\"file\" class=\"fa fa-file\"></i>";
         case 37: //text
-            return "<i title=\""+msg+"\" class=\"fa fa-file\"></i>";
+            return "<i title=\"file\" class=\"fa fa-file\"></i>";
         case 38: //text
-            return "<i title=\""+msg+"\" class=\"fa fa-file\"></i>";
+            return "<i title=\"file\" class=\"fa fa-file\"></i>";
         default:
             return "";
     }
