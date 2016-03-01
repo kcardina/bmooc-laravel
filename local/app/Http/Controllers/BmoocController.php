@@ -38,8 +38,8 @@ class BmoocController extends Controller {
         $user = $request->user();
         //dd($request);
         $topics = Artefact::with(['active_instruction', 'the_author', 'tags', 'last_modifier'])
+            ->orderBy('updated_at', 'desc')
             ->whereNull('parent_id')
-            ->orderBy('last_modified', 'desc')
             ->get();
         $auteurs = DB::table('users')->select('id', 'name')->distinct()->get();
         $tags = Tags::orderBy('tag')->get();
@@ -120,7 +120,7 @@ class BmoocController extends Controller {
         // SORT?
         //->distinct();
         $discs = Artefact::with(['last_modifier'])
-                ->orderBy('last_modified', 'desc')
+                ->orderBy('updated_at', 'desc')
                 ->whereIn('thread', $discussies)
                 ->whereNull('parent_id')
                 ->get();
