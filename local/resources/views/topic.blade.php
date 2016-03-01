@@ -11,7 +11,7 @@
         <!-- stylesheets -->
         {!! HTML::style('css/foundation.css') !!}
         {!! HTML::style('//cdn.quilljs.com/0.20.1/quill.snow.css') !!}
-        {!! HTML::style('css/app.css') !!}
+        {!! HTML::style('css/app.css?v=' . Version::get()) !!}
         <!-- scripts -->
         {!! HTML::script('js/vendor/modernizr.js') !!}
     </head>
@@ -644,12 +644,12 @@
         {!! HTML::script('js/vendor/jquery.js') !!}
         {!! HTML::script('js/foundation.min.js') !!}
         {!! HTML::script('js/flexie.min.js') !!}
-        {!! HTML::script('js/topic.js') !!}
+        {!! HTML::script('js/topic.js?v=' . Version::get()) !!}
         {!! HTML::script('js/imagesloaded.min.js') !!}
         {!! HTML::script('js/pointer-events-polyfill.js') !!}
         {!! HTML::script('https://www.youtube.com/iframe_api') !!}
-        {!! HTML::script('js/help.js') !!}
-        {!! HTML::script('js/app.js?v=0.4') !!}
+        {!! HTML::script('js/help.js?v=' . Version::get()) !!}
+        {!! HTML::script('js/app.js?v=' . Version::get()) !!}
         {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
         {!! HTML::script('js/jquery.form.min.js') !!}
         {!! HTML::script('js/pdf.js') !!}
