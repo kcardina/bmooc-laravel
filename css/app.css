@@ -408,7 +408,8 @@ a.emphasis:hover, .text a:hover{
     display: block;
     height: 100%;
     width: 100%;
-    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .artefact .text, .artefact_lightbox .text{
