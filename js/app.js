@@ -122,6 +122,8 @@ function showAnswerType(e) {
 
     // clear form and errors
     parent.find('.filetype_error').hide();
+    parent.removeClass('error');
+    parent.children().removeClass('error');
 
     if($this.hasClass('active')){
         return false;
@@ -150,6 +152,47 @@ function showAnswerType(e) {
 /********
 * FORMS *
 ********/
+
+/* CLEAR FILE UPLOAD */
+$(function(){
+    $('button .clear').on("click", function(){
+        var control = $("#control");
+        control.replaceWith( control.val('').clone( true ) );
+    });
+});
+
+;( function( $, window, document, undefined ){
+	$( '.inputfile' ).each( function(){
+		var $input	   = $( this ),
+			$el  	   = $input.parent( 'label' ),
+            $filename  = $el.find('.file_filename');
+
+        $el.find('.file_reset').on('click', function (e){
+            e.preventDefault();
+
+            $input.wrap('<form></form>').closest('form').get(0).reset();
+            $input.unwrap();
+            $input.trigger('change');
+        });
+
+		$input.on( 'change', function( e ){
+			var fileName = '';
+
+			if( this.files && this.files.length > 1 )
+				fileName = ( this.getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', this.files.length );
+			else if( e.target.value )
+				fileName = e.target.value.split( '\\' ).pop();
+
+            $filename.html( fileName );
+		});
+
+		// Firefox bug fix
+		$input
+		.on( 'focus', function(){ $input.addClass( 'has-focus' ); })
+		.on( 'blur', function(){ $input.removeClass( 'has-focus' ); });
+	});
+})( jQuery, window, document );
+
 
 /* FEEDBACK */
 $(function(){
