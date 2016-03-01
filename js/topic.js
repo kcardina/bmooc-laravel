@@ -287,7 +287,7 @@ function filetypesToIcons(f){
     $.each(f, function(key, value){
         var icon = filetypeToIcon(parseInt(value.id), value.description);
         console.log(r);
-        if($.inArray(icon, r) != 0){
+        if($.inArray(icon, r) == -1){
             r.push(icon);
         }
     });
