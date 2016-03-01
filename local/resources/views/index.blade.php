@@ -27,6 +27,7 @@
 
         </script>
 		<header class="green">
+		    {!! Version::get() !!}
 			<div class="row large">
 			    <div class="small-12 columns text-right">
                     <nav class="main">
