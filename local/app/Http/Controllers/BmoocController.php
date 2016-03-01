@@ -209,17 +209,19 @@ class BmoocController extends Controller {
                 }
 
                 // Thumbnails opslaan
-                // small
-                if($request->input('thumbnail_small') && $request->input('thumbnail_small') != null && $request->input('thumbnail_small') != ''){
-                    $destinationPath = 'uploads/thumbnails/small/' . $comment->url;
-                    $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_small')));
-                    file_put_contents($destinationPath, $data);
-                }
-                // large
-                if($request->input('thumbnail_large') && $request->input('thumbnail_large') != null && $request->input('thumbnail_large') != ''){
-                    $destinationPath = 'uploads/thumbnails/large/' . $comment->url;
-                    $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_large')));
-                    file_put_contents($destinationPath, $data);
+                if(isset($topic->url)){
+                    // small
+                    if($request->input('thumbnail_small') && $request->input('thumbnail_small') != null && $request->input('thumbnail_small') != ''){
+                        $destinationPath = 'uploads/thumbnails/small/' . $comment->url;
+                        $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_small')));
+                        file_put_contents($destinationPath, $data);
+                    }
+                    // large
+                    if($request->input('thumbnail_large') && $request->input('thumbnail_large') != null && $request->input('thumbnail_large') != ''){
+                        $destinationPath = 'uploads/thumbnails/large/' . $comment->url;
+                        $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_large')));
+                        file_put_contents($destinationPath, $data);
+                    }
                 }
 
                 if ($at) $at->artefacts()->save($comment);
@@ -379,17 +381,19 @@ class BmoocController extends Controller {
                 }
 
                 // Thumbnails opslaan
-                // small
-                if($request->input('thumbnail_small') && $request->input('thumbnail_small') != null && $request->input('thumbnail_small') != ''){
-                    $destinationPath = 'uploads/thumbnails/small/' . $instruction->url;
-                    $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_small')));
-                    file_put_contents($destinationPath, $data);
-                }
-                // large
-                if($request->input('thumbnail_large') && $request->input('thumbnail_large') != null && $request->input('thumbnail_large') != ''){
-                    $destinationPath = 'uploads/thumbnails/large/' . $instruction->url;
-                    $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_large')));
-                    file_put_contents($destinationPath, $data);
+                if(isset($topic->url)){
+                    // small
+                    if($request->input('thumbnail_small') && $request->input('thumbnail_small') != null && $request->input('thumbnail_small') != ''){
+                        $destinationPath = 'uploads/thumbnails/small/' . $instruction->url;
+                        $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_small')));
+                        file_put_contents($destinationPath, $data);
+                    }
+                    // large
+                    if($request->input('thumbnail_large') && $request->input('thumbnail_large') != null && $request->input('thumbnail_large') != ''){
+                        $destinationPath = 'uploads/thumbnails/large/' . $instruction->url;
+                        $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_large')));
+                        file_put_contents($destinationPath, $data);
+                    }
                 }
 
                 if ($at)
@@ -550,17 +554,19 @@ class BmoocController extends Controller {
             }
 
             // Thumbnails opslaan
-            // small
-            if($request->input('thumbnail_small') && $request->input('thumbnail_small') != null && $request->input('thumbnail_small') != ''){
-                $destinationPath = 'uploads/thumbnails/small/' . $topic->url;
-                $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_small')));
-                file_put_contents($destinationPath, $data);
-            }
-            // large
-            if($request->input('thumbnail_large') && $request->input('thumbnail_large') != null && $request->input('thumbnail_large') != ''){
-                $destinationPath = 'uploads/thumbnails/large/' . $topic->url;
-                $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_large')));
-                file_put_contents($destinationPath, $data);
+            if(isset($topic->url)){
+                // small
+                if($request->input('thumbnail_small') && $request->input('thumbnail_small') != null && $request->input('thumbnail_small') != ''){
+                    $destinationPath = 'uploads/thumbnails/small/' . $topic->url;
+                    $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_small')));
+                    file_put_contents($destinationPath, $data);
+                }
+                // large
+                if($request->input('thumbnail_large') && $request->input('thumbnail_large') != null && $request->input('thumbnail_large') != ''){
+                    $destinationPath = 'uploads/thumbnails/large/' . $topic->url;
+                    $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->input('thumbnail_large')));
+                    file_put_contents($destinationPath, $data);
+                }
             }
 
 

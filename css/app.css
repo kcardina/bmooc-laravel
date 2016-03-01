@@ -408,16 +408,13 @@ a.emphasis:hover, .text a:hover{
     display: block;
     height: 100%;
     width: 100%;
-    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .artefact .text, .artefact_lightbox .text{
     display: table-cell;
     vertical-align: middle;
-}
-
-.artefact .text h2{
-    text-align: center;
 }
 
 .topic .artefact:hover, .topic .artefact a:hover, .topic .artefact object:hover, .topic .artefact iframe:hover{
@@ -820,6 +817,78 @@ button.type_select.active{
 
 button.type_select.active .fa{
     color: #ffffff;
+}
+
+/* Inputfile */
+
+.input_file label{
+    width: 100%;
+}
+
+.js .inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.no-js .inputfile + div {
+    display: none;
+}
+
+.inputfile + div {
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 1rem;
+}
+
+.error .inputfile + div {
+    margin-bottom: 0;
+}
+
+.inputfile + div > span {
+    border: 1px solid white;
+    display: block;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.inputfile + div > span > span{
+    padding: 0.5rem;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.inputfile + div > span .file_label {
+    background-color: white;
+    color: #444;
+    fill: #444;
+    padding-right: 0.75rem;
+}
+
+.inputfile + div .file_label svg{
+    height: 0.8rem;
+    width: 0.8rem;
+    margin-right: 0.25rem
+}
+
+.inputfile + div > span.file_reset{
+    margin: 0;
+    padding: 0.5rem;
+    margin-left: 1rem;
+    width: auto;
+    float: right;
+}
+
+.inputfile + div > span.file_reset:hover{
+    background: red;
+}
+
+.inputfile + small.error {
+    margin-top: 100px;
 }
 
 /* MODAL */
