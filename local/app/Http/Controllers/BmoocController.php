@@ -37,7 +37,10 @@ class BmoocController extends Controller {
         //$user = Auth::user();
         $user = $request->user();
         //dd($request);
-        $topics = Artefact::with(['active_instruction', 'the_author', 'tags', 'last_modifier'])->whereNull('parent_id')->orderBy('created_at', 'desc')->orderBy('last_modified', 'desc')->get();
+        $topics = Artefact::with(['active_instruction', 'the_author', 'tags', 'last_modifier'])
+            ->whereNull('parent_id')
+            ->orderBy('last_modified', 'desc')
+            ->get();
         $auteurs = DB::table('users')->select('id', 'name')->distinct()->get();
         $tags = Tags::orderBy('tag')->get();
 
@@ -116,9 +119,10 @@ class BmoocController extends Controller {
                 ->lists('thread');
         // SORT?
         //->distinct();
-        $discs = Artefact::whereIn('thread', $discussies)
-                ->whereNull('parent_id')
+        $discs = Artefact::with(['last_modifier'])
                 ->orderBy('last_modified', 'desc')
+                ->whereIn('thread', $discussies)
+                ->whereNull('parent_id')
                 ->get();
         // extra information needed
         $auteurs = DB::table('users')->select('name', 'id')->distinct()->get();
