@@ -11,7 +11,7 @@
     <!-- stylesheets -->
     {!! HTML::style('css/foundation.css') !!}
     {!! HTML::style('//cdn.quilljs.com/0.20.1/quill.snow.css') !!}
-    {!! HTML::style('css/app.css') !!}
+    {!! HTML::style('css/app.css?v=' . Version::get()) !!}
     <!-- scripts -->
     {!! HTML::script('js/vendor/modernizr.js') !!}
   </head>
@@ -27,7 +27,6 @@
 
         </script>
 		<header class="green">
-		    {!! Version::get() !!}
 			<div class="row large">
 			    <div class="small-12 columns text-right">
                     <nav class="main">
@@ -455,8 +454,8 @@
 
     {!! HTML::script('js/vendor/jquery.js') !!}
     {!! HTML::script('js/foundation.min.js') !!}
-    {!! HTML::script('js/help.js') !!}
-    {!! HTML::script('js/app.js?v=0.4') !!}
+    {!! HTML::script('js/help.js?v=' . Version::get()) !!}
+    {!! HTML::script('js/app.js?v=' . Version::get()) !!}
     {!! HTML::script('//cdn.quilljs.com/0.20.1/quill.js') !!}
     {!! HTML::script('js/imagesloaded.min.js') !!}
     {!! HTML::script('js/jquery.form.min.js') !!}
