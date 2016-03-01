@@ -118,10 +118,18 @@ function displayDiv(type, div, data) {
         $("#" + lb + " .data-title").html(data.title);
         $("#" + lb + " .data-added").html(parseDate(data.created_at));
         $("#" + lb + " .data-author").html("<a href=\""+host+"/search/"+data.the_author.id+ "\">" + data.the_author.name + "</a>");
-        if (typeof data.copyright !== 'undefined') $("#" + lb + " .data-copyright").html(data.copyright);
-        else $("#" + lb + " .data-copyright").html("/");
-        if (typeof data.attachment !== 'undefined' && data.attachment && data.attachment != null) $("#" + lb + " .data-attachment").html("<a href=\""+ host + "/uploads/attachments/" + data.attachment +"\" target=\"_new\">document</a>");
-        else $("#" + lb + " .data-attachment").html("/");
+        if (data.copyright != null) {
+            $("#" + lb + " .data-copyright").html(data.copyright);
+            $("#" + lb + " .data-copyright").parent().show();
+        } else {
+            $("#" + lb + " .data-copyright").parent().hide();
+        }
+        if (data.attachment != null){
+            $("#" + lb + " .data-attachment").html("<a href=\""+ host + "/uploads/attachments/" + data.attachment +"\" target=\"_new\">document</a>");
+            $("#" + lb + " .data-attachment").parent().show();
+        } else {
+            $("#" + lb + " .data-attachment").parent().hide();
+        }
     }
     if (data.tags) {
         var list = "";
