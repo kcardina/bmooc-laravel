@@ -162,11 +162,13 @@ class BmoocController extends Controller {
                         if ($request->input('answer_url') && $request->input('answer_url')!=null && $request->input('answer_url')!='') { // URL meegegeven voor video
                             $url = $request->input('answer_url');
                             if (strpos($url, 'youtube') !== false || strpos($url, 'youtu.be') !== false) { // Youtube video
-                                if (strpos($url, 'watch?v='))
-                                    $comment->url = 'http://www.youtube.com/embed/' . substr($url, strpos($url, 'watch?v=') + 8);
-                                elseif (strpos($url, 'youtub.be/'))
-                                    $comment->url = 'http://www.youtube.com/embed/' . substr($url, strpos($url, 'youtu.be/') + 9);
-                                $at = ArtefactType::where('description', 'video_youtube')->first();
+
+                                $yt = BmoocController::parseYoutube($url);
+                                if($yt && $yt != ''){
+                                    $comment->url = 'http://www.youtube.com/embed/' . $yt;
+                                    $at = ArtefactType::where('description', 'video_youtube')->first();
+                                } else throw new Exception('The URL you entered is not a valid link to a YouTube video');
+
                             } elseif (strpos($url, 'vimeo.com') !== false) { // Vimeo video
                                 $comment->url = '//player.vimeo.com/video/'.substr($url, strpos($url, 'vimeo.com/') + 10);
                                 $at = ArtefactType::where('description', 'video_vimeo')->first();
@@ -329,14 +331,15 @@ class BmoocController extends Controller {
                         $at = ArtefactType::where('description', 'text')->first();
                         break;
                     case 'video':
-                        if ($request->input('instruction_url') && $request->input('instruction_url') != null && $request->input('instruction_url') != '') { // URL meegegeven voor video
+                        if ($request->input('instruction_url') && $request->input('instruction_url') != null && $request->input('instruction_url') != '') {// URL meegegeven voor video
                             $url = $request->input('instruction_url');
+
                             if (strpos($url, 'youtube') !== false || strpos($url, 'youtu.be') !== false) { // Youtube video
-                                if (strpos($url, 'watch?v='))
-                                    $instruction->url = 'http://www.youtube.com/embed/' . substr($url, strpos($url, 'watch?v=') + 8);
-                                elseif (strpos($url, 'youtub.be/'))
-                                    $instruction->url = 'http://www.youtube.com/embed/' . substr($url, strpos($url, 'youtu.be/') + 9);
-                                $at = ArtefactType::where('description', 'video_youtube')->first();
+                                $yt = BmoocController::parseYoutube($url);
+                                if($yt && $yt != ''){
+                                    $instruction->url = 'http://www.youtube.com/embed/' . $yt;
+                                    $at = ArtefactType::where('description', 'video_youtube')->first();
+                                } else throw new Exception('The URL you entered is not a valid link to a YouTube video');
                             } elseif (strpos($url, 'vimeo.com') !== false) { // Vimeo video
                                 $instruction->url = '//player.vimeo.com/video/' . substr($url, strpos($url, 'vimeo.com/') + 10);
                                 $at = ArtefactType::where('description', 'video_vimeo')->first();
@@ -507,11 +510,11 @@ class BmoocController extends Controller {
                     if ($request->input('topic_url') && $request->input('topic_url')!=null && $request->input('topic_url')!='') { // URL meegegeven voor video
                         $url = $request->input('topic_url');
                         if (strpos($url, 'youtube') !== false || strpos($url, 'youtu.be') !== false) { // Youtube video
-                            if (strpos($url, 'watch?v='))
-                                $topic->url = 'http://www.youtube.com/embed/' . substr($url, strpos($url, 'watch?v=') + 8);
-                            elseif (strpos($url, 'youtub.be/'))
-                                $topic->url = 'http://www.youtube.com/embed/' . substr($url, strpos($url, 'youtu.be/') + 9);
-                            $at = ArtefactType::where('description', 'video_youtube')->first();
+                            $yt = BmoocController::parseYoutube($url);
+                                if($yt && $yt != ''){
+                                    $comment->url = 'http://www.youtube.com/embed/' . $yt;
+                                    $at = ArtefactType::where('description', 'video_youtube')->first();
+                                } else throw new Exception('The URL you entered is not a valid link to a YouTube video');
                         } elseif (strpos($url, 'vimeo.com') !== false) { // Vimeo video
                             $topic->url = '//player.vimeo.com/video/'.substr($url, strpos($url, 'vimeo.com/') + 10);
                             $at = ArtefactType::where('description', 'video_vimeo')->first();
@@ -691,5 +694,13 @@ class BmoocController extends Controller {
             return $response;
         }
         abort(404, 'Image not found');
+    }
+
+    private function parseYoutube($url){
+        $video_id = false;
+        if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $url, $match)) {
+            $video_id = $match[1];
+        }
+        return $video_id;
     }
 }
