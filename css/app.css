@@ -417,10 +417,6 @@ a.emphasis:hover, .text a:hover{
     vertical-align: middle;
 }
 
-.artefact .text h2{
-    text-align: center;
-}
-
 .topic .artefact:hover, .topic .artefact a:hover, .topic .artefact object:hover, .topic .artefact iframe:hover{
     cursor: pointer;
     cursor: -webkit-zoom-in;
