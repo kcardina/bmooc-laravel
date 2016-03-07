@@ -410,6 +410,9 @@ var Thumbnail = (function(){
                 img.onload = function(){
                     pointer.render(img);
                 }
+                img.onerror = function(e){
+                    pointer.dfd.reject("Failed to read the image");
+                }
                 img.src = event.target.result;
             } else if(pointer.file.type.match('application/pdf') || pointer.file.type.match('application/x-pdf')){
                 var pdfAsArray = convertDataURIToBinary(event.target.result);
