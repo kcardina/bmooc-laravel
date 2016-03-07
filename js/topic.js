@@ -111,7 +111,6 @@ function hideDiv(div) {
 }
 
 function displayDiv(type, div, data) {
-    console.log(data);
     if (div.attr("data-reveal-id")) {
         // load metadata
         var lb = div.attr("data-reveal-id");
@@ -286,7 +285,6 @@ function filetypesToIcons(f){
     // get icons
     $.each(f, function(key, value){
         var icon = filetypeToIcon(parseInt(value.id), value.description);
-        console.log(r);
         if($.inArray(icon, r) == -1){
             r.push(icon);
         }

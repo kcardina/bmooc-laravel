@@ -215,7 +215,7 @@ class BmoocController extends Controller {
                 }
 
                 // Thumbnails opslaan
-                if(isset($topic->url)){
+                if(isset($comment->url)){
                     // small
                     if($request->input('thumbnail_small') && $request->input('thumbnail_small') != null && $request->input('thumbnail_small') != ''){
                         $destinationPath = 'uploads/thumbnails/small/' . $comment->url;
