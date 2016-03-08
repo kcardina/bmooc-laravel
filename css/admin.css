@@ -1,0 +1,14 @@
+header{
+    background: #333;
+    color: #fff;
+}
+
+header h1{
+    font-size: 2rem;
+    color: #fff;
+}
+
+nav.columns{
+    margin: 0;
+    padding: 0;
+}

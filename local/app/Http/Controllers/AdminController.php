@@ -5,9 +5,14 @@ namespace App\Http\Controllers;
 use Auth;
 use Request;
 use App;
-use App\Artefact;
 use Exception;
 use Input;
+use Artefacts;
+use App\User;
+use App\Artefact;
+use App\Tags;
+use stdClass;
+use DB;
 
 class AdminController extends Controller {
 
@@ -16,9 +21,48 @@ class AdminController extends Controller {
     }
 
     public function index(Request $request) {
+        $artefacts = new stdClass();
+        $users = new stdClass();
+        $tags = new stdClass();
+        // ALGEMEEN
+        $artefacts->aantal = DB::table('artefacts')->count();
+        $users->aantal = DB::table('users')->count();
+        $tags->aantal = DB::table('tags')->count();
+        // ARTEFACTS
+        $artefacts->types = [
+            "text" => DB::table('artefacts')->where('artefact_type', '28')->count(),
+            "image" => DB::table('artefacts')->where('artefact_type', '29')->orwhere('artefact_type', '30')->count(),
+            "video" => DB::table('artefacts')->where('artefact_type', '31')->orwhere('artefact_type', '32')->count(),
+            "pdf" => DB::table('artefacts')->where('artefact_type', '33')->orwhere('artefact_type', '34')->count()
+        ];
+        $artefacts->progress = json_encode(DB::table('artefacts')
+            ->select(DB::raw('artefacts.updated_at, CAST(artefacts.updated_at AS DATE) date, COUNT(updated_at) AS amount'))
+            ->groupBy(DB::raw('CAST(updated_at AS DATE)'))
+            ->get());
+        // USERS
+        $users->topten = DB::table('artefacts')
+            ->select(DB::raw('users.name, COUNT(author) AS theCount'))
+            ->join('users', 'artefacts.author', '=', 'users.id')
+            ->groupBy('artefacts.author')
+            ->orderBy('theCount', 'DESC')
+            ->limit(10)
+            ->get();
+        $users->passive = DB::table('users')
+            ->select('name')
+            ->leftJoin('artefacts', 'users.id', '=', 'artefacts.author')
+            ->where('artefacts.author', '=', NULL)
+            ->count();
+        // TAGS
+        // TAGS
+        $tags->topten = DB::table('tags')
+            ->select('tag', 'times_used')
+            ->orderBy('times_used', 'DESC')
+            ->orderBy('tag', 'ASC')
+            ->limit(10)
+            ->get();
         $user = Auth::user();
         if ($user && $user->role == "editor") {
-            return view('admin/index');
+            return view('admin/index', ['artefacts' => $artefacts, 'users' => $users, 'tags' => $tags]);
         } else {
             App::abort(401, 'Not authenticated');
         }
