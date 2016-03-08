@@ -413,9 +413,9 @@ var Thumbnail = (function(){
                 img.onerror = function(e){
                     pointer.dfd.reject("Failed to read the image");
                 }
-                img.src = event.target.result;
+                img.src = e.target.result;
             } else if(pointer.file.type.match('application/pdf') || pointer.file.type.match('application/x-pdf')){
-                var pdfAsArray = convertDataURIToBinary(event.target.result);
+                var pdfAsArray = convertDataURIToBinary(e.target.result);
                 pointer.renderPDF(pdfAsArray);
             } else {
                 pointer.dfd.reject("The uploaded file was not an image, nor a pdf");
