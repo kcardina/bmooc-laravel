@@ -669,7 +669,7 @@ var Tree = (function(){
             })
             .append("text")
             .attr('y', -IMAGE_SIZE/2)
-            .text(function(d) { return d.title; })
+            .text(function(d) { return splitString(d.title); })
             .each(function(d){
                 d3plus.textwrap()
                     .config(TEXTBOUNDS)
@@ -706,4 +706,10 @@ function parseDate(d) {
     var day = date.substring(8, 10);
 
     return(day + "/" + month + "/" + year + " " + time.substring(0, time.length - 3));
+}
+
+function splitString(str) {
+    return str.replace(/(\w{12})(?=.)/g, '$1 ');
+    //return str.replace(/[^A-Za-z0-9]/, ' ');
+    //return str.replace(/\W+/g, " ")
 }
