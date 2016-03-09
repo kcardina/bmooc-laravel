@@ -1,3 +1,20 @@
+html, body{
+    margin: 0;
+    padding: 0;
+}
+
+.row{
+    width: 100;
+    max-width: 100%
+}
+
+@media only screen and (min-width: 40.063em) {
+    .row{
+        max-width: 90%;
+    }
+} /* min-width 641px, medium screens */
+
+
 header{
     background: #333;
     color: #fff;
@@ -6,9 +23,61 @@ header{
 header h1{
     font-size: 2rem;
     color: #fff;
-}
-
-nav.columns{
+    display: inline;
     margin: 0;
     padding: 0;
+    margin-right: 2rem;
+}
+
+h2{
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-style: italic;
+    text-transform: uppercase;
+}
+
+.row.divide{
+    background: rgb(200, 255, 255);
+    margin-top: 2rem;
+}
+
+nav{
+    display: inline-block;
+    vertical-align: middle;
+}
+
+nav.inline, nav.inline ul, nav.inline ul li{
+    display: inline;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 2rem;
+}
+
+nav.inline.center{
+    display: block;
+    text-align: center;
+    width: 100%;
+}
+
+nav.inline li.active a{
+    text-decoration: underline;
+}
+
+nav.inline.slash li:after{
+    content: "/";
+}
+
+nav.inline.slash li:last-child:after{
+    content: "";
+}
+
+small{
+    font-size:  0.8rem;
+    vertical-align: middle;
+}
+
+.pullup{
+    max-height: 300px;
+    overflow: scroll;
 }

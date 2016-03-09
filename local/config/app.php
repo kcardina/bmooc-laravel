@@ -199,6 +199,7 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
 
         'Version'   => App\Helpers\Version::class,
+        'Menu'   => App\Helpers\Menu::class,
 		
         'Form'=> 'Illuminate\Html\FormFacade',
         'HTML'=> 'Illuminate\Html\HtmlFacade'

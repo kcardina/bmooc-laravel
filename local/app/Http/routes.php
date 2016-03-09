@@ -40,6 +40,8 @@ Route::get('logout', 'Auth\AuthController@getLogout');
 Route::post('feedback', 'BmoocController@feedback');
 
 Route::get('admin', 'AdminController@index');
+Route::get('admin/data/progress', 'AdminController@progress');
+Route::get('admin/data/tree', 'AdminController@tree');
 Route::get('admin/thumbnails', 'AdminController@getThumbnails');
 Route::post('admin/thumbnails', 'AdminController@postThumbnails');
 

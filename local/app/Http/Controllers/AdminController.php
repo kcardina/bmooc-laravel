@@ -25,6 +25,83 @@ class AdminController extends Controller {
         $users = new stdClass();
         $tags = new stdClass();
         // ALGEMEEN
+        $artefacts->count = DB::table('artefacts')->count();
+        $users->count = DB::table('users')->count();
+        $tags->count = DB::table('tags')->count();
+        // ARTEFACTS
+        $artefacts->types = [
+            "text" => DB::table('artefacts')->where('artefact_type', '28')->count(),
+            "image" => DB::table('artefacts')->where('artefact_type', '29')->orwhere('artefact_type', '30')->count(),
+            "video" => DB::table('artefacts')->where('artefact_type', '31')->orwhere('artefact_type', '32')->count(),
+            "pdf" => DB::table('artefacts')->where('artefact_type', '33')->orwhere('artefact_type', '34')->count()
+        ];
+        // USERS
+        $users->topten = DB::table('artefacts')
+            ->select(DB::raw('users.name, COUNT(author) AS theCount'))
+            ->join('users', 'artefacts.author', '=', 'users.id')
+            ->groupBy('artefacts.author')
+            ->orderBy('theCount', 'DESC')
+            ->limit(10)
+            ->get();
+        $users->passive = DB::table('users')
+            ->select('name')
+            ->leftJoin('artefacts', 'users.id', '=', 'artefacts.author')
+            ->where('artefacts.author', '=', NULL)
+            ->count();
+        // TAGS
+        // TAGS
+        $tags->topten = DB::table('artefacts_tags')
+            ->select(DB::raw('tag_id, tag, count(*) as times_used'))
+            ->groupBy('tag')
+            ->orderBy('times_used', 'DESC')
+            ->orderBy('tag', 'ASC')
+            ->limit(10)
+            ->join('tags', 'tag_id', '=', 'id')
+            ->get();
+        $tags->single = DB::table('artefacts_tags')
+            ->select(DB::raw('tag_id, tag, count(*) as times_used'))
+            ->groupBy('tag')
+            ->orderBy('tag', 'ASC')
+            ->having('times_used', '=', 1)
+            ->join('tags', 'tag_id', '=', 'id')
+            ->get();
+        /*$temp = DB::table('artefacts')
+            ->select(DB::raw('artefacts.thread, artefacts_tags.tag_id, COUNT(*) AS ct'))
+            ->distinct()
+            ->join('artefacts_tags', 'artefacts.id', '=', 'artefacts_tags.artefact_id')
+            ->groupBy('artefacts_tags.tag_id')
+            ->having('ct', '>', 1)
+            ->orderBY('ct', 'DESC')
+            ->get();*/
+        $sub = DB::table('artefacts_tags')
+            ->select(DB::raw('tag_id, tag, thread'))
+            ->groupBy('tag')
+            ->join('tags', 'tag_id', '=', 'id')
+            ->join('artefacts', 'artefacts_tags.artefact_id', '=', 'artefacts.id')
+            ->distinct()
+            ->get();
+        dd($sub);
+            //->groupBy('tag_id')
+        $temp = DB::table( DB::raw("({$sub->toSql()}) as sub") )
+            ->mergeBindings($sub->getQuery()) // you need to get underlying Query Builder
+            ->count();
+        dd($sub);
+        //$tags->multiple = DB::table('tags');
+        $user = Auth::user();
+        if ($user && $user->role == "editor") {
+            return view('admin.data.simple', ['artefacts' => $artefacts, 'users' => $users, 'tags' => $tags]);
+        } else {
+            App::abort(401, 'Not authenticated');
+        }
+    }
+
+
+    /*
+    public function index(Request $request) {
+        $artefacts = new stdClass();
+        $users = new stdClass();
+        $tags = new stdClass();
+        // ALGEMEEN
         $artefacts->aantal = DB::table('artefacts')->count();
         $users->aantal = DB::table('users')->count();
         $tags->aantal = DB::table('tags')->count();
@@ -62,10 +139,17 @@ class AdminController extends Controller {
             ->get();
         $user = Auth::user();
         if ($user && $user->role == "editor") {
-            return view('admin/index', ['artefacts' => $artefacts, 'users' => $users, 'tags' => $tags]);
+            return view('admin.data.simple', ['artefacts' => $artefacts, 'users' => $users, 'tags' => $tags]);
         } else {
             App::abort(401, 'Not authenticated');
         }
+    }*/
+
+    public function progress(Request $request){
+
+    }
+
+    public function tree(Request $request){
     }
 
     public function getThumbnails(Request $request) {
