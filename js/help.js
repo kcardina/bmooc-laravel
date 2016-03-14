@@ -91,13 +91,18 @@ $(document).ready(function(){
         e.preventDefault();
         e.stopImmediatePropagation();
         $('.help-msg').hide();
+        $('.help-msg').removeClass('right');
+        $('.help-msg').removeClass('left');
+
         $('.help-msg').css('top', $(this).offset().top + $(this).height() + 10 + 'px');
 
-        if($(this).offset().left > $(window).width() - 250 )
-            $('.help-msg').css('left', $(window).width() - 250 + 'px');
-        else
+        if($(this).offset().left > $(window).width() - 250 ) {
+            $('.help-msg').addClass('right');
+            $('.help-msg').css('left', $(this).offset().left - 250 + 'px');
+        } else{
+            $('.help-msg').addClass('left');
             $('.help-msg').css('left', $(this).offset().left + 'px');
-
+        }
         $('.msg-content').html(text[$(this).data('help-id')]);
         $('.help-msg').fadeIn();
     }

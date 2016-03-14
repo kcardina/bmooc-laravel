@@ -1033,6 +1033,11 @@ b{
   border-color: #031F20 transparent;
 }
 
+.help-msg.right:after{
+   left: auto;
+    right: 15px;
+}
+
 .help-txt{
     position: relative;
     margin: 0 auto;
