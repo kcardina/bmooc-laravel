@@ -15,7 +15,8 @@ var text = {
     view_current_instruction: "<p>Use this button to see the latest instruction for the current topic.</p>",
     new_instruction: "<p>Use this button to add a new instruction. If existing, the previous instruction will be disabled and replaced.</p>",
     details: "<p>Use this button to get more detailed information about the artefact above.</p>",
-    new_artefact: "<p>Use this button to add (some)thing to the artefact above. Your addition will appear next to it, like a tree getting a new branch.</p>"
+    new_artefact: "<p>Use this button to add (some)thing to the artefact above. Your addition will appear next to it, like a tree getting a new branch.</p>",
+    topic_title: "<p>This is a topic.<p><p>Click the title to expand the topic and see a visualisation of all the artefacts inside the topic.</p>"
 
 }
 
@@ -23,7 +24,8 @@ $(document).ready(function(){
 
     var help = false;
 
-    $("[help-show]").click(function(){
+    $("[help-show]").click(function(e){
+        e.stopImmediatePropagation();
         show($(this).attr('help-show'));
     });
 
@@ -75,7 +77,7 @@ $(document).ready(function(){
         // enable modals
         $("[data-rev-id]").each(function(){
             var d = $(this).attr("data-rev-id");
-            $(this).attr("data-rev-id");
+            $(this).removeAttr("data-rev-id");
             $(this).attr("data-reveal-id", d);
         });
 
@@ -87,10 +89,15 @@ $(document).ready(function(){
 
     function showMessage(e){
         e.preventDefault();
+        e.stopImmediatePropagation();
         $('.help-msg').hide();
-
         $('.help-msg').css('top', $(this).offset().top + $(this).height() + 10 + 'px');
-        $('.help-msg').css('left', $(this).offset().left + 'px');
+
+        if($(this).offset().left > $(window).width() - 250 )
+            $('.help-msg').css('left', $(window).width() - 250 + 'px');
+        else
+            $('.help-msg').css('left', $(this).offset().left + 'px');
+
         $('.msg-content').html(text[$(this).data('help-id')]);
         $('.help-msg').fadeIn();
     }

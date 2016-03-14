@@ -43,7 +43,7 @@
                                 </li>
                                 <li>
                                 @if (isset($user))
-                                    {!! HTML::link('auth/logout','Sign out', array('class'=>'logout')) !!}
+                                    {!! HTML::link('auth/logout','Sign out (' . $user->name . ')', array('class'=>'logout')) !!}
                                 @else
                                     {!! HTML::link('auth/login','Sign in', ['class'=>'logout', 'data-reveal-id'=>'signin', 'data-reveal-ajax'=>'true']) !!}
                                 @endif

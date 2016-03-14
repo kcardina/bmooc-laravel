@@ -42,7 +42,7 @@
                             </li>
                             <li>
                                 @if (isset($user))
-                                    {!! HTML::link('auth/logout','Sign out', array('class'=>'logout')) !!}
+                                    {!! HTML::link('auth/logout','Sign out (' . $user->name . ')', array('class'=>'logout'))  !!}
                                 @else
                                     {!! HTML::link('auth/login','Sign in', ['class'=>'logout', 'data-reveal-id'=>'signin', 'data-reveal-ajax'=>'true']) !!}
                                 @endif
@@ -122,6 +122,17 @@
         </header>
     
     <div class="items">
+
+    @if (isset($search) && sizeof($topic) <= 0)
+       <div class="item">
+          <div class="row">
+           <div class="columns">
+               <h2>No matching topics were found.</h2>
+           </div>
+        </div>
+       </div>
+    @endif
+
     @foreach ($topic as $topic)
         <!-- START item -->
 				<?php
@@ -131,7 +142,7 @@
     	
         <div class="item" data-id="{{ $topic->id }}">
            <div class="row">
-                <div class="small-11 large-5 columns">
+                <div class="small-11 large-5 columns" data-help="index" data-help-id="topic_title">
                     <h2>{{ $topic->title }}</h2>
                     <div class="extra laatste_wijziging">
                        initiated by
@@ -173,7 +184,7 @@
                     </div>
                     <div class="small-1 columns instruction text-right">
                         @if (isset($topic->active_instruction))
-                            <button class="small information" data-instruction-id="{{ $topic->active_instruction->id }}" data-instruction-added="{{ $topic->active_instruction->active_from }}" data-instruction-author="{{ $topic->active_instruction->name }}" data-instruction-title="{{ $topic->active_instruction->title }}" data-reveal-id="instruction" data-help="topic" data-help-id="details"></button>
+                            <button data-help="index" data-help-id="view_current_instruction" class="small information" data-instruction-id="{{ $topic->active_instruction->id }}" data-instruction-added="{{ $topic->active_instruction->active_from }}" data-instruction-author="{{ $topic->active_instruction->name }}" data-instruction-title="{{ $topic->active_instruction->title }}" data-reveal-id="instruction"></button>
                         @endif
                     </div>
                 </div>
@@ -523,7 +534,9 @@
             $('.type_select').click(showAnswerType);
 
             $('button[data-reveal-id="instruction"]').click(function(e){
-                e.stopImmediatePropagation();
+                if ($(this).attr('data-rev-id')) return false;
+                // $(document).on('open.fndtn.reveal', '#instruction', function () {
+                e.stopPropagation();
 
                 $("#instruction .data-title").html($(this).data('instruction-title'));
                 $("#instruction .data-added").html(parseDate($(this).data('instruction-added')));
