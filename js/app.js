@@ -580,9 +580,12 @@ var Tree = (function(){
             .nodeSize([IMAGE_SIZE, IMAGE_SIZE]);
         this.diagonal = d3.svg.diagonal()
             .projection(function(d) { return [d.y, d.x]; });
+        this.zoomListener = d3.behavior.zoom()
+            .on("zoom", this.zoom);
         this.svg = d3.select(this.el).append("svg")
             .attr("width", this.width)
             .attr("height", this.height)
+            .call(this.zoomListener)
             .append("g");
         this.g = this.svg.append("g");
     }
@@ -600,8 +603,21 @@ var Tree = (function(){
         if(h > this.height && this.height/h < s) s = this.height/h;
         t = [((this.width-w*s)/2)/s, -this.g.node().getBBox().y + (this.height-h*s)/2];
 
+        this.zoomListener.scale(s);
+        this.zoomListener.scaleExtent([s, 1])
+
         d3.select(this.g.node().parentNode).attr("transform", "scale(" + s + ")");
         this.g.attr("transform", "translate(" + t + ")");
+    }
+
+    /**
+     * Zoom and pan
+     * some interesting hints here: http://stackoverflow.com/questions/17405638/d3-js-zooming-and-panning-a-collapsible-tree-diagram
+     * It's important that this.zoomListener has been updated in the resize function
+     */
+    Tree.prototype.zoom = function(){
+        console.log('zoem');
+        d3.select(this).select('g').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
     }
 
     /**
