@@ -191,6 +191,14 @@
             </div>
             <div class="row extra">
                 <div class="small-12 columns tree">
+                   <nav>
+                    <button class="square purple nospace zoom-in">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                    <button class="square purple nospace zoom-out">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    </nav>
                 </div>
             </div>
         </div>
@@ -595,6 +603,12 @@
                    var tree = new Tree($('.tree', $this).get(0), data);
                     tree.draw();
                     tree.resize();
+                    $('.zoom-in', $this).click(function(){
+                        tree.zoom(1.1);
+                    });
+                    $('.zoom-out', $this).click(function(){
+                        tree.zoom(0.9);
+                    });
                 });
             }
 

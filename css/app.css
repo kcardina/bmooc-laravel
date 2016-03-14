@@ -301,6 +301,18 @@ a.emphasis:hover, .text a:hover{
     height: 100px;
 }
 
+.tree nav {
+    position: absolute;
+    right: 20px;
+    bottom: 0;
+}
+
+.tree nav button.square {
+    width: 2rem;
+    height: 2rem;
+    display: block;
+}
+
 .item .antwoorden a{
     border-bottom: none;
 }
@@ -760,6 +772,10 @@ button.pullup{
     margin-top: -10px;
 }
 
+button.nospace{
+    margin: 0;
+}
+
 button.plus{
     background: url(../img/plus.png) no-repeat left center;
     background-size: contain;
@@ -810,7 +826,7 @@ label small{
     color: inherit;
 }
 
-button .fa{
+form button .fa{
     display: block;
     font-size: 3rem;
     margin-bottom: 1rem;

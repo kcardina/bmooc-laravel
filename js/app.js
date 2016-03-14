@@ -581,7 +581,7 @@ var Tree = (function(){
         this.diagonal = d3.svg.diagonal()
             .projection(function(d) { return [d.y, d.x]; });
         this.zoomListener = d3.behavior.zoom()
-            .on("zoom", this.zoom);
+            .on("zoom", this.zoomed);
         this.svg = d3.select(this.el).append("svg")
             .attr("width", this.width)
             .attr("height", this.height)
@@ -601,13 +601,15 @@ var Tree = (function(){
 
         if(w > this.width) s = this.width/w;
         if(h > this.height && this.height/h < s) s = this.height/h;
-        t = [((this.width-w*s)/2)/s, -this.g.node().getBBox().y + (this.height-h*s)/2];
 
-        this.zoomListener.scale(s);
-        this.zoomListener.scaleExtent([s, 1])
+        t_w = this.width/2 - (w/2)*s;
+        t_h = -this.g.node().getBBox().y*s + (this.height-h*s)/2
 
-        d3.select(this.g.node().parentNode).attr("transform", "scale(" + s + ")");
-        this.g.attr("transform", "translate(" + t + ")");
+        this.zoomListener
+            .scale(s)
+            .translate([t_w, t_h])
+            .scaleExtent([s, 1])
+            .event(d3.select(this.el));
     }
 
     /**
@@ -615,9 +617,28 @@ var Tree = (function(){
      * some interesting hints here: http://stackoverflow.com/questions/17405638/d3-js-zooming-and-panning-a-collapsible-tree-diagram
      * It's important that this.zoomListener has been updated in the resize function
      */
-    Tree.prototype.zoom = function(){
-        console.log('zoem');
+    Tree.prototype.zoomed = function(){
         d3.select(this).select('g').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+    }
+
+    /**
+     * Zoom given scale and automatically translate to center
+    **/
+    Tree.prototype.zoom = function(scale){
+        var newScale = this.zoomListener.scale() * scale;
+        var newX = (this.zoomListener.translate()[0] - this.width / 2) * scale + this.width / 2;
+        var newY = (this.zoomListener.translate()[1] - this.height / 2) * scale + this.height / 2;
+
+        var w = this.g.node().getBBox().width;
+        t_w = this.zoomListener.translate[0] + (w/2)*s - (w/2)*newScale
+
+        console.log(this.svg);
+        console.log(this.el);
+
+        this.zoomListener
+            .scale(newScale)
+            //.translate([newX,newY])
+            .event(d3.select(this.el));
     }
 
     /**
