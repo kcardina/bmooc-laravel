@@ -568,11 +568,13 @@
                     $(this).toggleClass("active");
                     // maak grootte van scherm
                     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-                    $('.tree', this).height(h - document.getElementsByTagName('header')[0].offsetHeight);
+                    var i = (Math.max(document.getElementsByClassName('item')[0].offsetHeight, 0));
+                    $('.tree', this).height(h - document.getElementsByTagName('header')[0].offsetHeight - i * 2);
                     // scroll naar boven
                     // maak info grootte van scherm
                     $('html,body').animate({
-                        scrollTop: $(this).offset().top},
+                        scrollTop: $(this).offset().top - i
+                    },
                     'slow');
                     $(".extra", this).slideToggle();
                 }
