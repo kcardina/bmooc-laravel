@@ -330,10 +330,10 @@ function render(div, type, data){
             html = 'Please, <a href="' + host + "/uploads/" + data.url + '" target="_new">download</a> the document to open...';
             break;
         case 'local_pdf':
-            html = '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>';
+            html = '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">Click to view PDF</a><br/><small>(Your browser does not support viewing of PDF\'s inside bMOOC)</small></object>';
             break;
         case 'remote_pdf':
-            html = '<object data="' + data.url + '" type="application/pdf"><a href="' + data.url + '">[PDF]</a></object>';
+            html = '<object data="' + data.url + '" type="application/pdf"><a href="' + data.url + '">Click to view PDF</a><br/><small>(Your browser does not support viewing of PDF\'s inside bMOOC)</small></object>';
             break;
         default:
             html = '<p>Oops. Something went wrong. Try reloading the page.</p>';

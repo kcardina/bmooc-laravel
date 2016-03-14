@@ -520,6 +520,12 @@ fieldset{
     margin-bottom: 1rem;
 }
 
+@-moz-document url-prefix() {
+    fieldset {
+        display: table-cell;
+    }
+}
+
 fieldset.error input{
     margin-bottom: 1rem;
 }
