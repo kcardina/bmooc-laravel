@@ -305,12 +305,24 @@ a.emphasis:hover, .text a:hover{
     position: absolute;
     right: 20px;
     bottom: 0;
+    text-align: right;
+    display: none;
 }
 
 .tree nav button.square {
     width: 2rem;
     height: 2rem;
     display: block;
+    margin-left: auto;
+}
+
+.tree nav .purple{
+    background: purple;
+    margin-bottom: 1px;
+}
+
+.tree nav .purple:hover{
+    opacity: 0.8;
 }
 
 .item .antwoorden a{

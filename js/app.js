@@ -588,12 +588,21 @@ var Tree = (function(){
             .call(this.zoomListener)
             .append("g");
         this.g = this.svg.append("g");
+        this.hasZoom = false;
     }
 
     /**
-     * Automatically resize the tree to fit the container
+     *  Resize the tree to fit the container
      */
-    Tree.prototype.resize = function(){
+    Tree.prototype.fit = function(){
+
+        console.log('w: ' + this.el.offsetWidth);
+        console.log('h: ' + this.el.offsetHeight);
+        console.log(this.el);
+
+        this.width = this.el.offsetWidth - 30;
+        this.height = this.el.offsetHeight;
+
         var t = [0,0],
             s = 1,
             w = this.g.node().getBBox().width,
@@ -605,15 +614,41 @@ var Tree = (function(){
         t_w = this.width/2 - (w/2)*s;
         t_h = -this.g.node().getBBox().y*s + (this.height-h*s)/2
 
-        console.log("pre-resize: ["+this.zoomListener.translate()[0]+", "+this.zoomListener.translate()[1]+"]");
-
         this.zoomListener
             .scale(s)
             .translate([t_w, t_h])
             .scaleExtent([s, 1])
             .event(d3.select(this.el));
 
-        console.log("post-resize: ["+this.zoomListener.translate()[0]+", "+this.zoomListener.translate()[1]+"]");
+        if(s != 1){
+            this.hasZoom = true;
+        }
+    }
+
+    /**
+     * scale+move when window is resized
+     */
+    Tree.prototype.resize = function(){
+
+        this.width = this.el.offsetWidth - 30;
+        this.height = this.el.offsetHeight;
+
+        var t = [0,0],
+            s = this.zoomListener.scale(),
+            w = this.g.node().getBBox().width,
+            h = this.g.node().getBBox().height;
+
+        t_w = this.width/2 - (w/2)*s;
+        t_h = -this.g.node().getBBox().y*s + (this.height-h*s)/2
+
+        this.zoomListener
+            .scale(s)
+            .translate([t_w, t_h])
+            .event(d3.select(this.el));
+
+        if(s != 1){
+            this.hasZoom = true;
+        }
     }
 
     /**

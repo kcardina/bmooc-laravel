@@ -198,6 +198,7 @@
                     <button class="square purple nospace zoom-out">
                         <i class="fa fa-minus"></i>
                     </button>
+                    <small>(or scroll + drag to explore)</small>
                     </nav>
                 </div>
             </div>
@@ -574,20 +575,27 @@
                     $(".item .extra").hide();
                     // show new one
                     $(this).toggleClass("active");
-                    // maak grootte van scherm
-                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-                    var i = (Math.max(document.getElementsByClassName('item')[0].offsetHeight, 0));
-                    $('.tree', this).height(h - document.getElementsByTagName('header')[0].offsetHeight - i * 2);
+                    // maak grootte van scherm (met javascript, want svg kan niet in % of vh container
+                    resizeItem($(this));
+
                     // scroll naar boven
                     // maak info grootte van scherm
                     $('html,body').animate({
-                        scrollTop: $(this).offset().top - i
+                        scrollTop: $(this).offset().top - 25
                     },
                     'slow');
                     $(".extra", this).slideToggle();
                 }
             });
             
+            function resizeItem(item){
+                var OFFSET = 25;
+
+                var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+                $('.tree', item).height(h - document.getElementsByTagName('header')[0].offsetHeight - OFFSET * 2);
+            }
+
             //bind an event listener to every item.
             // on first click: make an ajax call to load all the images & unbind the event listener
             $(".item").bind('click', loadAnswers);
@@ -602,18 +610,26 @@
                 $.getJSON(host + '/json/topic/' + data['id'] + '/answers/search/' + author + '/' + tag + '/' + keyword, function(data) {
                    var tree = new Tree($('.tree', $this).get(0), data);
                     tree.draw();
-                    tree.resize();
-                    $('.zoom-in', $this).click(function(){
-                        tree.zoom(0.1);
-                    });
-                    $('.zoom-out', $this).click(function(){
-                        tree.zoom(-0.1);
-                    });
+                    tree.fit();
+                    if(tree.hasZoom){
+                        $('nav', $this).show();
+                        $('.zoom-in', $this).click(function(){
+                            tree.zoom(0.1);
+                        });
+                        $('.zoom-out', $this).click(function(){
+                            tree.zoom(-0.1);
+                        });
+                    }
                     $('.tree', $this).on('mousedown', function(){
                         $(this).addClass('move');
                     });
                     $('.tree', $this).on('mouseup', function(){
                         $(this).removeClass('move');
+                    });
+                    // handle resize
+                    $(window).on('resize', function(){
+                        resizeItem($this);
+                        tree.fit();
                     });
                 });
             }
