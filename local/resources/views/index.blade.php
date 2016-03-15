@@ -581,7 +581,7 @@
                     // scroll naar boven
                     // maak info grootte van scherm
                     $('html,body').animate({
-                        scrollTop: $(this).offset().top - 25
+                        scrollTop: $(this).offset().top - 40
                     },
                     'slow');
                     $(".extra", this).slideToggle();
@@ -589,7 +589,7 @@
             });
             
             function resizeItem(item){
-                var OFFSET = 25;
+                var OFFSET = 40;
 
                 var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
@@ -634,10 +634,17 @@
                         }
                     });
                     // handle reopen
-                    $('.row', $this).first().on('click', function(){
-                        setTimeout( function(){
-                            tree.fit()
-                        }, 400 ); // wait for toggle animation to finish
+                    $('.row', $this).first().on('click', function(e){
+                        if($this.hasClass('active')) {
+                            $(".item .extra").slideUp(function(){
+                                $(".item").removeClass("active");
+                            });
+                            e.stopPropagation();
+                        } else {
+                            setTimeout( function(){
+                                tree.fit()
+                            }, 400 ); // wait for toggle animation to finish
+                        }
                     });
                 });
             }
