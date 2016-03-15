@@ -355,8 +355,9 @@ a.emphasis:hover, .text a:hover{
 
 /* DATAVIS */
 .item svg{
-    pointer-events: all;
     overflow: hidden;
+    cursor: default;
+    cursor: grab;
 }
 
 .move svg, .move g, .move a {
