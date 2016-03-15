@@ -343,6 +343,10 @@ a.emphasis:hover, .text a:hover{
 }
 
 /* DATAVIS */
+.move svg, .move g, .move a {
+    cursor: move !important;
+}
+
 .node rect{
     fill: #282828;
     stroke: none;

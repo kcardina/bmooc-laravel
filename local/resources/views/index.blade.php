@@ -604,10 +604,16 @@
                     tree.draw();
                     tree.resize();
                     $('.zoom-in', $this).click(function(){
-                        tree.zoom(1.1);
+                        tree.zoom(0.1);
                     });
                     $('.zoom-out', $this).click(function(){
-                        tree.zoom(0.9);
+                        tree.zoom(-0.1);
+                    });
+                    $('.tree', $this).on('mousedown', function(){
+                        $(this).addClass('move');
+                    });
+                    $('.tree', $this).on('mouseup', function(){
+                        $(this).removeClass('move');
                     });
                 });
             }

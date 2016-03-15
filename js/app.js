@@ -605,11 +605,15 @@ var Tree = (function(){
         t_w = this.width/2 - (w/2)*s;
         t_h = -this.g.node().getBBox().y*s + (this.height-h*s)/2
 
+        console.log("pre-resize: ["+this.zoomListener.translate()[0]+", "+this.zoomListener.translate()[1]+"]");
+
         this.zoomListener
             .scale(s)
             .translate([t_w, t_h])
             .scaleExtent([s, 1])
             .event(d3.select(this.el));
+
+        console.log("post-resize: ["+this.zoomListener.translate()[0]+", "+this.zoomListener.translate()[1]+"]");
     }
 
     /**
@@ -625,19 +629,18 @@ var Tree = (function(){
      * Zoom given scale and automatically translate to center
     **/
     Tree.prototype.zoom = function(scale){
-        var newScale = this.zoomListener.scale() * scale;
-        var newX = (this.zoomListener.translate()[0] - this.width / 2) * scale + this.width / 2;
-        var newY = (this.zoomListener.translate()[1] - this.height / 2) * scale + this.height / 2;
-
-        var w = this.g.node().getBBox().width;
-        t_w = this.zoomListener.translate[0] + (w/2)*s - (w/2)*newScale
-
-        console.log(this.svg);
-        console.log(this.el);
-
+        // calculate scale
+        var oldScale = this.zoomListener.scale();
+        var newScale = this.zoomListener.scale() + scale;
+        // apply scale (for boundaries)
         this.zoomListener
-            .scale(newScale)
-            //.translate([newX,newY])
+            .scale(newScale);
+        // calculate translation
+        var w = this.g.node().getBBox().width;
+        t_w = this.zoomListener.translate()[0] + (w/2)*oldScale - (w/2)*this.zoomListener.scale()
+        // apply translation
+        this.zoomListener
+            .translate([t_w,this.zoomListener.translate()[1]])
             .event(d3.select(this.el));
     }
 
