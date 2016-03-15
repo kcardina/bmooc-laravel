@@ -655,7 +655,6 @@ var Tree = (function(){
         d3.select(window).on("mouseup.zoom", function(){
             d3.select(window).on("mousemove.zoom", null).on("mouseup.zoom", null);
         });
-        return true;
     }
 
     /**
