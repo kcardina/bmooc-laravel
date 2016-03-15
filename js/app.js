@@ -574,8 +574,6 @@ var Tree = (function(){
     function Tree(el, data){
         this.data = data;
         this.el = el;
-        this.width = el.offsetWidth - 30;
-        this.height = el.offsetHeight;
         this.tree = d3.layout.tree()
             .nodeSize([IMAGE_SIZE, IMAGE_SIZE]);
         this.diagonal = d3.svg.diagonal()
@@ -583,8 +581,8 @@ var Tree = (function(){
         this.zoomListener = d3.behavior.zoom()
             .on("zoom", this.zoomed);
         this.svg = d3.select(this.el).append("svg")
-            .attr("width", this.width)
-            .attr("height", this.height)
+            .attr("width", '100%')
+            .attr("height", '100%')
             .call(this.zoomListener)
             .append("g");
         this.g = this.svg.append("g");
@@ -596,23 +594,19 @@ var Tree = (function(){
      */
     Tree.prototype.fit = function(){
 
-        console.log('w: ' + this.el.offsetWidth);
-        console.log('h: ' + this.el.offsetHeight);
-        console.log(this.el);
-
-        this.width = this.el.offsetWidth - 30;
-        this.height = this.el.offsetHeight;
+        width = this.el.getBoundingClientRect().width;
+        height = this.el.getBoundingClientRect().height;
 
         var t = [0,0],
             s = 1,
             w = this.g.node().getBBox().width,
             h = this.g.node().getBBox().height;
 
-        if(w > this.width) s = this.width/w;
-        if(h > this.height && this.height/h < s) s = this.height/h;
+        if(w > width) s = width/w;
+        if(h > height && height/h < s) s = height/h;
 
-        t_w = this.width/2 - (w/2)*s;
-        t_h = -this.g.node().getBBox().y*s + (this.height-h*s)/2
+        t_w = width/2 - (w/2)*s;
+        t_h = -this.g.node().getBBox().y*s + (height-h*s)/2
 
         this.zoomListener
             .scale(s)
@@ -630,16 +624,16 @@ var Tree = (function(){
      */
     Tree.prototype.resize = function(){
 
-        this.width = this.el.offsetWidth - 30;
-        this.height = this.el.offsetHeight;
+        width = this.el.getBoundingClientRect().width;
+        height = this.el.getBoundingClientRect().height;
 
         var t = [0,0],
             s = this.zoomListener.scale(),
             w = this.g.node().getBBox().width,
             h = this.g.node().getBBox().height;
 
-        t_w = this.width/2 - (w/2)*s;
-        t_h = -this.g.node().getBBox().y*s + (this.height-h*s)/2
+        t_w = width/2 - (w/2)*s;
+        t_h = -this.g.node().getBBox().y*s + (height-h*s)/2
 
         this.zoomListener
             .scale(s)

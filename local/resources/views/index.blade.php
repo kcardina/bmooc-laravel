@@ -628,8 +628,16 @@
                     });
                     // handle resize
                     $(window).on('resize', function(){
-                        resizeItem($this);
-                        tree.fit();
+                        if($this.hasClass('active')){
+                            resizeItem($this);
+                            tree.fit();
+                        }
+                    });
+                    // handle reopen
+                    $('.row', $this).first().on('click', function(){
+                        setTimeout( function(){
+                            tree.fit()
+                        }, 400 ); // wait for toggle animation to finish
                     });
                 });
             }
