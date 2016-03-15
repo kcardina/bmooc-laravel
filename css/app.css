@@ -281,7 +281,6 @@ a.emphasis:hover, .text a:hover{
 
 .item.active{
     background: #282828;
-    cursor: default;
 }
 
 .extra.laatste_wijziging{
@@ -355,6 +354,11 @@ a.emphasis:hover, .text a:hover{
 }
 
 /* DATAVIS */
+.item svg{
+    pointer-events: all;
+    overflow: hidden;
+}
+
 .move svg, .move g, .move a {
     cursor: move !important;
 }
