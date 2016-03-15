@@ -652,6 +652,9 @@ var Tree = (function(){
      */
     Tree.prototype.zoomed = function(){
         d3.select(this).select('g').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        d3.select(window).on("mouseup.zoom", function(){
+            d3.select(window).on("mousemove.zoom", null).on("mouseup.zoom", null);
+        });
     }
 
     /**
