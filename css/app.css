@@ -301,6 +301,30 @@ a.emphasis:hover, .text a:hover{
     height: 100px;
 }
 
+.tree nav {
+    position: absolute;
+    right: 20px;
+    bottom: 0;
+    text-align: right;
+    display: none;
+}
+
+.tree nav button.square {
+    width: 2rem;
+    height: 2rem;
+    display: block;
+    margin-left: auto;
+}
+
+.tree nav .purple{
+    background: purple;
+    margin-bottom: 1px;
+}
+
+.tree nav .purple:hover{
+    opacity: 0.8;
+}
+
 .item .antwoorden a{
     border-bottom: none;
 }
@@ -331,6 +355,10 @@ a.emphasis:hover, .text a:hover{
 }
 
 /* DATAVIS */
+.move svg, .move g, .move a {
+    cursor: move !important;
+}
+
 .node rect{
     fill: #282828;
     stroke: none;
@@ -760,6 +788,10 @@ button.pullup{
     margin-top: -10px;
 }
 
+button.nospace{
+    margin: 0;
+}
+
 button.plus{
     background: url(../img/plus.png) no-repeat left center;
     background-size: contain;
@@ -810,7 +842,7 @@ label small{
     color: inherit;
 }
 
-button .fa{
+form button .fa{
     display: block;
     font-size: 3rem;
     margin-bottom: 1rem;
@@ -1007,7 +1039,7 @@ b{
   margin: 1em 0 3em;
   border-radius: 10px;
   background: #031F20;
-    min-width: 100px;
+    min-width: 250px;
     max-width: 500px;
     font-size: 0.8rem;
     z-index: 9999;
@@ -1031,6 +1063,11 @@ b{
   border-width: 0 15px 15px;
   border-style: solid;
   border-color: #031F20 transparent;
+}
+
+.help-msg.right:after{
+   left: auto;
+    right: 15px;
 }
 
 .help-txt{

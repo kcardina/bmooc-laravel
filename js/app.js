@@ -574,34 +574,103 @@ var Tree = (function(){
     function Tree(el, data){
         this.data = data;
         this.el = el;
-        this.width = el.offsetWidth - 30;
-        this.height = el.offsetHeight;
         this.tree = d3.layout.tree()
             .nodeSize([IMAGE_SIZE, IMAGE_SIZE]);
         this.diagonal = d3.svg.diagonal()
             .projection(function(d) { return [d.y, d.x]; });
+        this.zoomListener = d3.behavior.zoom()
+            .on("zoom", this.zoomed);
         this.svg = d3.select(this.el).append("svg")
-            .attr("width", this.width)
-            .attr("height", this.height)
+            .attr("width", '100%')
+            .attr("height", '100%')
+            .call(this.zoomListener)
             .append("g");
         this.g = this.svg.append("g");
+        this.hasZoom = false;
     }
 
     /**
-     * Automatically resize the tree to fit the container
+     *  Resize the tree to fit the container
      */
-    Tree.prototype.resize = function(){
+    Tree.prototype.fit = function(){
+
+        width = this.el.getBoundingClientRect().width;
+        height = this.el.getBoundingClientRect().height;
+
         var t = [0,0],
             s = 1,
             w = this.g.node().getBBox().width,
             h = this.g.node().getBBox().height;
 
-        if(w > this.width) s = this.width/w;
-        if(h > this.height && this.height/h < s) s = this.height/h;
-        t = [((this.width-w*s)/2)/s, -this.g.node().getBBox().y + (this.height-h*s)/2];
+        if(w > width) s = width/w;
+        if(h > height && height/h < s) s = height/h;
 
-        d3.select(this.g.node().parentNode).attr("transform", "scale(" + s + ")");
-        this.g.attr("transform", "translate(" + t + ")");
+        t_w = width/2 - (w/2)*s;
+        t_h = -this.g.node().getBBox().y*s + (height-h*s)/2
+
+        this.zoomListener
+            .scale(s)
+            .translate([t_w, t_h])
+            .scaleExtent([s, 1])
+            .event(d3.select(this.el));
+
+        if(s != 1){
+            this.hasZoom = true;
+        }
+    }
+
+    /**
+     * scale+move when window is resized
+     */
+    Tree.prototype.resize = function(){
+
+        width = this.el.getBoundingClientRect().width;
+        height = this.el.getBoundingClientRect().height;
+
+        var t = [0,0],
+            s = this.zoomListener.scale(),
+            w = this.g.node().getBBox().width,
+            h = this.g.node().getBBox().height;
+
+        t_w = width/2 - (w/2)*s;
+        t_h = -this.g.node().getBBox().y*s + (height-h*s)/2
+
+        this.zoomListener
+            .scale(s)
+            .translate([t_w, t_h])
+            .event(d3.select(this.el));
+
+        if(s != 1){
+            this.hasZoom = true;
+        }
+    }
+
+    /**
+     * Zoom and pan
+     * some interesting hints here: http://stackoverflow.com/questions/17405638/d3-js-zooming-and-panning-a-collapsible-tree-diagram
+     * It's important that this.zoomListener has been updated in the resize function
+     */
+    Tree.prototype.zoomed = function(){
+        d3.select(this).select('g').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+    }
+
+    /**
+     * Zoom given scale and automatically translate to center
+    **/
+    Tree.prototype.zoom = function(scale){
+        // calculate scale
+        var oldScale = this.zoomListener.scale();
+        var newScale = this.zoomListener.scale() + scale;
+        // apply scale (for boundaries)
+        this.zoomListener
+            .scale(newScale);
+        // calculate translation
+        var w = this.g.node().getBBox().width;
+        t_w = this.zoomListener.translate()[0] + (w/2)*oldScale - (w/2)*this.zoomListener.scale()
+        // apply translation
+        this.zoomListener
+            .translate([t_w,this.zoomListener.translate()[1]])
+            .event(d3.select(this.el));
     }
 
     /**

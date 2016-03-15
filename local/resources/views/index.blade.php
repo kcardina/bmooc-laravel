@@ -42,7 +42,7 @@
                             </li>
                             <li>
                                 @if (isset($user))
-                                    {!! HTML::link('auth/logout','Sign out', array('class'=>'logout')) !!}
+                                    {!! HTML::link('auth/logout','Sign out (' . $user->name . ')', array('class'=>'logout'))  !!}
                                 @else
                                     {!! HTML::link('auth/login','Sign in', ['class'=>'logout', 'data-reveal-id'=>'signin', 'data-reveal-ajax'=>'true']) !!}
                                 @endif
@@ -122,6 +122,17 @@
         </header>
     
     <div class="items">
+
+    @if (isset($search) && sizeof($topic) <= 0)
+       <div class="item">
+          <div class="row">
+           <div class="columns">
+               <h2>No matching topics were found.</h2>
+           </div>
+        </div>
+       </div>
+    @endif
+
     @foreach ($topic as $topic)
         <!-- START item -->
 				<?php
@@ -131,7 +142,7 @@
     	
         <div class="item" data-id="{{ $topic->id }}">
            <div class="row">
-                <div class="small-11 large-5 columns">
+                <div class="small-11 large-5 columns" data-help="index" data-help-id="topic_title">
                     <h2>{{ $topic->title }}</h2>
                     <div class="extra laatste_wijziging">
                        initiated by
@@ -173,13 +184,22 @@
                     </div>
                     <div class="small-1 columns instruction text-right">
                         @if (isset($topic->active_instruction))
-                            <button class="small information" data-instruction-id="{{ $topic->active_instruction->id }}" data-instruction-added="{{ $topic->active_instruction->active_from }}" data-instruction-author="{{ $topic->active_instruction->name }}" data-instruction-title="{{ $topic->active_instruction->title }}" data-reveal-id="instruction" data-help="topic" data-help-id="details"></button>
+                            <button data-help="index" data-help-id="view_current_instruction" class="small information" data-instruction-id="{{ $topic->active_instruction->id }}" data-instruction-added="{{ $topic->active_instruction->active_from }}" data-instruction-author="{{ $topic->active_instruction->name }}" data-instruction-title="{{ $topic->active_instruction->title }}" data-reveal-id="instruction"></button>
                         @endif
                     </div>
                 </div>
             </div>
             <div class="row extra">
                 <div class="small-12 columns tree">
+                   <nav>
+                    <button class="square purple nospace zoom-in">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                    <button class="square purple nospace zoom-out">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <small>(or scroll + drag to explore)</small>
+                    </nav>
                 </div>
             </div>
         </div>
@@ -523,7 +543,9 @@
             $('.type_select').click(showAnswerType);
 
             $('button[data-reveal-id="instruction"]').click(function(e){
-                e.stopImmediatePropagation();
+                if ($(this).attr('data-rev-id')) return false;
+                // $(document).on('open.fndtn.reveal', '#instruction', function () {
+                e.stopPropagation();
 
                 $("#instruction .data-title").html($(this).data('instruction-title'));
                 $("#instruction .data-added").html(parseDate($(this).data('instruction-added')));
@@ -553,18 +575,27 @@
                     $(".item .extra").hide();
                     // show new one
                     $(this).toggleClass("active");
-                    // maak grootte van scherm
-                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-                    $('.tree', this).height(h - document.getElementsByTagName('header')[0].offsetHeight);
+                    // maak grootte van scherm (met javascript, want svg kan niet in % of vh container
+                    resizeItem($(this));
+
                     // scroll naar boven
                     // maak info grootte van scherm
                     $('html,body').animate({
-                        scrollTop: $(this).offset().top},
+                        scrollTop: $(this).offset().top - 25
+                    },
                     'slow');
                     $(".extra", this).slideToggle();
                 }
             });
             
+            function resizeItem(item){
+                var OFFSET = 25;
+
+                var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+                $('.tree', item).height(h - document.getElementsByTagName('header')[0].offsetHeight - OFFSET * 2);
+            }
+
             //bind an event listener to every item.
             // on first click: make an ajax call to load all the images & unbind the event listener
             $(".item").bind('click', loadAnswers);
@@ -579,7 +610,35 @@
                 $.getJSON(host + '/json/topic/' + data['id'] + '/answers/search/' + author + '/' + tag + '/' + keyword, function(data) {
                    var tree = new Tree($('.tree', $this).get(0), data);
                     tree.draw();
-                    tree.resize();
+                    tree.fit();
+                    if(tree.hasZoom){
+                        $('nav', $this).show();
+                        $('.zoom-in', $this).click(function(){
+                            tree.zoom(0.1);
+                        });
+                        $('.zoom-out', $this).click(function(){
+                            tree.zoom(-0.1);
+                        });
+                    }
+                    $('.tree', $this).on('mousedown', function(){
+                        $(this).addClass('move');
+                    });
+                    $('.tree', $this).on('mouseup', function(){
+                        $(this).removeClass('move');
+                    });
+                    // handle resize
+                    $(window).on('resize', function(){
+                        if($this.hasClass('active')){
+                            resizeItem($this);
+                            tree.fit();
+                        }
+                    });
+                    // handle reopen
+                    $('.row', $this).first().on('click', function(){
+                        setTimeout( function(){
+                            tree.fit()
+                        }, 400 ); // wait for toggle animation to finish
+                    });
                 });
             }
 
