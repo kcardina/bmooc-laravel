@@ -4,6 +4,18 @@ var artefactRight = null;
 var temp_future = null;
 var future = null;
 
+window.onpopstate = function(event) {
+    if (event.state) {
+        showArtefactLeft(event.state.id, event.state.answer, null, false);
+    }
+};
+
+/**
+ *  Show the artefacts
+ *  @param {Integer} id - the id of the left artefact
+ *  @param {Integer} answer - show the n'th answer
+ *  @param {Integer} prev - the id of the left artefact. Used when clicking the left arrow to be able to return to the current state
+ */
 function showArtefactLeft(id, answer, prev) {
     if (!answer)
         answer = 0;
@@ -74,7 +86,14 @@ function showArtefactRight(number_of_answer) {
         else
             showArrowRight(); // showArrowRight(null);
 
-        window.history.pushState("topichistory", "bMOOC - Topic " + artefactLeft.artefact.id + "/" + number_of_answer, host + "/topic/" + artefactLeft.artefact.id + "/" + number_of_answer);
+        var newHistory = {
+            id: artefactLeft.artefact.id,
+            answer: number_of_answer
+        }
+
+        if(JSON.stringify(window.history.state) !== JSON.stringify(newHistory)){
+            window.history.pushState(newHistory, "bMOOC LUCA School of Arts", host + "/topic/" + artefactLeft.artefact.id + "/" + number_of_answer);
+        }
     });
 }
 
