@@ -40,6 +40,8 @@
         </header>
         <div class="columns medium-6 large-3 small-centered">
             <h2>Sign in</h2>
+              <p>Using bMOOC for the first time? {!! HTML::link('auth/register','Create an account', ['class'=>'emphasis', 'data-reveal-id'=>'signup', 'data-reveal-ajax'=>'true']) !!}.</p>
+
                @if (count($errors))
                         @foreach($errors->all() as $error)
                             <small class="error">{{ $error }}</small>
