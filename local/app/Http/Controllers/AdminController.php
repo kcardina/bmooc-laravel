@@ -197,7 +197,25 @@ class AdminController extends Controller {
     }*/
 
     public function progress(Request $request){
+        // LIST OF TOPICS
+        $topics = DB::table('artefacts')
+            ->orderBy('updated_at', 'desc')
+            ->whereNull('parent_id')
+            ->get();
+        $topic = Input::get('topic');
+        if(!is_numeric($topic)) $topic = null;
 
+        $artefacts = DB::table('artefacts')
+            ->select('id', 'created_at')
+            ->where('thread', 'LIKE', $topic)
+            ->get();
+
+        $user = Auth::user();
+        if ($user && $user->role == "editor") {
+            return view('admin.data.progress', ['topics' => $topics, 'topic' => $topic, 'artefacts' => $artefacts]);
+        } else {
+            App::abort(401, 'Not authenticated');
+        }
     }
 
     public function tree(Request $request){

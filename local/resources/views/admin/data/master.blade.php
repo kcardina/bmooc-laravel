@@ -3,7 +3,7 @@
 @section('title', 'Data')
 
 @section('nav_secondary')
-    <li class="{{ Menu::active('admin') }}">
+    <li class="{{ Menu::active('basic') }}">
         <a href="/admin/data/basic">basic</a>
     </li>
     <li class="{{ Menu::active('progress') }}">
@@ -40,7 +40,7 @@
 @section('scripts')
     @parent
 
-    {!! HTML::script('//d3js.org/d3.v3.min.js') !!}
+    {!! HTML::script('//d3js.org/d3.v3.js') !!}
     {!! HTML::script('js/d3plus.min.js') !!}
 
     <script>

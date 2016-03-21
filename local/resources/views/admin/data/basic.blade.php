@@ -150,7 +150,7 @@
             var el = ".users_distribution";
 
             // Generate a Bates distribution of 10 random variables.
-            var values = JSON.parse('{!! json_encode($users->users) !!}');
+            var values = JSON.parse('{!! addslashes(json_encode($users->users)) !!}');
 
             // A formatter for counts.
             var formatCount = d3.format("f");
