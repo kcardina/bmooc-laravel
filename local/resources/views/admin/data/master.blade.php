@@ -24,8 +24,12 @@
                 <select name="topic">
                     <option value="all">ALL TOPICS</option>
                     <option disabled>──────────</option>
-                   @foreach($topics as $topic)
-                    <option value="{{ $topic->id }}">{{ $topic->title }}</option>
+                   @foreach($topics as $t)
+                       @if ($t->thread == $topic)
+                            <option selected value="{{ $t->thread }}">{{ $t->title }}</option>
+                       @else
+                           <option value="{{ $t->thread }}">{{ $t->title }}</option>
+                       @endif
                     @endforeach
                 </select>
             </form>

@@ -26,61 +26,101 @@ class AdminController extends Controller {
             ->orderBy('updated_at', 'desc')
             ->whereNull('parent_id')
             ->get();
+        $topic = Input::get('topic');
+        if(!is_numeric($topic)) $topic = null;
+
         $artefacts = new stdClass();
         $users = new stdClass();
         $tags = new stdClass();
         // ALGEMEEN
-        $artefacts->count = DB::table('artefacts')->count();
-        $users->count = DB::table('users')->count();
-        $tags->count = DB::table('tags')->count();
+        $artefacts->count = DB::table('artefacts')
+            ->where('thread', 'LIKE', $topic)
+            ->count();
+        if($topic)
+            $users->count = sizeof(DB::table('users')
+                ->select('users.id')
+                ->leftJoin('artefacts', 'users.id', '=', 'artefacts.author')
+                ->where('thread', 'LIKE', $topic)
+                ->groupBy('users.id')
+                ->get());
+        else $users->count = DB::table('users')->count();
+        $users->all = DB::table('users')->count();
+        if($topic)
+            $tags->count = sizeof(DB::table('artefacts_tags')
+                ->join('artefacts', 'artefact_id', '=', 'artefacts.id')
+                ->where('thread', 'LIKE', $topic)
+                ->groupBy('tag_id')
+                ->get());
+        else $tags->count = DB::table('tags')->count();
         // ARTEFACTS
         $artefacts->types = [
-            "text" => DB::table('artefacts')->where('artefact_type', '28')->count(),
-            "image" => DB::table('artefacts')->where('artefact_type', '29')->orwhere('artefact_type', '30')->count(),
-            "video" => DB::table('artefacts')->where('artefact_type', '31')->orwhere('artefact_type', '32')->count(),
-            "pdf" => DB::table('artefacts')->where('artefact_type', '33')->orwhere('artefact_type', '34')->count()
+            "text" => DB::table('artefacts')
+                ->where('thread', 'LIKE', $topic)
+                ->where('artefact_type', '28')
+                ->count(),
+            "image" => DB::table('artefacts')
+                ->where('thread', 'LIKE', $topic)
+                ->where(function ($query) {
+                    $query->where('artefact_type', '29')
+                        ->orwhere('artefact_type', '30');
+                })
+                ->count(),
+            "video" => DB::table('artefacts')
+                ->where('thread', 'LIKE', $topic)
+                ->where(function ($query) {
+                    $query->where('artefact_type', '31')
+                        ->orwhere('artefact_type', '32');
+                })
+                ->count(),
+            "pdf" => DB::table('artefacts')
+                ->where('thread', 'LIKE', $topic)
+                ->where(function ($query) {
+                    $query->where('artefact_type', '33')
+                        ->orwhere('artefact_type', '34');
+                })
+                ->count()
         ];
         // USERS
         $users->topten = DB::table('artefacts')
             ->select(DB::raw('users.name, COUNT(author) AS post_count'))
             ->join('users', 'artefacts.author', '=', 'users.id')
+            ->where('thread', 'LIKE', $topic)
             ->groupBy('artefacts.author')
             ->orderBy('post_count', 'DESC')
             ->limit(10)
             ->get();
-        $users->topten = DB::table('artefacts')
-            ->select(DB::raw('users.name, COUNT(author) AS post_count'))
+        $users->active = sizeof(DB::table('artefacts')
             ->join('users', 'artefacts.author', '=', 'users.id')
+            ->where('thread', 'LIKE', $topic)
             ->groupBy('artefacts.author')
-            ->orderBy('post_count', 'DESC')
-            ->limit(10)
-            ->get();
-        $users->passive = DB::table('users')
-            ->select('name')
-            ->leftJoin('artefacts', 'users.id', '=', 'artefacts.author')
-            ->where('artefacts.author', '=', NULL)
-            ->count();
+            ->get());
+        $users->passive = $users->all - $users->active;
         $users->users = DB::table('artefacts')
             ->select(DB::raw('users.name, COUNT(author) AS post_count'))
             ->join('users', 'artefacts.author', '=', 'users.id')
+            ->where('thread', 'LIKE', $topic)
             ->groupBy('artefacts.author')
             ->orderBy('post_count', 'DESC')
             ->get();
         // TAGS
         $tags->topten = DB::table('artefacts_tags')
             ->select(DB::raw('tag_id, tag, count(*) as times_used'))
+            ->leftJoin('artefacts', 'artefact_id', '=', 'artefacts.id')
+            ->where('thread', 'LIKE', $topic)
             ->groupBy('tag')
             ->orderBy('times_used', 'DESC')
             ->orderBy('tag', 'ASC')
             ->limit(10)
-            ->join('tags', 'tag_id', '=', 'id')
+            ->join('tags', 'tag_id', '=', 'tags.id')
             ->get();
         $tags->single = DB::table('artefacts_tags')
             ->select(DB::raw('tag_id, tag, count(*) as times_used'))
+            ->leftJoin('artefacts', 'artefact_id', '=', 'artefacts.id')
+            ->where('thread', 'LIKE', $topic)
             ->groupBy('tag')
             ->orderBy('tag', 'ASC')
             ->having('times_used', '=', 1)
-            ->join('tags', 'tag_id', '=', 'id')
+            ->join('tags', 'tag_id', '=', 'tags.id')
             ->get();
         /*$temp = DB::table('artefacts')
             ->select(DB::raw('artefacts.thread, artefacts_tags.tag_id, COUNT(*) AS ct'))
@@ -89,7 +129,7 @@ class AdminController extends Controller {
             ->groupBy('artefacts_tags.tag_id')
             ->having('ct', '>', 1)
             ->orderBY('ct', 'DESC')
-            ->get();*/
+            ->get();
         $sub = DB::table('artefacts_tags')
             ->select(DB::raw('tag_id, tag, thread'))
             ->groupBy('tag')
@@ -97,10 +137,10 @@ class AdminController extends Controller {
             ->join('artefacts', 'artefacts_tags.artefact_id', '=', 'artefacts.id')
             ->distinct()
             ->get();
-        //$tags->multiple = DB::table('tags');
+        //$tags->multiple = DB::table('tags'); */
         $user = Auth::user();
         if ($user && $user->role == "editor") {
-            return view('admin.data.basic', ['topics' => $topics, 'artefacts' => $artefacts, 'users' => $users, 'tags' => $tags]);
+            return view('admin.data.basic', ['topics' => $topics, 'topic' => $topic, 'artefacts' => $artefacts, 'users' => $users, 'tags' => $tags]);
         } else {
             App::abort(401, 'Not authenticated');
         }

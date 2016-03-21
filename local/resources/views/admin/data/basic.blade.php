@@ -119,9 +119,9 @@
         </div>
         <div class="columns medium-4">
             <dl>
-                <dt>Passive users</dt>
+                <dt>Not involved</dt>
                 <dd>
-                    {{ $users->passive }} <small>({{ round(($users->passive/$users->count)*100) }}%)</small>
+                    {{ $users->passive }} <small>({{ round(($users->passive/$users->all)*100) }}%)</small>
                 </dd>
             </dl>
         </div>
@@ -150,14 +150,12 @@
             var el = ".users_distribution";
 
             // Generate a Bates distribution of 10 random variables.
-            //var values = d3.range(1000).map(d3.random.bates(10));
             var values = JSON.parse('{!! json_encode($users->users) !!}');
-            console.log(values);
 
             // A formatter for counts.
             var formatCount = d3.format("f");
 
-            var margin = {top: 10, right: 0, bottom: 30, left: 0},
+            var margin = {top: 10, right: 30, bottom: 30, left: 30},
                 width = $(el).closest('.columns').width() - margin.left - margin.right,
                 height = 500 - margin.top - margin.bottom;
 
