@@ -20,7 +20,12 @@ class AdminController extends Controller {
         //$this->middleware('auth', ['except' => 'index']);
     }
 
-    public function index(Request $request) {
+    public function basic(Request $request) {
+        // LIST OF TOPICS
+        $topics = DB::table('artefacts')
+            ->orderBy('updated_at', 'desc')
+            ->whereNull('parent_id')
+            ->get();
         $artefacts = new stdClass();
         $users = new stdClass();
         $tags = new stdClass();
@@ -37,10 +42,17 @@ class AdminController extends Controller {
         ];
         // USERS
         $users->topten = DB::table('artefacts')
-            ->select(DB::raw('users.name, COUNT(author) AS theCount'))
+            ->select(DB::raw('users.name, COUNT(author) AS post_count'))
             ->join('users', 'artefacts.author', '=', 'users.id')
             ->groupBy('artefacts.author')
-            ->orderBy('theCount', 'DESC')
+            ->orderBy('post_count', 'DESC')
+            ->limit(10)
+            ->get();
+        $users->topten = DB::table('artefacts')
+            ->select(DB::raw('users.name, COUNT(author) AS post_count'))
+            ->join('users', 'artefacts.author', '=', 'users.id')
+            ->groupBy('artefacts.author')
+            ->orderBy('post_count', 'DESC')
             ->limit(10)
             ->get();
         $users->passive = DB::table('users')
@@ -48,7 +60,12 @@ class AdminController extends Controller {
             ->leftJoin('artefacts', 'users.id', '=', 'artefacts.author')
             ->where('artefacts.author', '=', NULL)
             ->count();
-        // TAGS
+        $users->users = DB::table('artefacts')
+            ->select(DB::raw('users.name, COUNT(author) AS post_count'))
+            ->join('users', 'artefacts.author', '=', 'users.id')
+            ->groupBy('artefacts.author')
+            ->orderBy('post_count', 'DESC')
+            ->get();
         // TAGS
         $tags->topten = DB::table('artefacts_tags')
             ->select(DB::raw('tag_id, tag, count(*) as times_used'))
@@ -80,16 +97,10 @@ class AdminController extends Controller {
             ->join('artefacts', 'artefacts_tags.artefact_id', '=', 'artefacts.id')
             ->distinct()
             ->get();
-        dd($sub);
-            //->groupBy('tag_id')
-        $temp = DB::table( DB::raw("({$sub->toSql()}) as sub") )
-            ->mergeBindings($sub->getQuery()) // you need to get underlying Query Builder
-            ->count();
-        dd($sub);
         //$tags->multiple = DB::table('tags');
         $user = Auth::user();
         if ($user && $user->role == "editor") {
-            return view('admin.data.simple', ['artefacts' => $artefacts, 'users' => $users, 'tags' => $tags]);
+            return view('admin.data.basic', ['topics' => $topics, 'artefacts' => $artefacts, 'users' => $users, 'tags' => $tags]);
         } else {
             App::abort(401, 'Not authenticated');
         }

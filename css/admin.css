@@ -81,3 +81,20 @@ small{
     max-height: 300px;
     overflow: scroll;
 }
+
+.bar rect{
+    fill: #333;
+}
+
+.bar text{
+    fill: white;
+}
+
+.axis path, .axis line{
+    fill: none;
+    stroke: #333;
+}
+
+svg{
+    font-size: 0.7rem;
+}

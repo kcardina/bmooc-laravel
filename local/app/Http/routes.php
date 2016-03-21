@@ -39,7 +39,10 @@ Route::get('logout', 'Auth\AuthController@getLogout');
 
 Route::post('feedback', 'BmoocController@feedback');
 
-Route::get('admin', 'AdminController@index');
+Route::get('admin', function(){
+    return Redirect::to('admin/data/basic');
+});
+Route::get('admin/data/basic', 'AdminController@basic');
 Route::get('admin/data/progress', 'AdminController@progress');
 Route::get('admin/data/tree', 'AdminController@tree');
 Route::get('admin/thumbnails', 'AdminController@getThumbnails');

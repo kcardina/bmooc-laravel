@@ -17,7 +17,7 @@
               <h1>bMOOC Dashboard</h1>
                <nav>
                   <div class="icon-bar two-up">
-                      <a href="/admin" class="item {{ Menu::active('admin') }}">
+                      <a href="/admin/data" class="item {{ Menu::active('admin') }}">
                         <i title="video" class="fa fa-area-chart"></i>
                         <label>Data</label>
                       </a>
@@ -46,5 +46,9 @@
     </div>
 
     {!! HTML::script('js/vendor/jquery.js') !!}
+    <script>
+        var host = "{{ URL::to('/') }}";
+    </script>
+    @yield('scripts')
 </body>
 </html>
