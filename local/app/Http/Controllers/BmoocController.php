@@ -81,6 +81,11 @@ class BmoocController extends Controller {
     public function showTopic($links, $answer = null) {
         $user = Auth::user();
         $artefactLinks = Artefact::find($links);
+
+        if(!$user){
+            return view('errors.login');
+        }
+
         if ($artefactLinks) {
             return view('topic', ['artefactLeft' => $links, 'answerRight' => $answer, 'user' => $user]);
         } else {
