@@ -517,7 +517,7 @@ class BmoocController extends Controller {
                         if (strpos($url, 'youtube') !== false || strpos($url, 'youtu.be') !== false) { // Youtube video
                             $yt = BmoocController::parseYoutube($url);
                                 if($yt && $yt != ''){
-                                    $comment->url = 'http://www.youtube.com/embed/' . $yt;
+                                    $topic->url = 'http://www.youtube.com/embed/' . $yt;
                                     $at = ArtefactType::where('description', 'video_youtube')->first();
                                 } else throw new Exception('The URL you entered is not a valid link to a YouTube video');
                         } elseif (strpos($url, 'vimeo.com') !== false) { // Vimeo video
