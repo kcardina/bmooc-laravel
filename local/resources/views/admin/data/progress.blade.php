@@ -3,8 +3,23 @@
 @section('content')
     @parent
 
+   <div class="row divide">
+        <div class="columns">
+            <h2>Additions / day</h2>
+        </div>
+    </div>
     <div class="row">
-        <div class="columns graph">
+        <div class="columns day_graph">
+
+        </div>
+    </div>
+    <div class="row divide">
+        <div class="columns">
+            <h2>Additions grow</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="columns grow_graph">
 
         </div>
     </div>
@@ -17,10 +32,10 @@
 
     <script>
         /**
-         * USERS_DISTRIBUTION
+         * ARTEFACTS / DATE
          */
 
-        var el = ".graph";
+        var el = ".day_graph";
 
         // Set the dimensions of the canvas / graph
         var margin = {top: 30, right: 20, bottom: 30, left: 50},
@@ -28,11 +43,12 @@
             height = 270 - margin.top - margin.bottom;
 
         // Parse the date / time
-        var parseDate = function(d){
+        var trimDate = function(d){
             var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d);
-            var format = d3.time.format('%Y-%m-%d');
-            var stripped = format(date);
-            return d3.time.format('%Y-%m-%d').parse(stripped);
+            return d3.time.format('%Y-%m-%d')(date);
+        }
+        var parseDate = function(d){
+            return d3.time.format('%Y-%m-%d').parse(d);
         }
 
         // Set the ranges
@@ -48,12 +64,8 @@
 
         // Define the line
         var valueline = d3.svg.line()
-            .x(function(d) {
-                return x(d.key);
-            })
-            .y(function(d) {
-                return y(d.values);
-            });
+            .x(function(d) { return x(parseDate(d.key)); })
+            .y(function(d) { return y(d.values); });
 
         // Adds the svg canvas
         var svg = d3.select(el)
@@ -66,35 +78,96 @@
 
         var artefacts = JSON.parse('{!! addslashes(json_encode($artefacts)) !!}');
 
-        /* data.forEach(function(d) {
-            d.date = parseDate(d.created_at);
-            d.close = d.id;
-            console.log(d);
-        }); */
-
-
         var data = d3.nest()
-          .key(function(d) {
-              return parseDate(d.created_at);
-          })
-          .rollup(function(d) {
-           return d3.sum(d, function(g) {return 1 });
-          }).entries(artefacts);
-
-        console.log(data);
+          .key(function(d) { return trimDate(d.created_at); })
+          .rollup(function(d) { return d3.sum(d, function(g) {return 1 }); })
+          .entries(artefacts);
 
         // Scale the range of the data
-        x.domain(d3.extent(data, function(d) {
-            return d.key;
-        }));
-        y.domain([0, d3.max(data, function(d) {
-            return d.values;
-        })]);
+        x.domain(d3.extent(data, function(d) { return parseDate(d.key); }));
+        y.domain([0, d3.max(data, function(d) { return d.values; })]);
 
         // Add the valueline path.
         svg.append("path")
             .attr("class", "line")
             .attr("d", valueline(data));
+
+        // Add the scatterplot
+        svg.selectAll("dot")
+            .data(data)
+            .enter().append("circle")
+            .attr("r", 3.5)
+            .attr("cx", function(d) { return x(parseDate(d.key)); })
+            .attr("cy", function(d) { return y(d.values); })
+            .append("svg:title")
+            .text(function(d){ return d.values + " additions" });
+
+        // Add the X Axis
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        // Add the Y Axis
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis);
+
+    </script>
+
+    <script>
+        /**
+         * ARTEFACTS / PROGRESS
+         */
+
+        var el = ".grow_graph";
+
+        // Adds the svg canvas
+        var svg = d3.select(el)
+            .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+                .attr("transform",
+                      "translate(" + margin.left + "," + margin.top + ")");
+
+        var artefacts = JSON.parse('{!! addslashes(json_encode($artefacts)) !!}');
+
+        var counter = 0;
+
+        var data = d3.nest()
+            .key(function(d) {
+                return trimDate(d.created_at);
+             })
+            .rollup(function(d) {
+                return counter += d3.sum(d, function(g) {
+                    return 1
+                });
+            })
+            .entries(artefacts);
+
+        // Define the line
+        var valueline = d3.svg.line()
+            .x(function(d) { return x(parseDate(d.key)); })
+            .y(function(d) { return y(d.values); });
+
+        // Scale the range of the data
+        y.domain([0, d3.max(data, function(d) { return d.values; })]);
+
+        // Add the valueline path.
+        svg.append("path")
+            .attr("class", "line")
+            .attr("d", valueline(data));
+
+        // Add the scatterplot
+        svg.selectAll("dot")
+            .data(data)
+            .enter().append("circle")
+            .attr("r", 3.5)
+            .attr("cx", function(d) { return x(parseDate(d.key)); })
+            .attr("cy", function(d) { return y(d.values); })
+            .append("svg:title")
+            .text(function(d){ return d.key + " - " + d.values + " additions" });
 
         // Add the X Axis
         svg.append("g")

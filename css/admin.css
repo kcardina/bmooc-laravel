@@ -93,9 +93,20 @@ small{
 .axis path, .axis line{
     fill: none;
     stroke: #333;
+    stroke-width: 1;
 }
 
 svg{
     font-size: 0.7rem;
     text-anchor: middle;
+}
+
+path {
+    stroke: #333;
+    stroke-width: 2;
+    fill: none;
+}
+
+circle{
+    cursor: help;
 }
