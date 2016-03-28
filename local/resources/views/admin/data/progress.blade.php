@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="columns day_graph">
+        <div class="columns" id="day_graph">
 
         </div>
     </div>
@@ -19,7 +19,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="columns grow_graph">
+        <div class="columns" id="grow_graph">
 
         </div>
     </div>
@@ -35,7 +35,7 @@
          * ARTEFACTS / DATE
          */
 
-        var el = ".day_graph";
+        var el = "#day_graph";
 
         // Set the dimensions of the canvas / graph
         var margin = {top: 30, right: 20, bottom: 30, left: 50},
@@ -120,7 +120,7 @@
          * ARTEFACTS / PROGRESS
          */
 
-        var el = ".grow_graph";
+        var el = "#grow_graph";
 
         // Adds the svg canvas
         var svg = d3.select(el)

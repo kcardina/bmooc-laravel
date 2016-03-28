@@ -128,7 +128,7 @@
         <div class="columns medium-4">
             <dl>
                 <dt>Distribution</dt>
-                <dd class="users_distribution"></dd>
+                <dd id="users_distribution"></dd>
             </dl>
         </div>
     </div>
@@ -147,7 +147,7 @@
          */
         $(document).ready(function(){
 
-            var el = ".users_distribution";
+            var el = "#users_distribution";
 
             // Generate a Bates distribution of 10 random variables.
             var values = JSON.parse('{!! addslashes(json_encode($users->users)) !!}');
@@ -179,7 +179,7 @@
                 .scale(x)
                 .orient("bottom");
 
-            var svg = d3.select(".users_distribution").append("svg")
+            var svg = d3.select(el).append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
               .append("g")

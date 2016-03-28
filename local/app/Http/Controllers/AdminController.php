@@ -219,6 +219,32 @@ class AdminController extends Controller {
     }
 
     public function tree(Request $request){
+        // LIST OF TOPICS
+        $topics = DB::table('artefacts')
+            ->orderBy('updated_at', 'desc')
+            ->whereNull('parent_id')
+            ->get();
+        $topic = Input::get('topic');
+        if(!is_numeric($topic)) $topic = null;
+
+        $parent = DB::table('artefacts')
+            ->select('id')
+            ->where('thread', 'LIKE', $topic)
+            ->where('parent_id', '=', NULL)
+            ->get();
+        $parent = Artefact::all()->find($parent[0]->id);
+
+        $tree = $parent;
+
+        $parent->children = BmoocJsonController::buildTree($parent->children, $parent->id);
+
+        $user = Auth::user();
+        if ($user && $user->role == "editor") {
+            return view('admin.data.tree', ['topics' => $topics, 'topic' => $topic, 'tree' => $tree]);
+        } else {
+            App::abort(401, 'Not authenticated');
+        }
+
     }
 
     public function getThumbnails(Request $request) {

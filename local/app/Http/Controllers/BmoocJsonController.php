@@ -53,7 +53,7 @@ class BmoocJsonController extends Controller
         return response()->json($tree);
 	}
 
-    private function buildTree($elements, $parentId = 0, $author = null, $tag = null, $keyword = null) {
+    public static function buildTree($elements, $parentId = 0, $author = null, $tag = null, $keyword = null) {
         $branch = array();
         foreach ($elements as $element) {
             $element = BmoocJsonController::search($element, $author, $tag, $keyword);
@@ -69,7 +69,7 @@ class BmoocJsonController extends Controller
         return $branch;
     }
 
-    private function search($element, $author, $tag, $keyword){
+    private static function search($element, $author, $tag, $keyword){
         if(isset($author) && $author != 'all'){
             if($element->author != $author) $element->hidden = true;
         }

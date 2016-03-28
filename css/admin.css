@@ -108,5 +108,18 @@ path {
 }
 
 circle{
-    cursor: help;
+    cursor: pointer;
+}
+
+#tree rect{
+    fill:white;
+}
+
+#tree path{
+    stroke: gray;
+}
+
+.slider .handle text {
+  text-align: center;
+  font-size: 1rem;
 }
