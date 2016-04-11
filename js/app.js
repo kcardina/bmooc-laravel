@@ -330,10 +330,10 @@ function render(div, type, data){
             html = 'Please, <a href="' + host + "/uploads/" + data.url + '" target="_new">download</a> the document to open...';
             break;
         case 'local_pdf':
-            html = '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">[PDF]</a></object>';
+            html = '<object data="' + host + "/uploads/" + data.url + '" type="application/pdf"><a href="' + host + "/uploads/" + data.url + '">Click to view PDF</a><br/><small>(Your browser does not support viewing of PDF\'s inside bMOOC)</small></object>';
             break;
         case 'remote_pdf':
-            html = '<object data="' + data.url + '" type="application/pdf"><a href="' + data.url + '">[PDF]</a></object>';
+            html = '<object data="' + data.url + '" type="application/pdf"><a href="' + data.url + '">Click to view PDF</a><br/><small>(Your browser does not support viewing of PDF\'s inside bMOOC)</small></object>';
             break;
         default:
             html = '<p>Oops. Something went wrong. Try reloading the page.</p>';
@@ -410,9 +410,12 @@ var Thumbnail = (function(){
                 img.onload = function(){
                     pointer.render(img);
                 }
-                img.src = event.target.result;
+                img.onerror = function(e){
+                    pointer.dfd.reject("Failed to read the image");
+                }
+                img.src = e.target.result;
             } else if(pointer.file.type.match('application/pdf') || pointer.file.type.match('application/x-pdf')){
-                var pdfAsArray = convertDataURIToBinary(event.target.result);
+                var pdfAsArray = convertDataURIToBinary(e.target.result);
                 pointer.renderPDF(pdfAsArray);
             } else {
                 pointer.dfd.reject("The uploaded file was not an image, nor a pdf");
@@ -571,34 +574,106 @@ var Tree = (function(){
     function Tree(el, data){
         this.data = data;
         this.el = el;
-        this.width = el.offsetWidth - 30;
-        this.height = el.offsetHeight;
         this.tree = d3.layout.tree()
             .nodeSize([IMAGE_SIZE, IMAGE_SIZE]);
         this.diagonal = d3.svg.diagonal()
             .projection(function(d) { return [d.y, d.x]; });
+        this.zoomListener = d3.behavior.zoom()
+            .on("zoom", this.zoomed);
         this.svg = d3.select(this.el).append("svg")
-            .attr("width", this.width)
-            .attr("height", this.height)
+            .attr("width", '100%')
+            .attr("height", '100%')
+            .call(this.zoomListener)
             .append("g");
         this.g = this.svg.append("g");
+        this.hasZoom = false;
     }
 
     /**
-     * Automatically resize the tree to fit the container
+     *  Resize the tree to fit the container
      */
-    Tree.prototype.resize = function(){
+    Tree.prototype.fit = function(){
+
+        width = this.el.getBoundingClientRect().width;
+        height = this.el.getBoundingClientRect().height;
+
         var t = [0,0],
             s = 1,
             w = this.g.node().getBBox().width,
             h = this.g.node().getBBox().height;
 
-        if(w > this.width) s = this.width/w;
-        if(h > this.height && this.height/h < s) s = this.height/h;
-        t = [((this.width-w*s)/2)/s, -this.g.node().getBBox().y + (this.height-h*s)/2];
+        if(w > width) s = width/w;
+        if(h > height && height/h < s) s = height/h;
 
-        d3.select(this.g.node().parentNode).attr("transform", "scale(" + s + ")");
-        this.g.attr("transform", "translate(" + t + ")");
+        t_w = width/2 - (w/2)*s;
+        t_h = -this.g.node().getBBox().y*s + (height-h*s)/2
+
+        this.zoomListener
+            .scale(s)
+            .translate([t_w, t_h])
+            .scaleExtent([s, 1])
+            .event(d3.select(this.el));
+
+        if(s != 1){
+            this.hasZoom = true;
+        }
+    }
+
+    /**
+     * scale+move when window is resized
+     */
+    Tree.prototype.resize = function(){
+
+        width = this.el.getBoundingClientRect().width;
+        height = this.el.getBoundingClientRect().height;
+
+        var t = [0,0],
+            s = this.zoomListener.scale(),
+            w = this.g.node().getBBox().width,
+            h = this.g.node().getBBox().height;
+
+        t_w = width/2 - (w/2)*s;
+        t_h = -this.g.node().getBBox().y*s + (height-h*s)/2
+
+        this.zoomListener
+            .scale(s)
+            .translate([t_w, t_h])
+            .event(d3.select(this.el));
+
+        if(s != 1){
+            this.hasZoom = true;
+        }
+    }
+
+    /**
+     * Zoom and pan
+     * some interesting hints here: http://stackoverflow.com/questions/17405638/d3-js-zooming-and-panning-a-collapsible-tree-diagram
+     * It's important that this.zoomListener has been updated in the resize function
+     */
+    Tree.prototype.zoomed = function(){
+        d3.select(this).select('g').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        d3.select(window).on("mouseup.zoom", function(){
+            d3.select(window).on("mousemove.zoom", null).on("mouseup.zoom", null);
+        });
+    }
+
+    /**
+     * Zoom given scale and automatically translate to center
+    **/
+    Tree.prototype.zoom = function(scale){
+        // calculate scale
+        var oldScale = this.zoomListener.scale();
+        var newScale = this.zoomListener.scale() + scale;
+        // apply scale (for boundaries)
+        this.zoomListener
+            .scale(newScale);
+        // calculate translation
+        var w = this.g.node().getBBox().width;
+        t_w = this.zoomListener.translate()[0] + (w/2)*oldScale - (w/2)*this.zoomListener.scale()
+        // apply translation
+        this.zoomListener
+            .translate([t_w,this.zoomListener.translate()[1]])
+            .event(d3.select(this.el));
     }
 
     /**
@@ -666,7 +741,7 @@ var Tree = (function(){
             })
             .append("text")
             .attr('y', -IMAGE_SIZE/2)
-            .text(function(d) { return d.title; })
+            .text(function(d) { return splitString(d.title); })
             .each(function(d){
                 d3plus.textwrap()
                     .config(TEXTBOUNDS)
@@ -703,4 +778,10 @@ function parseDate(d) {
     var day = date.substring(8, 10);
 
     return(day + "/" + month + "/" + year + " " + time.substring(0, time.length - 3));
+}
+
+function splitString(str) {
+    return str.replace(/(\w{12})(?=.)/g, '$1 ');
+    //return str.replace(/[^A-Za-z0-9]/, ' ');
+    //return str.replace(/\W+/g, " ")
 }
