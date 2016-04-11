@@ -27,19 +27,19 @@
 
             formatDate = d3.time.format("%d %b %Y");
 
-            // scale function
-            var timeScale = d3.time.scale()
-              .domain([
-                  d3.min(this.tree.nodes(this.data), function(d){
+            var max = d3.max(this.tree.nodes(this.data), function(d){
                       var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d.created_at);
                       return date;
-                  }),
-                  d3.max(this.tree.nodes(this.data), function(d){
+                  });
+            var min = d3.min(this.tree.nodes(this.data), function(d){
                       var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d.created_at);
                       return date;
                   })
-              ])
-              .range([0, this.width])
+
+            // scale function
+            var timeScale = d3.time.scale()
+              .domain([min, max])
+              .range([100, this.width() - 100])
               .clamp(true);
 
             // initial value (max date)
@@ -51,7 +51,7 @@
             // defines brush
             var brush = d3.svg.brush()
                 .x(timeScale)
-                .extent([startingValue, startingValue])
+                .extent([max, max])
                 .on("brush", brushed);
 
             var axis = d3.svg.axis()
@@ -68,7 +68,7 @@
             d3.select(this.svg.node().parentNode).append("g")
                 .attr("class", "x axis")
                 // put in middle of screen
-                .attr("transform", "translate(0," + (this.height - 25) + ")")
+                .attr("transform", "translate(0," + (this.height() - 25) + ")")
                 // inroduce axis
                 .call(axis)
                 .select(".domain");
@@ -82,36 +82,44 @@
               .remove();
 
             slider.select(".background")
-              .attr("height", this.height);
+              .attr("height", this.height());
 
             // HANDLE
             var handle = slider.append("g")
               .attr("class", "handle")
 
             handle.append("circle")
-              .attr("transform", "translate(0," + (this.height - 25) + ")")
+              .attr("transform", "translate(0," + (this.height() - 25) + ")")
               .attr("r", 5)
 
             handle.append('text')
               .text(startingValue)
-              .attr("transform", "translate(" + 0 + " ," + (this.height - 55) + ")");
+              .attr("transform", "translate(" + 0 + " ," + (this.height() - 55) + ")");
 
             slider
               .call(brush.event)
 
-            function brushed(pointer) {
+            function brushed() {
+                var value = brush.extent()[0];
 
-                //console.log(pointer.svg);
+                // put the brush to a new value
+                if (d3.event.sourceEvent) { // not a programmatic event
+                    value = timeScale.invert(d3.mouse(this)[0]);
+                    brush.extent([value, value]);
+                }
 
-              var value = brush.extent()[0];
+                handle.attr("transform", "translate(" + timeScale(value) + ",0)");
+                handle.select('text').text(formatDate(value));
 
-              if (d3.event.sourceEvent) { // not a programmatic event
-                value = timeScale.invert(d3.mouse(this)[0]);
-                brush.extent([value, value]);
-              }
 
-              handle.attr("transform", "translate(" + timeScale(value) + ",0)");
-              handle.select('text').text(formatDate(value));
+                // show all the nodes
+                d3.select(this.parentNode).selectAll("g.node").attr("display", "block");
+                // hide the newest nodes
+                d3.select(this.parentNode).selectAll("g.node")
+                    .filter(function(d) {
+                        var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d.created_at);
+                        return date > brush.extent()[0];
+                    }).attr("display", "none");
             }
         }
     </script>
@@ -122,11 +130,13 @@
 
         var data = JSON.parse('{!! addslashes(json_encode($tree)) !!}');
 
-        var tree = new Tree($('#tree').get(0), data);
+        var tree = new Tree($('#tree').get(0), data, {
+            move: false
+        });
 
         tree.draw();
         tree.slider();
-        tree.resize();
+        tree.fit();
 
     </script>
 
