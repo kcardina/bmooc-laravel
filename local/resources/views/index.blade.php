@@ -601,6 +601,10 @@
             $(".item").bind('click', loadAnswers);
 
             function loadAnswers(e){
+                if("{!!  isset($user) !!}" != 1){
+                    $('a.logout').click();
+                    return false;
+                }
                 $(this).unbind(e);
                 var data = $(this).data();
                 var $this = $(this);

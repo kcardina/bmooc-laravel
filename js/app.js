@@ -571,7 +571,11 @@ var Tree = (function(){
      * @param {dom element} el - The container for the Tree svg element.
      * @param {JSON} data - A JSON-tree containing the data to visualize.
      */
-    function Tree(el, data){
+    function Tree(el, data, options){
+
+        // options
+        this.move = (typeof options.move === 'undefined') ? 'true' : options.move;
+
         this.data = data;
         this.el = el;
         this.tree = d3.layout.tree()
@@ -580,13 +584,26 @@ var Tree = (function(){
             .projection(function(d) { return [d.y, d.x]; });
         this.zoomListener = d3.behavior.zoom()
             .on("zoom", this.zoomed);
-        this.svg = d3.select(this.el).append("svg")
-            .attr("width", '100%')
-            .attr("height", '100%')
-            .call(this.zoomListener)
-            .append("g");
+        if(this.move){
+            this.svg = d3.select(this.el).append("svg")
+                .attr("width", '100%')
+                .attr("height", '100%')
+                .call(this.zoomListener)
+                .append("g");
+        } else {
+            this.svg = d3.select(this.el).append("svg")
+                .attr("width", '100%')
+                .attr("height", '100%')
+                .append("g");
+        }
         this.g = this.svg.append("g");
         this.hasZoom = false;
+        this.width = function(){
+            return this.el.getBoundingClientRect().width;
+        }
+        this.height = function() {
+            return this.el.getBoundingClientRect().height;
+        }
     }
 
     /**
@@ -594,8 +611,8 @@ var Tree = (function(){
      */
     Tree.prototype.fit = function(){
 
-        width = this.el.getBoundingClientRect().width;
-        height = this.el.getBoundingClientRect().height;
+        width = this.width();
+        height = this.height();
 
         var t = [0,0],
             s = 1,
@@ -624,8 +641,8 @@ var Tree = (function(){
      */
     Tree.prototype.resize = function(){
 
-        width = this.el.getBoundingClientRect().width;
-        height = this.el.getBoundingClientRect().height;
+        width = this.width();
+        height = this.height();
 
         var t = [0,0],
             s = this.zoomListener.scale(),
@@ -659,6 +676,7 @@ var Tree = (function(){
 
     /**
      * Zoom given scale and automatically translate to center
+     * UNUSED??
     **/
     Tree.prototype.zoom = function(scale){
         // calculate scale

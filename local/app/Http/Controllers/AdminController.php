@@ -5,9 +5,14 @@ namespace App\Http\Controllers;
 use Auth;
 use Request;
 use App;
-use App\Artefact;
 use Exception;
 use Input;
+use Artefacts;
+use App\User;
+use App\Artefact;
+use App\Tags;
+use stdClass;
+use DB;
 
 class AdminController extends Controller {
 
@@ -15,13 +20,231 @@ class AdminController extends Controller {
         //$this->middleware('auth', ['except' => 'index']);
     }
 
-    public function index(Request $request) {
+    public function basic(Request $request) {
+        // LIST OF TOPICS
+        $topics = DB::table('artefacts')
+            ->orderBy('updated_at', 'desc')
+            ->whereNull('parent_id')
+            ->get();
+        $topic = Input::get('topic');
+        if(!is_numeric($topic)) $topic = null;
+
+        $artefacts = new stdClass();
+        $users = new stdClass();
+        $tags = new stdClass();
+        // ALGEMEEN
+        $artefacts->count = DB::table('artefacts')
+            ->where('thread', 'LIKE', $topic)
+            ->count();
+        if($topic)
+            $users->count = sizeof(DB::table('users')
+                ->select('users.id')
+                ->leftJoin('artefacts', 'users.id', '=', 'artefacts.author')
+                ->where('thread', 'LIKE', $topic)
+                ->groupBy('users.id')
+                ->get());
+        else $users->count = DB::table('users')->count();
+        $users->all = DB::table('users')->count();
+        if($topic)
+            $tags->count = sizeof(DB::table('artefacts_tags')
+                ->join('artefacts', 'artefact_id', '=', 'artefacts.id')
+                ->where('thread', 'LIKE', $topic)
+                ->groupBy('tag_id')
+                ->get());
+        else $tags->count = DB::table('tags')->count();
+        // ARTEFACTS
+        $artefacts->types = [
+            "text" => DB::table('artefacts')
+                ->where('thread', 'LIKE', $topic)
+                ->where('artefact_type', '28')
+                ->count(),
+            "image" => DB::table('artefacts')
+                ->where('thread', 'LIKE', $topic)
+                ->where(function ($query) {
+                    $query->where('artefact_type', '29')
+                        ->orwhere('artefact_type', '30');
+                })
+                ->count(),
+            "video" => DB::table('artefacts')
+                ->where('thread', 'LIKE', $topic)
+                ->where(function ($query) {
+                    $query->where('artefact_type', '31')
+                        ->orwhere('artefact_type', '32');
+                })
+                ->count(),
+            "pdf" => DB::table('artefacts')
+                ->where('thread', 'LIKE', $topic)
+                ->where(function ($query) {
+                    $query->where('artefact_type', '33')
+                        ->orwhere('artefact_type', '34');
+                })
+                ->count()
+        ];
+        // USERS
+        $users->topten = DB::table('artefacts')
+            ->select(DB::raw('users.name, COUNT(author) AS post_count'))
+            ->join('users', 'artefacts.author', '=', 'users.id')
+            ->where('thread', 'LIKE', $topic)
+            ->groupBy('artefacts.author')
+            ->orderBy('post_count', 'DESC')
+            ->limit(10)
+            ->get();
+        $users->active = sizeof(DB::table('artefacts')
+            ->join('users', 'artefacts.author', '=', 'users.id')
+            ->where('thread', 'LIKE', $topic)
+            ->groupBy('artefacts.author')
+            ->get());
+        $users->passive = $users->all - $users->active;
+        $users->users = DB::table('artefacts')
+            ->select(DB::raw('users.name, COUNT(author) AS post_count'))
+            ->join('users', 'artefacts.author', '=', 'users.id')
+            ->where('thread', 'LIKE', $topic)
+            ->groupBy('artefacts.author')
+            ->orderBy('post_count', 'DESC')
+            ->get();
+        // TAGS
+        $tags->topten = DB::table('artefacts_tags')
+            ->select(DB::raw('tag_id, tag, count(*) as times_used'))
+            ->leftJoin('artefacts', 'artefact_id', '=', 'artefacts.id')
+            ->where('thread', 'LIKE', $topic)
+            ->groupBy('tag')
+            ->orderBy('times_used', 'DESC')
+            ->orderBy('tag', 'ASC')
+            ->limit(10)
+            ->join('tags', 'tag_id', '=', 'tags.id')
+            ->get();
+        $tags->single = DB::table('artefacts_tags')
+            ->select(DB::raw('tag_id, tag, count(*) as times_used'))
+            ->leftJoin('artefacts', 'artefact_id', '=', 'artefacts.id')
+            ->where('thread', 'LIKE', $topic)
+            ->groupBy('tag')
+            ->orderBy('tag', 'ASC')
+            ->having('times_used', '=', 1)
+            ->join('tags', 'tag_id', '=', 'tags.id')
+            ->get();
+        /*$temp = DB::table('artefacts')
+            ->select(DB::raw('artefacts.thread, artefacts_tags.tag_id, COUNT(*) AS ct'))
+            ->distinct()
+            ->join('artefacts_tags', 'artefacts.id', '=', 'artefacts_tags.artefact_id')
+            ->groupBy('artefacts_tags.tag_id')
+            ->having('ct', '>', 1)
+            ->orderBY('ct', 'DESC')
+            ->get();
+        $sub = DB::table('artefacts_tags')
+            ->select(DB::raw('tag_id, tag, thread'))
+            ->groupBy('tag')
+            ->join('tags', 'tag_id', '=', 'id')
+            ->join('artefacts', 'artefacts_tags.artefact_id', '=', 'artefacts.id')
+            ->distinct()
+            ->get();
+        //$tags->multiple = DB::table('tags'); */
         $user = Auth::user();
         if ($user && $user->role == "editor") {
-            return view('admin/index');
+            return view('admin.data.basic', ['topics' => $topics, 'topic' => $topic, 'artefacts' => $artefacts, 'users' => $users, 'tags' => $tags]);
         } else {
             App::abort(401, 'Not authenticated');
         }
+    }
+
+
+    /*
+    public function index(Request $request) {
+        $artefacts = new stdClass();
+        $users = new stdClass();
+        $tags = new stdClass();
+        // ALGEMEEN
+        $artefacts->aantal = DB::table('artefacts')->count();
+        $users->aantal = DB::table('users')->count();
+        $tags->aantal = DB::table('tags')->count();
+        // ARTEFACTS
+        $artefacts->types = [
+            "text" => DB::table('artefacts')->where('artefact_type', '28')->count(),
+            "image" => DB::table('artefacts')->where('artefact_type', '29')->orwhere('artefact_type', '30')->count(),
+            "video" => DB::table('artefacts')->where('artefact_type', '31')->orwhere('artefact_type', '32')->count(),
+            "pdf" => DB::table('artefacts')->where('artefact_type', '33')->orwhere('artefact_type', '34')->count()
+        ];
+        $artefacts->progress = json_encode(DB::table('artefacts')
+            ->select(DB::raw('artefacts.updated_at, CAST(artefacts.updated_at AS DATE) date, COUNT(updated_at) AS amount'))
+            ->groupBy(DB::raw('CAST(updated_at AS DATE)'))
+            ->get());
+        // USERS
+        $users->topten = DB::table('artefacts')
+            ->select(DB::raw('users.name, COUNT(author) AS theCount'))
+            ->join('users', 'artefacts.author', '=', 'users.id')
+            ->groupBy('artefacts.author')
+            ->orderBy('theCount', 'DESC')
+            ->limit(10)
+            ->get();
+        $users->passive = DB::table('users')
+            ->select('name')
+            ->leftJoin('artefacts', 'users.id', '=', 'artefacts.author')
+            ->where('artefacts.author', '=', NULL)
+            ->count();
+        // TAGS
+        // TAGS
+        $tags->topten = DB::table('tags')
+            ->select('tag', 'times_used')
+            ->orderBy('times_used', 'DESC')
+            ->orderBy('tag', 'ASC')
+            ->limit(10)
+            ->get();
+        $user = Auth::user();
+        if ($user && $user->role == "editor") {
+            return view('admin.data.simple', ['artefacts' => $artefacts, 'users' => $users, 'tags' => $tags]);
+        } else {
+            App::abort(401, 'Not authenticated');
+        }
+    }*/
+
+    public function progress(Request $request){
+        // LIST OF TOPICS
+        $topics = DB::table('artefacts')
+            ->orderBy('updated_at', 'desc')
+            ->whereNull('parent_id')
+            ->get();
+        $topic = Input::get('topic');
+        if(!is_numeric($topic)) $topic = null;
+
+        $artefacts = DB::table('artefacts')
+            ->select('id', 'created_at')
+            ->where('thread', 'LIKE', $topic)
+            ->get();
+
+        $user = Auth::user();
+        if ($user && $user->role == "editor") {
+            return view('admin.data.progress', ['topics' => $topics, 'topic' => $topic, 'artefacts' => $artefacts]);
+        } else {
+            App::abort(401, 'Not authenticated');
+        }
+    }
+
+    public function tree(Request $request){
+        // LIST OF TOPICS
+        $topics = DB::table('artefacts')
+            ->orderBy('updated_at', 'desc')
+            ->whereNull('parent_id')
+            ->get();
+        $topic = Input::get('topic');
+        if(!is_numeric($topic)) $topic = null;
+
+        $parent = DB::table('artefacts')
+            ->select('id')
+            ->where('thread', 'LIKE', $topic)
+            ->where('parent_id', '=', NULL)
+            ->get();
+        $parent = Artefact::all()->find($parent[0]->id);
+
+        $tree = $parent;
+
+        $parent->children = BmoocJsonController::buildTree($parent->children, $parent->id);
+
+        $user = Auth::user();
+        if ($user && $user->role == "editor") {
+            return view('admin.data.tree', ['topics' => $topics, 'topic' => $topic, 'tree' => $tree]);
+        } else {
+            App::abort(401, 'Not authenticated');
+        }
+
     }
 
     public function getThumbnails(Request $request) {
