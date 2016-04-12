@@ -25,6 +25,8 @@
 
         Tree.prototype.timeline = function(){
 
+            var pointer = this;
+
             formatDate = d3.time.format("%d %b %Y");
 
             var max = d3.max(this.tree.nodes(this.data), function(d){
@@ -116,12 +118,20 @@
 
                 // show all the nodes
                 d3.select(this.parentNode).selectAll("g.node").attr("display", "block");
+                d3.select(this.parentNode).selectAll("path.link").attr("display", "block");
                 // hide the newest nodes
                 d3.select(this.parentNode).selectAll("g.node")
                     .filter(function(d) {
                         var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d.created_at);
                         return date > brush.extent()[0];
                     }).attr("display", "none");
+                d3.select(this.parentNode).selectAll("path.link")
+                    .filter(function(d) {
+                        var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d.target.created_at);
+                        return date > brush.extent()[0];
+                    })//.attr("opacity", "0.2");
+                    .attr("display", "none");
+                pointer.fit();
             }
 
             // play buttons
@@ -148,7 +158,7 @@
                 d3.select(d3.select('.slider').node()).transition()
                     .ease(d3.ease("linear"))
                     .duration(function(){
-                        return 5000 * Math.abs((brush.extent()[0] - min) / (max - min));
+                        return (5000 + 200 * d3.select(this.parentNode).selectAll("g.node").size()) * Math.abs((brush.extent()[0] - min) / (max - min));
                     })
                     .call(brush.extent([min, min]))
                     .call(brush.event);
@@ -161,7 +171,7 @@
                     .ease(d3.ease("linear"))
                     .duration(function(){
 
-                        return 5000 * Math.abs((max - brush.extent()[0]) / (max - min));
+                        return (5000 + 200 * d3.select(this.parentNode).selectAll("g.node").size()) * Math.abs((max - brush.extent()[0]) / (max - min));
                     })
                     .call(brush.extent([max, max]))
                     .call(brush.event);

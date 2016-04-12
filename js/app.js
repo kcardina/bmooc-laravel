@@ -628,8 +628,18 @@ var Tree = (function(){
         this.zoomListener
             .scale(s)
             .translate([t_w, t_h])
+            .scaleExtent([s, 1]);
+
+        d3.select(this.el).transition()
+            .duration(125)
+            .call(this.zoomListener.event);
+        /*
+        this.zoomListener
+            .scale(s)
+            .translate([t_w, t_h])
             .scaleExtent([s, 1])
             .event(d3.select(this.el));
+        */
 
         if(s != 1){
             this.hasZoom = true;
@@ -668,6 +678,7 @@ var Tree = (function(){
      * It's important that this.zoomListener has been updated in the resize function
      */
     Tree.prototype.zoomed = function(){
+        console.log('zoomed');
         d3.select(this).select('g').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
         d3.select(window).on("mouseup.zoom", function(){
             d3.select(window).on("mousemove.zoom", null).on("mouseup.zoom", null);
