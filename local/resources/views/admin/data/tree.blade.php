@@ -23,7 +23,7 @@
          * TREE
          */
 
-        Tree.prototype.slider = function(){
+        Tree.prototype.timeline = function(){
 
             formatDate = d3.time.format("%d %b %Y");
 
@@ -52,7 +52,7 @@
             var brush = d3.svg.brush()
                 .x(timeScale)
                 .extent([max, max])
-                .on("brush", brushed);
+                .on("brush", brushed)
 
             var axis = d3.svg.axis()
                 .scale(timeScale)
@@ -81,8 +81,10 @@
             slider.selectAll(".extent,.resize")
               .remove();
 
+            // background for slider to make selection area bigger
             slider.select(".background")
-              .attr("height", this.height());
+              .attr("height", 25)
+                .attr("transform", "translate(0," + (this.height() - 25 - 12) + ")")
 
             // HANDLE
             var handle = slider.append("g")
@@ -121,6 +123,50 @@
                         return date > brush.extent()[0];
                     }).attr("display", "none");
             }
+
+            // play buttons
+            var controls = d3.select("#tree")
+                .append("div")
+                .attr("class", "timeline_controls");
+
+            var controls_rewind = controls
+                .append("button")
+                .text("\u23EA\uFE0E")
+                .attr("class", "purple")
+                .on("click", rewind);
+
+            var controls_forward = controls
+                .append("button")
+                .text("\u23E9\uFE0E")
+                .attr("class", "purple")
+                .on("click", forward);
+
+
+            function rewind(){
+                controls_forward.classed("active", false);
+                controls_rewind.classed("active", true);
+                d3.select(d3.select('.slider').node()).transition()
+                    .ease(d3.ease("linear"))
+                    .duration(function(){
+                        return 5000 * Math.abs((brush.extent()[0] - min) / (max - min));
+                    })
+                    .call(brush.extent([min, min]))
+                    .call(brush.event);
+            }
+
+            function forward(){
+                controls_rewind.classed("active", false);
+                controls_forward.classed("active", true);
+                d3.select(d3.select('.slider').node()).transition()
+                    .ease(d3.ease("linear"))
+                    .duration(function(){
+
+                        return 5000 * Math.abs((max - brush.extent()[0]) / (max - min));
+                    })
+                    .call(brush.extent([max, max]))
+                    .call(brush.event);
+            }
+
         }
     </script>
 
@@ -135,7 +181,7 @@
         });
 
         tree.draw();
-        tree.slider();
+        tree.timeline();
         tree.fit();
 
     </script>

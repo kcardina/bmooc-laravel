@@ -123,3 +123,26 @@ circle{
   text-align: center;
   font-size: 1rem;
 }
+
+.slider .background{
+    cursor: pointer !important;
+}
+
+
+.timeline_controls{
+    text-align: center;
+}
+
+button{
+    margin: 2px;
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    background: none;
+    border: 1px solid #751e82;
+    color: #751e82;
+}
+
+button:hover, button.active{
+    background: #751e82;
+    color: white;
+}
