@@ -82,7 +82,7 @@ class AdminController extends Controller {
         ];
         // USERS
         $users->topten = DB::table('artefacts')
-            ->select(DB::raw('users.name, COUNT(author) AS post_count'))
+            ->select('users.name', DB::raw('COUNT(author) AS post_count'))
             ->join('users', 'artefacts.author', '=', 'users.id')
             ->where('thread', 'LIKE', $topic)
             ->groupBy('artefacts.author')
@@ -96,7 +96,7 @@ class AdminController extends Controller {
             ->get());
         $users->passive = $users->all - $users->active;
         $users->users = DB::table('artefacts')
-            ->select(DB::raw('users.name, COUNT(author) AS post_count'))
+            ->select('users.name', DB::raw('COUNT(author) AS post_count'))
             ->join('users', 'artefacts.author', '=', 'users.id')
             ->where('thread', 'LIKE', $topic)
             ->groupBy('artefacts.author')
@@ -104,7 +104,7 @@ class AdminController extends Controller {
             ->get();
         // TAGS
         $tags->topten = DB::table('artefacts_tags')
-            ->select(DB::raw('tag_id, tag, count(*) as times_used'))
+            ->select('tag_id', 'tag', DB::raw('count(*) as times_used'))
             ->leftJoin('artefacts', 'artefact_id', '=', 'artefacts.id')
             ->where('thread', 'LIKE', $topic)
             ->groupBy('tag')
@@ -114,7 +114,7 @@ class AdminController extends Controller {
             ->join('tags', 'tag_id', '=', 'tags.id')
             ->get();
         $tags->single = DB::table('artefacts_tags')
-            ->select(DB::raw('tag_id, tag, count(*) as times_used'))
+            ->select('tag_id', 'tag', DB::raw('count(*) as times_used'))
             ->leftJoin('artefacts', 'artefact_id', '=', 'artefacts.id')
             ->where('thread', 'LIKE', $topic)
             ->groupBy('tag')
