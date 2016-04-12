@@ -631,6 +631,7 @@ var Tree = (function(){
             .scaleExtent([s, 1]);
 
         d3.select(this.el).transition()
+            .duration(125)
             .call(this.zoomListener.event);
         /*
         this.zoomListener
