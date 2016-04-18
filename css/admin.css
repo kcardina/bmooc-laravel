@@ -133,6 +133,16 @@ circle{
     text-align: center;
 }
 
+.main_controls{
+    position: absolute;
+    top: 0;
+    left: 1rem;
+}
+
+.main_controls button{
+    display: block;
+}
+
 button{
     margin: 2px;
     padding: 5px 10px;

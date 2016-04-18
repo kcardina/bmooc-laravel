@@ -198,8 +198,7 @@
             var tags = JSON.parse('{!! addslashes(json_encode($tags)) !!}');
 
             var force = d3.layout.force()
-                .linkDistance(200) // IMAGE_SIZE
-                .size([this.width(), this.height()]);
+                .linkDistance(200); // IMAGE_SIZE
 
             var links = [];
             var edges = [];
@@ -388,10 +387,39 @@
             move: false
         });
 
-        tree.drawCluster();
-        //tree.draw();
-        //tree.timeline();
-        //tree.fit();
+        // main buttons
+        var controls = d3.select("#tree")
+            .append("div")
+            .attr("class", "main_controls");
+
+        var controls_tree = controls
+            .append("button")
+            .text("TREE")
+            .attr("class", "purple active")
+            .on("click", function(){
+                controls_tree.attr("class", "active");
+                controls_cluster.attr("class", "");
+
+                tree.draw();
+                tree.timeline();
+                tree.fit();
+            });
+
+        var controls_cluster = controls
+            .append("button")
+            .text("CLUSTER")
+            .attr("class", "purple")
+            .on("click", function(){
+                controls_tree.attr("class", "");
+                controls_cluster.attr("class", "active");
+
+                tree.drawCluster();
+            });
+
+        //tree.drawCluster();
+        tree.draw();
+        tree.timeline();
+        tree.fit();
 
     </script>
 

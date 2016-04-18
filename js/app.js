@@ -597,6 +597,8 @@ var Tree = (function(){
                 .append("g");
         }
         this.g = this.svg.append("g");
+        this.tree = d3.layout.tree()
+            .nodeSize([IMAGE_SIZE, IMAGE_SIZE]);
         this.hasZoom = false;
         this.width = function(){
             return this.el.getBoundingClientRect().width;
@@ -710,12 +712,9 @@ var Tree = (function(){
      */
     Tree.prototype.draw = function(){
 
-        var tree = d3.layout.tree()
-            .nodeSize([IMAGE_SIZE, IMAGE_SIZE]);
-
         // Compute the new tree layout.
-        var nodes = tree.nodes(this.data);//.reverse()
-        var links = tree.links(nodes);
+        var nodes = this.tree.nodes(this.data);//.reverse()
+        var links = this.tree.links(nodes);
 
         // horizontal spacing of the nodes (depth of the node * x)
         nodes.forEach(function(d) { d.y = d.depth * (IMAGE_SIZE + IMAGE_SIZE/10) });
