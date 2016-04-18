@@ -574,12 +574,12 @@ var Tree = (function(){
     function Tree(el, data, options){
 
         // options
-        this.move = (typeof options.move === 'undefined') ? 'true' : options.move;
+        if(typeof options !== 'undefined'){
+            this.move = (typeof options.move === 'undefined') ? 'true' : options.move;
+        }
 
         this.data = data;
         this.el = el;
-        this.tree = d3.layout.tree()
-            .nodeSize([IMAGE_SIZE, IMAGE_SIZE]);
         this.diagonal = d3.svg.diagonal()
             .projection(function(d) { return [d.y, d.x]; });
         this.zoomListener = d3.behavior.zoom()
@@ -710,9 +710,12 @@ var Tree = (function(){
      */
     Tree.prototype.draw = function(){
 
+        var tree = d3.layout.tree()
+            .nodeSize([IMAGE_SIZE, IMAGE_SIZE]);
+
         // Compute the new tree layout.
-        var nodes = this.tree.nodes(this.data);//.reverse()
-        var links = this.tree.links(nodes);
+        var nodes = tree.nodes(this.data);//.reverse()
+        var links = tree.links(nodes);
 
         // horizontal spacing of the nodes (depth of the node * x)
         nodes.forEach(function(d) { d.y = d.depth * (IMAGE_SIZE + IMAGE_SIZE/10) });

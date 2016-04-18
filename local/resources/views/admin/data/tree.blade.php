@@ -178,6 +178,94 @@
             }
 
         }
+
+        Tree.prototype.drawCluster = function(){
+
+            var nodes = JSON.parse('{!! addslashes(json_encode($list)) !!}');
+            var tags = JSON.parse('{!! addslashes(json_encode($tags)) !!}');
+
+            var force = d3.layout.force()
+                .linkDistance(100) // IMAGE_SIZE
+                .size([this.width(), this.height()]);
+            var links = [];
+            var edges = [];
+            var tagslist = [];
+
+            // maak een lijst met tags
+            tags.forEach(function(e){
+                if ($.inArray(e.tag_id, tagslist) < 0) tagslist.push(e.tag_id);
+            });
+
+            tagslist.forEach(function(i) {
+                // lijst voor elke tag de artefacten op met die tag
+                var l = tags.filter(function(n) {
+                    return n.tag_id === i;
+                });
+
+                // maak een source-target array
+                for(i = 0; i < l.length; i++){
+                    for(j = i+1; j < l.length; j++){
+                        var st = {source: l[i].artefact_id, target: l[j].artefact_id};
+
+                        // voeg toe aan source target array. if exists: value++
+                        /*var exists = links.filter(function(n) {
+                            return n.source == st.source && n.target == st.target
+                        });
+
+                        if(exists.length > 0) console.log(exists);
+
+                        else */links.push(st);
+                    }
+                }
+            });
+
+            links.forEach(function(e) {
+                var sourceNode = nodes.indexOf(nodes.filter(function(n) { return n.id === e.source; })[0]);
+
+                var targetNode = nodes.indexOf(nodes.filter(function(n) { return n.id === e.target; })[0]);
+
+                edges.push({source: sourceNode, target: targetNode});
+            });
+
+            console.log(nodes);
+            console.log(tags);
+            console.log(tagslist);
+            console.log(links);
+            console.log(edges);
+
+            force.nodes(nodes)
+                .links(edges)
+                .start();
+
+            var link = this.g.selectAll(".link")
+                .data(edges)
+            .enter().append("line")
+                .attr("class", "link")
+                .attr("stroke", "grey")
+                .attr("stroke-width", 1);
+
+            var node = this.g.selectAll(".node")
+              .data(nodes)
+            .enter().append("circle")
+              .attr("class", "node")
+              .attr("r", 5)
+              .style("fill",  "black")
+              .call(force.drag);
+
+            node.append("title")
+                .text(function(d) { return d.title; });
+
+            force.on("tick", function() {
+                link.attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+                node.attr("cx", function(d) { return d.x; })
+                    .attr("cy", function(d) { return d.y; });
+              });
+
+        }
     </script>
 
     <script>
@@ -190,9 +278,10 @@
             move: false
         });
 
-        tree.draw();
-        tree.timeline();
-        tree.fit();
+        tree.drawCluster();
+        //tree.draw();
+        //tree.timeline();
+        //tree.fit();
 
     </script>
 
