@@ -181,11 +181,24 @@
 
         Tree.prototype.drawCluster = function(){
 
+            var IMAGE_SIZE = 50;
+            var MARGIN = {
+                top: IMAGE_SIZE/2,
+                right: IMAGE_SIZE/2,
+                bottom: IMAGE_SIZE/2,
+                left: IMAGE_SIZE/2
+            };
+            var TEXTBOUNDS = {
+                width: IMAGE_SIZE,
+                height: IMAGE_SIZE,
+                resize: true
+            }
+
             var nodes = JSON.parse('{!! addslashes(json_encode($list)) !!}');
             var tags = JSON.parse('{!! addslashes(json_encode($tags)) !!}');
 
             var force = d3.layout.force()
-                .linkDistance(100) // IMAGE_SIZE
+                .linkDistance(200) // IMAGE_SIZE
                 .size([this.width(), this.height()]);
 
             var links = [];
@@ -197,8 +210,8 @@
                 if ($.inArray(e.tag_id, tagslist) < 0) tagslist.push(e.tag_id);
             });
 
+            // lijst voor elke tag de artefacten op met die tag
             tagslist.forEach(function(i) {
-                // lijst voor elke tag de artefacten op met die tag
                 var l = tags.filter(function(n) {
                     return n.tag_id === i;
                 });
@@ -226,6 +239,7 @@
                 }
             });
 
+            // gebruik de index in de array ipv id voor Force layout
             links.forEach(function(e) {
                 var sourceNode = nodes.indexOf(nodes.filter(function(n) { return n.id === e.source; })[0]);
 
@@ -233,21 +247,17 @@
 
                 edges.push({source: sourceNode, target: targetNode, value: e.value});
             });
-/*
-            console.log(nodes);
-            console.log(tags);
-            console.log(tagslist);
-            console.log(links);
-            console.log(edges);
-*/
 
             force.nodes(nodes)
                 .links(edges)
                 .start();
 
+            // declare the links
             var link = this.g.selectAll(".link")
-                .data(edges)
-            .enter().append("line")
+                .data(edges);
+
+            // enter the links
+            link.enter().append("line")
                 .attr("class", "link")
                 .attr("stroke", "#878787")
                 .attr("stroke-width", 1)
@@ -255,14 +265,62 @@
                     return 0.33 * d.value;
                 });
 
-
+            // declare the nodes
             var node = this.g.selectAll(".node")
-              .data(nodes)
-            .enter().append("circle")
-              .attr("class", "node")
-              .attr("r", 5)
-              .style("fill",  "black")
-              .call(force.drag);
+              .data(nodes);
+
+            var nodeEnter = node.enter().append("g")
+                .attr("class", "node")
+                .attr("transform", function(d){
+                    return "translate(" + d.x + "," + d.y + ")";
+                });
+
+            //img
+        nodeEnter.filter(function(d) { return d.hidden; })
+            .append("a")
+            .attr("xlink:href", function(d) {
+                return "/topic/"+d.id;
+            })
+            .append("circle")
+            .attr("cx", 5)
+            .attr("cy", 0)
+            .attr("r", 5);
+
+        //img
+        nodeEnter.filter(function(d) { return d.url; })
+            .filter(function(d) { return !d.hidden })
+            .append("a")
+            .attr("xlink:href", function(d) {
+                return "/topic/"+d.id;
+            })
+            .append("image")
+            .attr("xlink:href", function(d) {
+                return "/artefact/" + d.id + "/thumbnail/"
+            })
+            .attr('y', -IMAGE_SIZE/2)
+            .attr('width', IMAGE_SIZE)
+            .attr('height', IMAGE_SIZE);
+
+        //text
+        nodeEnter.filter(function(d) { return d.contents })
+            .filter(function(d) { return !d.hidden })
+            .append("a")
+            .attr("xlink:href", function(d) {
+                return "/topic/"+d.id;
+            })
+            .append("text")
+            .attr('y', -IMAGE_SIZE/2)
+            .text(function(d) { return splitString(d.title); })
+            .each(function(d){
+                d3plus.textwrap()
+                    .config(TEXTBOUNDS)
+                    .valign('middle')
+                    .align('center')
+                    .container(d3.select(this))
+                    .draw();
+            });
+
+            nodeEnter.call(force.drag);
 
             node.append("title")
                 .text(function(d) { return d.title; });
@@ -270,15 +328,19 @@
             var skip = 0;
 
             force.on("tick", function() {
-                skip++
-                if(skip % (Math.ceil(nodes.length/100)) != 0) return;
+                //skip++
+                //if(skip % (Math.ceil(nodes.length/100)) != 0) return;
                 link.attr("x1", function(d) { return d.source.x; })
                     .attr("y1", function(d) { return d.source.y; })
                     .attr("x2", function(d) { return d.target.x; })
                     .attr("y2", function(d) { return d.target.y; });
 
-                node.attr("cx", function(d) { return d.x; })
-                    .attr("cy", function(d) { return d.y; });
+                /*node.attr("cx", function(d) { return d.x; })
+                    .attr("cy", function(d) { return d.y; });*/
+
+                node.attr("transform", function(d){
+                    return "translate(" + d.x + "," + d.y + ")";
+                });
               });
 
         }
