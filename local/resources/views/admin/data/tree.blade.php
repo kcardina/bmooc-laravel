@@ -187,6 +187,7 @@
             var force = d3.layout.force()
                 .linkDistance(100) // IMAGE_SIZE
                 .size([this.width(), this.height()]);
+
             var links = [];
             var edges = [];
             var tagslist = [];
@@ -205,16 +206,22 @@
                 // maak een source-target array
                 for(i = 0; i < l.length; i++){
                     for(j = i+1; j < l.length; j++){
-                        var st = {source: l[i].artefact_id, target: l[j].artefact_id};
+                        var st = {source: l[i].artefact_id, target: l[j].artefact_id, value: 1};
 
                         // voeg toe aan source target array. if exists: value++
-                        /*var exists = links.filter(function(n) {
+                        var exists = links.filter(function(n) {
                             return n.source == st.source && n.target == st.target
                         });
 
-                        if(exists.length > 0) console.log(exists);
+                        if(exists.length > 0){
+                            var index = links.indexOf(exists[0]);
+                            var st_ = links[index];
+                            st_.value++;
 
-                        else */links.push(st);
+                            links[index] = st_;
+                        } else {
+                            links.push(st);
+                        }
                     }
                 }
             });
@@ -224,14 +231,15 @@
 
                 var targetNode = nodes.indexOf(nodes.filter(function(n) { return n.id === e.target; })[0]);
 
-                edges.push({source: sourceNode, target: targetNode});
+                edges.push({source: sourceNode, target: targetNode, value: e.value});
             });
-
+/*
             console.log(nodes);
             console.log(tags);
             console.log(tagslist);
             console.log(links);
             console.log(edges);
+*/
 
             force.nodes(nodes)
                 .links(edges)
@@ -241,8 +249,12 @@
                 .data(edges)
             .enter().append("line")
                 .attr("class", "link")
-                .attr("stroke", "grey")
-                .attr("stroke-width", 1);
+                .attr("stroke", "#878787")
+                .attr("stroke-width", 1)
+                .attr("opacity", function(d){
+                    return 0.33 * d.value;
+                });
+
 
             var node = this.g.selectAll(".node")
               .data(nodes)
@@ -255,7 +267,11 @@
             node.append("title")
                 .text(function(d) { return d.title; });
 
+            var skip = 0;
+
             force.on("tick", function() {
+                skip++
+                if(skip % (Math.ceil(nodes.length/100)) != 0) return;
                 link.attr("x1", function(d) { return d.source.x; })
                     .attr("y1", function(d) { return d.source.y; })
                     .attr("x2", function(d) { return d.target.x; })
