@@ -250,6 +250,7 @@
 
             force.nodes(nodes)
                 .links(edges)
+                .on("start", start)
                 .start();
 
             // declare the links
@@ -276,49 +277,49 @@
                 });
 
             //img
-        nodeEnter.filter(function(d) { return d.hidden; })
-            .append("a")
-            .attr("xlink:href", function(d) {
-                return "/topic/"+d.id;
-            })
-            .append("circle")
-            .attr("cx", 5)
-            .attr("cy", 0)
-            .attr("r", 5);
+            nodeEnter.filter(function(d) { return d.hidden; })
+                .append("a")
+                .attr("xlink:href", function(d) {
+                    return "/topic/"+d.id;
+                })
+                .append("circle")
+                .attr("cx", 5)
+                .attr("cy", 0)
+                .attr("r", 5);
 
-        //img
-        nodeEnter.filter(function(d) { return d.url; })
-            .filter(function(d) { return !d.hidden })
-            .append("a")
-            .attr("xlink:href", function(d) {
-                return "/topic/"+d.id;
-            })
-            .append("image")
-            .attr("xlink:href", function(d) {
-                return "/artefact/" + d.id + "/thumbnail/"
-            })
-            .attr('y', -IMAGE_SIZE/2)
-            .attr('width', IMAGE_SIZE)
-            .attr('height', IMAGE_SIZE);
+            //img
+            nodeEnter.filter(function(d) { return d.url; })
+                .filter(function(d) { return !d.hidden })
+                .append("a")
+                .attr("xlink:href", function(d) {
+                    return "/topic/"+d.id;
+                })
+                .append("image")
+                .attr("xlink:href", function(d) {
+                    return "/artefact/" + d.id + "/thumbnail/"
+                })
+                .attr('y', -IMAGE_SIZE/2)
+                .attr('width', IMAGE_SIZE)
+                .attr('height', IMAGE_SIZE);
 
-        //text
-        nodeEnter.filter(function(d) { return d.contents })
-            .filter(function(d) { return !d.hidden })
-            .append("a")
-            .attr("xlink:href", function(d) {
-                return "/topic/"+d.id;
-            })
-            .append("text")
-            .attr('y', -IMAGE_SIZE/2)
-            .text(function(d) { return splitString(d.title); })
-            .each(function(d){
-                d3plus.textwrap()
-                    .config(TEXTBOUNDS)
-                    .valign('middle')
-                    .align('center')
-                    .container(d3.select(this))
-                    .draw();
-            });
+            //text
+            nodeEnter.filter(function(d) { return d.contents })
+                .filter(function(d) { return !d.hidden })
+                .append("a")
+                .attr("xlink:href", function(d) {
+                    return "/topic/"+d.id;
+                })
+                .append("text")
+                .attr('y', -IMAGE_SIZE/2)
+                .text(function(d) { return splitString(d.title); })
+                .each(function(d){
+                    d3plus.textwrap()
+                        .config(TEXTBOUNDS)
+                        .valign('middle')
+                        .align('center')
+                        .container(d3.select(this))
+                        .draw();
+                });
 
             nodeEnter.call(force.drag);
 
@@ -327,6 +328,7 @@
 
             var skip = 0;
 
+            /*
             force.on("tick", function() {
                 //skip++
                 //if(skip % (Math.ceil(nodes.length/100)) != 0) return;
@@ -336,12 +338,42 @@
                     .attr("y2", function(d) { return d.target.y; });
 
                 /*node.attr("cx", function(d) { return d.x; })
-                    .attr("cy", function(d) { return d.y; });*/
+                    .attr("cy", function(d) { return d.y; });*//*
 
                 node.attr("transform", function(d){
                     return "translate(" + d.x + "," + d.y + ")";
                 });
               });
+        */
+
+            function start(){
+
+                var ticksPerRender = 3;
+
+                requestAnimationFrame(function render() {
+
+                    for (var i = 0; i < ticksPerRender; i++) {
+                        force.tick();
+                    }
+
+                    link.attr("x1", function(d) { return d.source.x; })
+                        .attr("y1", function(d) { return d.source.y; })
+                        .attr("x2", function(d) { return d.target.x; })
+                        .attr("y2", function(d) { return d.target.y; });
+
+                    /*node.attr("cx", function(d) { return d.x; })
+                        .attr("cy", function(d) { return d.y; });*/
+
+                    node.attr("transform", function(d){
+                        return "translate(" + d.x + "," + d.y + ")";
+                    });
+
+                    if (force.alpha() > 0) {
+                        requestAnimationFrame(render);
+                    }
+
+                });
+            }
 
         }
     </script>
