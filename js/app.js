@@ -575,6 +575,7 @@ var Tree = (function(){
     function Tree(el, data, options){
 
         // Options array
+        this.move = true;
         if(typeof options !== 'undefined'){
             // allow zooming & dragging of the tree
             this.move = (typeof options.move === 'undefined') ? 'true' : options.move;
@@ -582,26 +583,22 @@ var Tree = (function(){
 
         this.data = data;
         this.el = el;
-        this.diagonal = d3.svg.diagonal()
-            .projection(function(d) { return [d.y, d.x]; });
+
         this.zoomListener = d3.behavior.zoom()
             .on("zoom", this.zoomed);
-        if(this.move){
-            this.svg = d3.select(this.el).append("svg")
+        this.hasZoom = false;
+
+        this.svg = d3.select(this.el).append("svg")
                 .attr("width", '100%')
-                .attr("height", '100%')
-                .call(this.zoomListener)
-                .append("g");
-        } else {
-            this.svg = d3.select(this.el).append("svg")
-                .attr("width", '100%')
-                .attr("height", '100%')
-                .append("g");
-        }
+                .attr("height", '100%');
+        if(this.move) this.svg.call(this.zoomListener);
+        this.svg = this.svg.append("g");
+
         this.g = this.svg.append("g");
+
         this.tree = d3.layout.tree()
             .nodeSize([Tree.IMAGE_SIZE, Tree.IMAGE_SIZE]);
-        this.hasZoom = false;
+
         this.width = function(){
             return this.el.getBoundingClientRect().width;
         }
@@ -686,9 +683,15 @@ var Tree = (function(){
      */
     Tree.prototype.draw = function(){
 
+        treelayout = d3.layout.tree()
+            .nodeSize([Tree.IMAGE_SIZE, Tree.IMAGE_SIZE]);
+
         // Compute the new tree layout.
-        var nodes = this.tree.nodes(this.data);//.reverse()
-        var links = this.tree.links(nodes);
+        var nodes = treelayout.nodes(this.data);//.reverse()
+        var links = treelayout.links(nodes);
+
+        var diagonal = d3.svg.diagonal()
+            .projection(function(d) { return [d.y, d.x]; });
 
         // horizontal spacing of the nodes (depth of the node * x)
         nodes.forEach(function(d) { d.y = d.depth * (Tree.IMAGE_SIZE + Tree.IMAGE_SIZE/10) });
@@ -762,7 +765,7 @@ var Tree = (function(){
         // Enter the links.
         link.enter().insert("path", "g")
             .attr("class", "link")
-            .attr("d", this.diagonal);
+            .attr("d", diagonal);
     }
 
     return Tree;

@@ -284,9 +284,9 @@
                 .attr("xlink:href", function(d) {
                     return "/artefact/" + d.id + "/thumbnail/"
                 })
-                .attr('y', -Tree.IMAGE_SIZE/2)
-                .attr('width', Tree.IMAGE_SIZE)
-                .attr('height', Tree.IMAGE_SIZE);
+                .attr('y', -Tree.IMAGE_SIZE/4)
+                .attr('width', Tree.IMAGE_SIZE/2)
+                .attr('height', Tree.IMAGE_SIZE/2);
 
             //text
             nodeEnter.filter(function(d) { return d.contents })
@@ -296,7 +296,7 @@
                     return "/topic/"+d.id;
                 })
                 .append("text")
-                .attr('y', -Tree.IMAGE_SIZE/2)
+                .attr('y', -Tree.IMAGE_SIZE/4)
                 .text(function(d) { return splitString(d.title); })
                 .each(function(d){
                     d3plus.textwrap()
@@ -374,36 +374,48 @@
             move: false
         });
 
-        // main buttons
-        var controls = d3.select("#tree")
-            .append("div")
-            .attr("class", "main_controls");
+        function spawn_controls(){
 
-        var controls_tree = controls
-            .append("button")
-            .text("TREE")
-            .attr("class", "purple active")
-            .on("click", function(){
-                controls_tree.attr("class", "active");
-                controls_cluster.attr("class", "");
+            // main buttons
+            var controls = d3.select("#tree")
+                .append("div")
+                .attr("class", "main_controls");
 
-                tree.draw();
-                tree.timeline();
-                tree.fit();
-            });
+            var controls_tree = controls
+                .append("button")
+                .text("TREE")
+                .attr("class", "purple active")
+                .on("click", function(){
+                    controls_tree.attr("class", "active");
+                    controls_cluster.attr("class", "");
+                    $('#tree').html("");
+                    tree = new Tree($('#tree').get(0), data, {
+                        move: false
+                    });
+                    spawn_controls();
+                    tree.draw();
+                    tree.timeline();
+                    tree.fit();
+                });
 
-        var controls_cluster = controls
-            .append("button")
-            .text("CLUSTER")
-            .attr("class", "purple")
-            .on("click", function(){
-                controls_tree.attr("class", "");
-                controls_cluster.attr("class", "active");
-
-                tree.drawCluster();
-            });
-
-        //tree.drawCluster();
+            var controls_cluster = controls
+                .append("button")
+                .text("CLUSTER")
+                .attr("class", "purple")
+                .on("click", function(){
+                    controls_tree.attr("class", "");
+                    controls_cluster.attr("class", "active");
+                    $('#tree').html("");
+                    tree = new Tree($('#tree').get(0), data, {
+                        move: false
+                    });
+                    spawn_controls();
+                    tree.drawCluster();
+                    tree.timeline();
+                    tree.fit();
+                });
+        }
+        spawn_controls();
         tree.draw();
         tree.timeline();
         tree.fit();
