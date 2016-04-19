@@ -111,10 +111,6 @@ circle{
     cursor: pointer;
 }
 
-#tree rect{
-    fill:white;
-}
-
 #tree path{
     stroke: gray;
 }

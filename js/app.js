@@ -690,15 +690,31 @@ var Tree = (function(){
         var nodes = treelayout.nodes(this.data);//.reverse()
         var links = treelayout.links(nodes);
 
-        var diagonal = d3.svg.diagonal()
-            .projection(function(d) { return [d.y, d.x]; });
-
         // horizontal spacing of the nodes (depth of the node * x)
         nodes.forEach(function(d) { d.y = d.depth * (Tree.IMAGE_SIZE + Tree.IMAGE_SIZE/10) });
 
         // Declare the nodes.
         var node = this.g.selectAll("g.node")
             .data(nodes);
+
+        // Draw the links
+        this.drawNodes(node, {background: 'white'});
+
+        // Declare the links
+        var link = this.g.selectAll("path.link")
+        .data(links, function(d) { return d.target.id; });
+
+        // Draw the links.
+        this.drawLinks(link)
+    }
+
+    Tree.prototype.drawNodes = function(node, options){
+        // Options array
+        var background = 'none';
+        if(typeof options !== 'undefined'){
+            // allow zooming & dragging of the tree
+            background = (typeof options.background === 'undefined') ? 'none' : options.background;
+        }
 
         // Enter the nodes.
         var nodeEnter = node.enter().append("g")
@@ -737,6 +753,7 @@ var Tree = (function(){
         nodeEnter.filter(function(d) { return d.contents })
             .filter(function(d) { return !d.hidden })
             .append("rect")
+            .attr('fill', background)
             .attr('width', Tree.IMAGE_SIZE)
             .attr('height', Tree.IMAGE_SIZE)
             .attr('y', -Tree.IMAGE_SIZE/2);
@@ -757,12 +774,12 @@ var Tree = (function(){
                     .container(d3.select(this))
                     .draw();
             });
+    }
 
-        // Declare the links
-        var link = this.g.selectAll("path.link")
-        .data(links, function(d) { return d.target.id; });
+    Tree.prototype.drawLinks = function(link){
+        var diagonal = d3.svg.diagonal()
+            .projection(function(d) { return [d.y, d.x]; });
 
-        // Enter the links.
         link.enter().insert("path", "g")
             .attr("class", "link")
             .attr("d", diagonal);

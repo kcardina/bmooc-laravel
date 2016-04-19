@@ -118,14 +118,14 @@
 
                 // show all the nodes
                 d3.select(this.parentNode).selectAll("g.node").attr("display", "block");
-                d3.select(this.parentNode).selectAll("path.link").attr("display", "block");
+                d3.select(this.parentNode).selectAll(".link").attr("display", "block");
                 // hide the newest nodes
                 d3.select(this.parentNode).selectAll("g.node")
                     .filter(function(d) {
                         var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d.created_at);
                         return date > brush.extent()[0];
                     }).attr("display", "none");
-                d3.select(this.parentNode).selectAll("path.link")
+                d3.select(this.parentNode).selectAll(".link")
                     .filter(function(d) {
                         var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d.target.created_at);
                         return date > brush.extent()[0];
@@ -256,81 +256,12 @@
             var node = this.g.selectAll(".node")
               .data(nodes);
 
-            var nodeEnter = node.enter().append("g")
-                .attr("class", "node")
-                .attr("transform", function(d){
-                    return "translate(" + d.x + "," + d.y + ")";
-                });
+            this.drawNodes(node, {background: 'none'});
 
-            //img
-            nodeEnter.filter(function(d) { return d.hidden; })
-                .append("a")
-                .attr("xlink:href", function(d) {
-                    return "/topic/"+d.id;
-                })
-                .append("circle")
-                .attr("cx", 5)
-                .attr("cy", 0)
-                .attr("r", 5);
-
-            //img
-            nodeEnter.filter(function(d) { return d.url; })
-                .filter(function(d) { return !d.hidden })
-                .append("a")
-                .attr("xlink:href", function(d) {
-                    return "/topic/"+d.id;
-                })
-                .append("image")
-                .attr("xlink:href", function(d) {
-                    return "/artefact/" + d.id + "/thumbnail/"
-                })
-                .attr('y', -Tree.IMAGE_SIZE/4)
-                .attr('width', Tree.IMAGE_SIZE/2)
-                .attr('height', Tree.IMAGE_SIZE/2);
-
-            //text
-            nodeEnter.filter(function(d) { return d.contents })
-                .filter(function(d) { return !d.hidden })
-                .append("a")
-                .attr("xlink:href", function(d) {
-                    return "/topic/"+d.id;
-                })
-                .append("text")
-                .attr('y', -Tree.IMAGE_SIZE/4)
-                .text(function(d) { return splitString(d.title); })
-                .each(function(d){
-                    d3plus.textwrap()
-                        .config(Tree.TEXTBOUNDS)
-                        .valign('middle')
-                        .align('center')
-                        .container(d3.select(this))
-                        .draw();
-                });
-
-            nodeEnter.call(force.drag);
+            node.call(force.drag);
 
             node.append("title")
                 .text(function(d) { return d.title; });
-
-            var skip = 0;
-
-            /*
-            force.on("tick", function() {
-                //skip++
-                //if(skip % (Math.ceil(nodes.length/100)) != 0) return;
-                link.attr("x1", function(d) { return d.source.x; })
-                    .attr("y1", function(d) { return d.source.y; })
-                    .attr("x2", function(d) { return d.target.x; })
-                    .attr("y2", function(d) { return d.target.y; });
-
-                /*node.attr("cx", function(d) { return d.x; })
-                    .attr("cy", function(d) { return d.y; });*//*
-
-                node.attr("transform", function(d){
-                    return "translate(" + d.x + "," + d.y + ")";
-                });
-              });
-        */
 
             function start(){
 
@@ -346,9 +277,6 @@
                         .attr("y1", function(d) { return d.source.y; })
                         .attr("x2", function(d) { return d.target.x; })
                         .attr("y2", function(d) { return d.target.y; });
-
-                    /*node.attr("cx", function(d) { return d.x; })
-                        .attr("cy", function(d) { return d.y; });*/
 
                     node.attr("transform", function(d){
                         return "translate(" + d.x + "," + d.y + ")";
