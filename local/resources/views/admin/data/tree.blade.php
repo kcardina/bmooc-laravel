@@ -181,19 +181,6 @@
 
         Tree.prototype.drawCluster = function(){
 
-            var IMAGE_SIZE = 50;
-            var MARGIN = {
-                top: IMAGE_SIZE/2,
-                right: IMAGE_SIZE/2,
-                bottom: IMAGE_SIZE/2,
-                left: IMAGE_SIZE/2
-            };
-            var TEXTBOUNDS = {
-                width: IMAGE_SIZE,
-                height: IMAGE_SIZE,
-                resize: true
-            }
-
             var nodes = JSON.parse('{!! addslashes(json_encode($list)) !!}');
             var tags = JSON.parse('{!! addslashes(json_encode($tags)) !!}');
 
@@ -297,9 +284,9 @@
                 .attr("xlink:href", function(d) {
                     return "/artefact/" + d.id + "/thumbnail/"
                 })
-                .attr('y', -IMAGE_SIZE/2)
-                .attr('width', IMAGE_SIZE)
-                .attr('height', IMAGE_SIZE);
+                .attr('y', -Tree.IMAGE_SIZE/2)
+                .attr('width', Tree.IMAGE_SIZE)
+                .attr('height', Tree.IMAGE_SIZE);
 
             //text
             nodeEnter.filter(function(d) { return d.contents })
@@ -309,11 +296,11 @@
                     return "/topic/"+d.id;
                 })
                 .append("text")
-                .attr('y', -IMAGE_SIZE/2)
+                .attr('y', -Tree.IMAGE_SIZE/2)
                 .text(function(d) { return splitString(d.title); })
                 .each(function(d){
                     d3plus.textwrap()
-                        .config(TEXTBOUNDS)
+                        .config(Tree.TEXTBOUNDS)
                         .valign('middle')
                         .align('center')
                         .container(d3.select(this))

@@ -547,24 +547,25 @@ var Thumbnail = (function(){
 })();
 
 
-/********************************
-* RENDER TREES (uses 3dplus.js) *
-********************************/
+/************************************************
+* RENDER TREES (dependencies: d3js & 3dplus.js) *
+************************************************/
 
 var Tree = (function(){
 
-    var IMAGE_SIZE = 100;
-    var MARGIN = {
-        top: IMAGE_SIZE/2,
-        right: IMAGE_SIZE/2,
-        bottom: IMAGE_SIZE/2,
-        left: IMAGE_SIZE/2
+    /** Static variables shared by all instances **/
+    Tree.IMAGE_SIZE = 100;
+    Tree.MARGIN = {
+        top: Tree.IMAGE_SIZE/2,
+        right: Tree.IMAGE_SIZE/2,
+        bottom: Tree.IMAGE_SIZE/2,
+        left: Tree.IMAGE_SIZE/2
     };
-    var TEXTBOUNDS = {
-        width: IMAGE_SIZE,
-        height: IMAGE_SIZE,
+    Tree.TEXTBOUNDS = {
+        width: Tree.IMAGE_SIZE,
+        height: Tree.IMAGE_SIZE,
         resize: true
-    }
+    };
 
     /**
      * Create a Tree.
@@ -573,8 +574,9 @@ var Tree = (function(){
      */
     function Tree(el, data, options){
 
-        // options
+        // Options array
         if(typeof options !== 'undefined'){
+            // allow zooming & dragging of the tree
             this.move = (typeof options.move === 'undefined') ? 'true' : options.move;
         }
 
@@ -598,7 +600,7 @@ var Tree = (function(){
         }
         this.g = this.svg.append("g");
         this.tree = d3.layout.tree()
-            .nodeSize([IMAGE_SIZE, IMAGE_SIZE]);
+            .nodeSize([Tree.IMAGE_SIZE, Tree.IMAGE_SIZE]);
         this.hasZoom = false;
         this.width = function(){
             return this.el.getBoundingClientRect().width;
@@ -635,13 +637,6 @@ var Tree = (function(){
         d3.select(this.el).transition()
             .duration(125)
             .call(this.zoomListener.event);
-        /*
-        this.zoomListener
-            .scale(s)
-            .translate([t_w, t_h])
-            .scaleExtent([s, 1])
-            .event(d3.select(this.el));
-        */
 
         if(s != 1){
             this.hasZoom = true;
@@ -680,31 +675,10 @@ var Tree = (function(){
      * It's important that this.zoomListener has been updated in the resize function
      */
     Tree.prototype.zoomed = function(){
-        console.log('zoomed');
         d3.select(this).select('g').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
         d3.select(window).on("mouseup.zoom", function(){
             d3.select(window).on("mousemove.zoom", null).on("mouseup.zoom", null);
         });
-    }
-
-    /**
-     * Zoom given scale and automatically translate to center
-     * UNUSED??
-    **/
-    Tree.prototype.zoom = function(scale){
-        // calculate scale
-        var oldScale = this.zoomListener.scale();
-        var newScale = this.zoomListener.scale() + scale;
-        // apply scale (for boundaries)
-        this.zoomListener
-            .scale(newScale);
-        // calculate translation
-        var w = this.g.node().getBBox().width;
-        t_w = this.zoomListener.translate()[0] + (w/2)*oldScale - (w/2)*this.zoomListener.scale()
-        // apply translation
-        this.zoomListener
-            .translate([t_w,this.zoomListener.translate()[1]])
-            .event(d3.select(this.el));
     }
 
     /**
@@ -717,12 +691,11 @@ var Tree = (function(){
         var links = this.tree.links(nodes);
 
         // horizontal spacing of the nodes (depth of the node * x)
-        nodes.forEach(function(d) { d.y = d.depth * (IMAGE_SIZE + IMAGE_SIZE/10) });
+        nodes.forEach(function(d) { d.y = d.depth * (Tree.IMAGE_SIZE + Tree.IMAGE_SIZE/10) });
 
         // Declare the nodes.
         var node = this.g.selectAll("g.node")
             .data(nodes);
-
 
         // Enter the nodes.
         var nodeEnter = node.enter().append("g")
@@ -753,17 +726,17 @@ var Tree = (function(){
             .attr("xlink:href", function(d) {
                 return "/artefact/" + d.id + "/thumbnail/"
             })
-            .attr('y', -IMAGE_SIZE/2)
-            .attr('width', IMAGE_SIZE)
-            .attr('height', IMAGE_SIZE);
+            .attr('y', -Tree.IMAGE_SIZE/2)
+            .attr('width', Tree.IMAGE_SIZE)
+            .attr('height', Tree.IMAGE_SIZE);
 
         //text
         nodeEnter.filter(function(d) { return d.contents })
             .filter(function(d) { return !d.hidden })
             .append("rect")
-            .attr('width', IMAGE_SIZE)
-            .attr('height', IMAGE_SIZE)
-            .attr('y', -IMAGE_SIZE/2);
+            .attr('width', Tree.IMAGE_SIZE)
+            .attr('height', Tree.IMAGE_SIZE)
+            .attr('y', -Tree.IMAGE_SIZE/2);
         nodeEnter.filter(function(d) { return d.contents })
             .filter(function(d) { return !d.hidden })
             .append("a")
@@ -771,11 +744,11 @@ var Tree = (function(){
                 return "/topic/"+d.id;
             })
             .append("text")
-            .attr('y', -IMAGE_SIZE/2)
+            .attr('y', -Tree.IMAGE_SIZE/2)
             .text(function(d) { return splitString(d.title); })
             .each(function(d){
                 d3plus.textwrap()
-                    .config(TEXTBOUNDS)
+                    .config(Tree.TEXTBOUNDS)
                     .valign('middle')
                     .align('center')
                     .container(d3.select(this))

@@ -251,6 +251,7 @@ class AdminController extends Controller {
             ->get();
 
         $user = Auth::user();
+
         if ($user && $user->role == "editor") {
             return view('admin.data.tree', ['topics' => $topics, 'topic' => $topic, 'tree' => $tree, 'list' => $list, 'tags' => $tags]);
         } else {
