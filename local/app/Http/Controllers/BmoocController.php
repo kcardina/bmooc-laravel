@@ -34,9 +34,9 @@ class BmoocController extends Controller {
     }
 
     public function index(Request $request) {
-        //$user = Auth::user();
-        $user = $request->user();
-        //dd($request);
+        $user = Auth::user();
+        //$user = $request->user();
+        //dd(Auth::user());
         $topics = Artefact::with(['active_instruction', 'the_author', 'tags', 'last_modifier'])
             ->orderBy('updated_at', 'desc')
             ->whereNull('parent_id')

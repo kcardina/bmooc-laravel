@@ -601,7 +601,7 @@
             $(".item").bind('click', loadAnswers);
 
             function loadAnswers(e){
-                if("{!!  isset($user) !!}" != 1){
+                if(parseInt("{!!  isset($user) !!}") != 1){
                     $('a.logout').click();
                     return false;
                 }
