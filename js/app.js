@@ -572,13 +572,19 @@ var Tree = (function(){
      * @param {dom element} el - The container for the Tree svg element.
      * @param {JSON} data - A JSON-tree containing the data to visualize.
      */
-    function Tree(el, data, options){
+    function Tree(el, data, opt){
 
         // Options array
-        this.move = true;
-        if(typeof options !== 'undefined'){
-            // allow zooming & dragging of the tree
-            this.move = (typeof options.move === 'undefined') ? 'true' : options.move;
+        this.options = {
+            interactive: true, // Allow dragging & zooming
+            showImages: true, // Show the images
+            background: true // give a background to text so the links appear behind
+        };
+
+        if(typeof opt !== 'undefined'){
+            if(typeof opt.interactive !== 'undefined') this.options.interactive = opt.interactive;
+            if(typeof opt.showImages !== 'undefined') this.options.showImages = opt.showImages;
+            if(typeof opt.background !== 'undefined') this.options.background = opt.background;
         }
 
         this.data = data;
@@ -590,14 +596,18 @@ var Tree = (function(){
 
         this.svg = d3.select(this.el).append("svg")
                 .attr("width", '100%')
-                .attr("height", '100%');
-        if(this.move) this.svg.call(this.zoomListener);
-        this.svg = this.svg.append("g");
-
-        this.g = this.svg.append("g");
+                .attr("height", '100%')
+                .attr("class", "svg");
+        // add one g to scale and capture events
+        this.container = this.svg.append("g");
+        // add another g to draw the visualisation
+        this.g = this.container.append("g");
 
         this.tree = d3.layout.tree()
             .nodeSize([Tree.IMAGE_SIZE, Tree.IMAGE_SIZE]);
+
+        this.nodes;
+        this.links;
 
         this.width = function(){
             return this.el.getBoundingClientRect().width;
@@ -605,6 +615,35 @@ var Tree = (function(){
         this.height = function() {
             return this.el.getBoundingClientRect().height;
         }
+    }
+
+    /**
+     *  Render a visualisation
+     */
+    Tree.prototype.render = function(type){
+        // clear the current vis
+        d3.select(this.el).selectAll("svg").remove();
+        // add svg
+        this.svg = d3.select(this.el).append("svg")
+                .attr("width", '100%')
+                .attr("height", '100%')
+                .attr("class", "svg");
+        this.svg.selectAll("g").remove();
+        // add one g to scale and capture events
+        this.container = this.svg.append("g");
+        // add another g to draw the visualisation
+        this.g = this.container.append("g");
+
+        if(this.options.interactive) this.svg.call(this.zoomListener);
+
+        if(type == "tree"){
+            this.renderTree();
+        }
+        if(type == "tags"){
+            this.renderTags();
+        }
+
+        this.timeline();
     }
 
     /**
@@ -630,8 +669,13 @@ var Tree = (function(){
             .scale(s)
             .translate([t_w, t_h])
             .scaleExtent([s, 1]);
+        // for some mysterious reason, updation the zoomListener only works when called twice
+        this.zoomListener
+            .scale(s)
+            .translate([t_w, t_h])
+            .scaleExtent([s, 1]);
 
-        d3.select(this.el).transition()
+        this.svg.transition()
             .duration(125)
             .call(this.zoomListener.event);
 
@@ -672,6 +716,7 @@ var Tree = (function(){
      * It's important that this.zoomListener has been updated in the resize function
      */
     Tree.prototype.zoomed = function(){
+        // this should be this.container g element
         d3.select(this).select('g').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
         d3.select(window).on("mouseup.zoom", function(){
             d3.select(window).on("mousemove.zoom", null).on("mouseup.zoom", null);
@@ -681,7 +726,7 @@ var Tree = (function(){
     /**
      * Generate and show the tree.
      */
-    Tree.prototype.draw = function(){
+    Tree.prototype.renderTree = function(){
 
         treelayout = d3.layout.tree()
             .nodeSize([Tree.IMAGE_SIZE, Tree.IMAGE_SIZE]);
@@ -698,23 +743,31 @@ var Tree = (function(){
             .data(nodes);
 
         // Draw the links
-        this.drawNodes(node, {background: 'white'});
+        this.drawNodes(node);
 
         // Declare the links
         var link = this.g.selectAll("path.link")
         .data(links, function(d) { return d.target.id; });
 
-        // Draw the links.
-        this.drawLinks(link)
+        var diagonal = d3.svg.diagonal()
+            .projection(function(d) { return [d.y, d.x]; });
+
+        link.enter().insert("path", "g")
+            .attr("class", "link")
+            .attr("d", diagonal);
     }
 
-    Tree.prototype.drawNodes = function(node, options){
-        // Options array
-        var background = 'none';
-        if(typeof options !== 'undefined'){
-            // allow zooming & dragging of the tree
-            background = (typeof options.background === 'undefined') ? 'none' : options.background;
-        }
+    /**
+     *  Backwards compatibility
+     */
+    Tree.prototype.draw = function(){
+        this.render("tree");
+    }
+
+    /**
+     * Draw the nodes. Reused by the render functions
+     */
+    Tree.prototype.drawNodes = function(node){
 
         // Enter the nodes.
         var nodeEnter = node.enter().append("g")
@@ -723,66 +776,70 @@ var Tree = (function(){
                 return "translate(" + d.y + "," + d.x + ")";
             });
 
-        //img
-        nodeEnter.filter(function(d) { return d.hidden; })
-            .append("a")
-            .attr("xlink:href", function(d) {
-                return "/topic/"+d.id;
-            })
-            .append("circle")
-            .attr("cx", 5)
-            .attr("cy", 0)
-            .attr("r", 5);
+        if(this.options.showImages){
 
-        //img
-        nodeEnter.filter(function(d) { return d.url; })
-            .filter(function(d) { return !d.hidden })
-            .append("a")
-            .attr("xlink:href", function(d) {
-                return "/topic/"+d.id;
-            })
-            .append("image")
-            .attr("xlink:href", function(d) {
-                return "/artefact/" + d.id + "/thumbnail/"
-            })
-            .attr('y', -Tree.IMAGE_SIZE/2)
-            .attr('width', Tree.IMAGE_SIZE)
-            .attr('height', Tree.IMAGE_SIZE);
+            //hidden
+            nodeEnter.filter(function(d) { return d.hidden; })
+                .append("a")
+                .attr("xlink:href", function(d) {
+                    return "/topic/"+d.id;
+                })
+                .append("circle")
+                .attr("cx", 5)
+                .attr("cy", 0)
+                .attr("r", 5);
 
-        //text
-        nodeEnter.filter(function(d) { return d.contents })
-            .filter(function(d) { return !d.hidden })
-            .append("rect")
-            .attr('fill', background)
-            .attr('width', Tree.IMAGE_SIZE)
-            .attr('height', Tree.IMAGE_SIZE)
-            .attr('y', -Tree.IMAGE_SIZE/2);
-        nodeEnter.filter(function(d) { return d.contents })
-            .filter(function(d) { return !d.hidden })
-            .append("a")
-            .attr("xlink:href", function(d) {
-                return "/topic/"+d.id;
-            })
-            .append("text")
-            .attr('y', -Tree.IMAGE_SIZE/2)
-            .text(function(d) { return splitString(d.title); })
-            .each(function(d){
-                d3plus.textwrap()
-                    .config(Tree.TEXTBOUNDS)
-                    .valign('middle')
-                    .align('center')
-                    .container(d3.select(this))
-                    .draw();
-            });
-    }
+            //img
+            nodeEnter.filter(function(d) { return d.url; })
+                .filter(function(d) { return !d.hidden })
+                .append("a")
+                .attr("xlink:href", function(d) {
+                    return "/topic/"+d.id;
+                })
+                .append("image")
+                .attr("xlink:href", function(d) {
+                    return "/artefact/" + d.id + "/thumbnail/"
+                })
+                .attr('y', -Tree.IMAGE_SIZE/2)
+                .attr('width', Tree.IMAGE_SIZE)
+                .attr('height', Tree.IMAGE_SIZE);
 
-    Tree.prototype.drawLinks = function(link){
-        var diagonal = d3.svg.diagonal()
-            .projection(function(d) { return [d.y, d.x]; });
+            //text
+            var bg = nodeEnter.filter(function(d) { return d.contents })
+                .filter(function(d) { return !d.hidden })
+                .append("rect")
+                .attr('width', Tree.IMAGE_SIZE)
+                .attr('height', Tree.IMAGE_SIZE)
+                .attr('y', -Tree.IMAGE_SIZE/2);
+            if(this.options.background) bg.attr("class", "filled");
 
-        link.enter().insert("path", "g")
-            .attr("class", "link")
-            .attr("d", diagonal);
+            nodeEnter.filter(function(d) { return d.contents })
+                .filter(function(d) { return !d.hidden })
+                .append("a")
+                .attr("xlink:href", function(d) {
+                    return "/topic/"+d.id;
+                })
+                .append("text")
+                .attr('y', -Tree.IMAGE_SIZE/2)
+                .text(function(d) { return splitString(d.title); })
+                .each(function(d){
+                    d3plus.textwrap()
+                        .config(Tree.TEXTBOUNDS)
+                        .valign('middle')
+                        .align('center')
+                        .container(d3.select(this))
+                        .draw();
+                });
+        } else {
+            nodeEnter.append("a")
+                .attr("xlink:href", function(d) {
+                    return "/topic/"+d.id;
+                })
+                .append("circle")
+                .attr("cx", 2.5)
+                .attr("cy", 0)
+                .attr("r", 5);
+        }
     }
 
     return Tree;

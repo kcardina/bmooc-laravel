@@ -4,6 +4,27 @@
     @parent
 
     <div class="row">
+        <div class="columns small-4">
+            <dl>
+                <dt>Tree</dt>
+                <dd>Toont de chronologische boomstructuur</dd>
+            </dl>
+        </div>
+        <div class="columns small-4">
+            <dl>
+                <dt>Tags (structure)</dt>
+                <dd>Linkt artefacten met dezelfde tags aan elkaar. Hoe dikker de lijn tussen artefacten, hoe meer tags er overeen komen.</dd>
+                </dl>
+        </div>
+        <div class="columns small-4">
+            <dl>
+                <dt>Tags (images)</dt>
+                <dd>Zie Tags (structure). Toont de artefacten ipv zwarte bollen. <strong>Experimenteel!</strong></dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="columns" id="tree">
 
         </div>
@@ -67,7 +88,7 @@
                 .tickValues([timeScale.domain()[0], timeScale.domain()[1]])
 
             // select on parent node, we don't want to scale the timeline
-            d3.select(this.svg.node().parentNode).append("g")
+            d3.select(this.svg.node()).append("g")
                 .attr("class", "x axis")
                 // put in middle of screen
                 .attr("transform", "translate(0," + (this.height() - 25) + ")")
@@ -76,7 +97,7 @@
                 .select(".domain");
 
             // add slider handle on parentNode, we don't want to scale it
-            var slider = d3.select(this.svg.node().parentNode).append("g")
+            var slider = d3.select(this.svg.node()).append("g")
               .attr("class", "slider")
               .call(brush);
 
@@ -179,13 +200,13 @@
 
         }
 
-        Tree.prototype.drawCluster = function(){
+        Tree.prototype.renderTags = function(){
 
             var nodes = JSON.parse('{!! addslashes(json_encode($list)) !!}');
             var tags = JSON.parse('{!! addslashes(json_encode($tags)) !!}');
 
             var force = d3.layout.force()
-                .linkDistance(200); // IMAGE_SIZE
+                .linkDistance(Tree.IMAGE_SIZE*3); // IMAGE_SIZE
 
             var links = [];
             var edges = [];
@@ -256,7 +277,7 @@
             var node = this.g.selectAll(".node")
               .data(nodes);
 
-            this.drawNodes(node, {background: 'none'});
+            this.drawNodes(node);
 
             node.call(force.drag);
 
@@ -290,11 +311,6 @@
             }
 
         }
-
-        Tree.prototype.bundle = function(){
-
-
-        }
     </script>
 
     <script>
@@ -303,89 +319,53 @@
 
         var data = JSON.parse('{!! addslashes(json_encode($tree)) !!}');
 
-        var tree = new Tree($('#tree').get(0), data, {
-            move: false
+        tree = new Tree($('#tree').get(0), data, {
+            interactive: true
         });
+        tree.render("tree");
 
-        function spawn_controls(active){
+        // main buttons
+        var controls = d3.select("#tree")
+            .append("div")
+            .attr("class", "main_controls");
 
-            // main buttons
-            var controls = d3.select("#tree")
-                .append("div")
-                .attr("class", "main_controls");
+        var controls_tree = controls
+            .append("button")
+            .text("TREE")
+            .attr("class", "purple active")
+            .on("click", function(){
+                tree.options.interactive = true;
+                tree.options.background = true;
+                tree.options.showImages = true;
+                tree.render("tree");
+            });
 
-            var controls_tree = controls
-                .append("button")
-                .text("TREE")
-                .attr("class", "purple")
-                .on("click", function(){
-                    $('#tree').html("");
-                    tree = new Tree($('#tree').get(0), data, {
-                        move: false
-                    });
-                    spawn_controls("tree");
-                    tree.draw();
-                    tree.timeline();
-                    tree.fit();
-                });
+        var controls_cluster = controls
+            .append("button")
+            .text("TAGS (structure)")
+            .attr("class", "purple")
+            .on("click", function(){
+                tree.options.interactive = false;
+                tree.options.background = false;
+                tree.options.showImages = false;
+                tree.render("tags");
+            });
 
-            var controls_cluster = controls
-                .append("button")
-                .text("TAGS (structure)")
-                .attr("class", "purple")
-                .on("click", function(){
-                    $('#tree').html("");
-                    tree = new Tree($('#tree').get(0), data, {
-                        move: false
-                    });
-                    spawn_controls("cluster");
-                    tree.drawCluster();
-                    tree.timeline();
-                    tree.fit();
-                });
+        var controls_cluster_img = controls
+            .append("button")
+            .text("TAGS (images)")
+            .attr("class", "purple")
+            .on("click", function(){
+                tree.options.interactive = false;
+                tree.options.background = false;
+                tree.options.showImages = true;
+                tree.render("tags");
+            });
 
-            var controls_cluster_img = controls
-                .append("button")
-                .text("TAGS (images)")
-                .attr("class", "purple")
-                .on("click", function(){
-                    $('#tree').html("");
-                    tree = new Tree($('#tree').get(0), data, {
-                        move: false
-                    });
-                    spawn_controls("cluster_img");
-                    tree.drawCluster();
-                    tree.timeline();
-                    tree.fit();
-                });
-
-            var controls_bundle = controls
-                .append("button")
-                .text("BUNDLE")
-                .attr("class", "purple")
-                .on("click", function(){
-                    $('#tree').html("");
-                    tree = new Tree($('#tree').get(0), data, {
-                        move: false
-                    });
-                    spawn_controls("bundle");
-                    tree.bundle();
-                    //tree.timeline();
-                    tree.fit();
-                });
-
-            if(active == "tree"){
-                controls_tree.attr("class", "active");
-            } else if (active == "cluster") {
-                controls_cluster.attr("class", "active");
-            } else if(active == "cluster_img"){
-                controls_cluster_img.attr("class", "active");
-            }
-        }
-        spawn_controls("tree");
-        tree.draw();
-        tree.timeline();
-        tree.fit();
+        $(".main_controls button").on("click", function(){
+            $(".main_controls button").removeClass("active");
+            $(this).addClass("active");
+        });
 
     </script>
 
