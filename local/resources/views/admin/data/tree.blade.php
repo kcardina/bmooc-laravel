@@ -290,6 +290,11 @@
             }
 
         }
+
+        Tree.prototype.bundle = function(){
+
+
+        }
     </script>
 
     <script>
@@ -302,7 +307,7 @@
             move: false
         });
 
-        function spawn_controls(){
+        function spawn_controls(active){
 
             // main buttons
             var controls = d3.select("#tree")
@@ -312,15 +317,13 @@
             var controls_tree = controls
                 .append("button")
                 .text("TREE")
-                .attr("class", "purple active")
+                .attr("class", "purple")
                 .on("click", function(){
-                    controls_tree.attr("class", "active");
-                    controls_cluster.attr("class", "");
                     $('#tree').html("");
                     tree = new Tree($('#tree').get(0), data, {
                         move: false
                     });
-                    spawn_controls();
+                    spawn_controls("tree");
                     tree.draw();
                     tree.timeline();
                     tree.fit();
@@ -328,22 +331,58 @@
 
             var controls_cluster = controls
                 .append("button")
-                .text("CLUSTER")
+                .text("TAGS (structure)")
                 .attr("class", "purple")
                 .on("click", function(){
-                    controls_tree.attr("class", "");
-                    controls_cluster.attr("class", "active");
                     $('#tree').html("");
                     tree = new Tree($('#tree').get(0), data, {
                         move: false
                     });
-                    spawn_controls();
+                    spawn_controls("cluster");
                     tree.drawCluster();
                     tree.timeline();
                     tree.fit();
                 });
+
+            var controls_cluster_img = controls
+                .append("button")
+                .text("TAGS (images)")
+                .attr("class", "purple")
+                .on("click", function(){
+                    $('#tree').html("");
+                    tree = new Tree($('#tree').get(0), data, {
+                        move: false
+                    });
+                    spawn_controls("cluster_img");
+                    tree.drawCluster();
+                    tree.timeline();
+                    tree.fit();
+                });
+
+            var controls_bundle = controls
+                .append("button")
+                .text("BUNDLE")
+                .attr("class", "purple")
+                .on("click", function(){
+                    $('#tree').html("");
+                    tree = new Tree($('#tree').get(0), data, {
+                        move: false
+                    });
+                    spawn_controls("bundle");
+                    tree.bundle();
+                    //tree.timeline();
+                    tree.fit();
+                });
+
+            if(active == "tree"){
+                controls_tree.attr("class", "active");
+            } else if (active == "cluster") {
+                controls_cluster.attr("class", "active");
+            } else if(active == "cluster_img"){
+                controls_cluster_img.attr("class", "active");
+            }
         }
-        spawn_controls();
+        spawn_controls("tree");
         tree.draw();
         tree.timeline();
         tree.fit();
