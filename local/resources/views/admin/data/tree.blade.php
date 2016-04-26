@@ -1,7 +1,23 @@
 @extends('admin.data.master')
 
 @section('content')
-    @parent
+    <div class="row">
+        <div class="columns">
+           <form id="topics">
+                <select name="topic">
+                    <option value="all">ALL TOPICS (EXPERIMENTAL!!!)</option>
+                    <option disabled>──────────</option>
+                   @foreach($topics as $t)
+                       @if ($t->thread == $topic)
+                            <option selected value="{{ $t->thread }}">{{ $t->title }}</option>
+                       @else
+                           <option value="{{ $t->thread }}">{{ $t->title }}</option>
+                       @endif
+                    @endforeach
+                </select>
+            </form>
+        </div>
+    </div>
 
     <div class="row">
         <div class="columns small-4">

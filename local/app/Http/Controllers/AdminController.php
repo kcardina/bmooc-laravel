@@ -225,7 +225,8 @@ class AdminController extends Controller {
             ->whereNull('parent_id')
             ->get();
         $topic = Input::get('topic');
-        if(!is_numeric($topic)) $topic = null;
+        if($topic == "all") $topic = null;
+        else if(!is_numeric($topic)) $topic = $topics[0]->thread;
 
         // BUILD TREE
         $parent = DB::table('artefacts')
