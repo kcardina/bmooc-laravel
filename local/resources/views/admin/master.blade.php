@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>bMOOC Dashboard | @yield('title')</title>
+    <title>bMOOC | @yield('title')</title>
 
     {!! HTML::style('css/foundation.css') !!}
     {!! HTML::style('css/admin.css') !!}
@@ -14,7 +14,7 @@
    <header>
       <div class="row">
           <div class="columns">
-              <h1>bMOOC Dashboard</h1>
+              <h1>bMOOC</h1>
                <nav>
                   <div class="icon-bar two-up">
                       <a href="/admin/data" class="item {{ Menu::active('admin') }}">

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>bMOOC Dashboard</title>
+    <title>bMOOC</title>
 
     {!! HTML::style('css/foundation.css') !!}
     {!! HTML::style('css/admin.css') !!}
@@ -11,7 +11,7 @@
 <body>
 
    <header>
-       <h1>bMOOC Dashboard</h1>
+       <h1>bMOOC</h1>
    </header>
 
    <nav>

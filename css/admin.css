@@ -96,6 +96,14 @@ small{
     stroke-width: 1;
 }
 
+.node rect{
+    fill: none;
+}
+
+.node rect.filled{
+    fill: white;
+}
+
 svg{
     font-size: 0.7rem;
     text-anchor: middle;
@@ -109,10 +117,6 @@ path {
 
 circle{
     cursor: pointer;
-}
-
-#tree rect{
-    fill:white;
 }
 
 #tree path{
@@ -133,6 +137,16 @@ circle{
     text-align: center;
 }
 
+.main_controls{
+    position: absolute;
+    top: 0;
+    left: 1rem;
+}
+
+.main_controls button{
+    display: block;
+}
+
 button{
     margin: 2px;
     padding: 5px 10px;
@@ -145,4 +159,9 @@ button{
 button:hover, button.active{
     background: #751e82;
     color: white;
+}
+
+.tree_zoom{
+    pointer-events: all;
+    cursor: move;
 }
