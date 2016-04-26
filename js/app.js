@@ -648,6 +648,8 @@ var Tree = (function(){
             this.container.call(this.zoomListener);
         }
 
+        this.fit();
+
         //if(this.options.fit) this.fit();
     }
 

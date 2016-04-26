@@ -400,6 +400,7 @@
                 tree.options.interactive = true;
                 tree.options.background = true;
                 tree.options.showImages = true;
+                tree.options.fit = false;
                 tree.render("tree");
             });
 
@@ -411,6 +412,7 @@
                 tree.options.interactive = false;
                 tree.options.background = false;
                 tree.options.showImages = false;
+                tree.options.fit = false;
                 tree.render("tags");
             });
 
@@ -422,6 +424,7 @@
                 tree.options.interactive = false;
                 tree.options.background = false;
                 tree.options.showImages = true;
+                tree.options.fit = false;
                 tree.render("tags");
             });
 
