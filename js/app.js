@@ -571,6 +571,7 @@ var Tree = (function(){
      * Create a Tree.
      * @param {dom element} el - The container for the Tree svg element.
      * @param {JSON} data - A JSON-tree containing the data to visualize.
+     * @param {object} opt - An optional object defining the trees behavior
      */
     function Tree(el, data, opt){
 
@@ -578,7 +579,8 @@ var Tree = (function(){
         this.options = {
             interactive: true, // Allow dragging & zooming
             showImages: true, // Show the images
-            background: true // give a background to text so the links appear behind
+            background: true, // give a background to text so the links appear behind
+            fit: true // scales the visualisation to fit the container upon render
         };
 
         if(typeof opt !== 'undefined'){
@@ -598,16 +600,14 @@ var Tree = (function(){
                 .attr("width", '100%')
                 .attr("height", '100%')
                 .attr("class", "svg");
-        // add one g to scale and capture events
-        this.container = this.svg.append("g");
+        // add one g to capture events
+        this.container = this.svg.append("g")
+            .attr("class", "tree_container");
+        // add one g to scale
+        this.zoomContainer = this.container.append("g")
+            .attr("class", "tree_zoom")
         // add another g to draw the visualisation
-        this.g = this.container.append("g");
-
-        this.tree = d3.layout.tree()
-            .nodeSize([Tree.IMAGE_SIZE, Tree.IMAGE_SIZE]);
-
-        this.nodes;
-        this.links;
+        this.g = this.zoomContainer.append("g");
 
         this.width = function(){
             return this.el.getBoundingClientRect().width;
@@ -622,28 +622,34 @@ var Tree = (function(){
      */
     Tree.prototype.render = function(type){
         // clear the current vis
-        d3.select(this.el).selectAll("svg").remove();
-        // add svg
-        this.svg = d3.select(this.el).append("svg")
-                .attr("width", '100%')
-                .attr("height", '100%')
-                .attr("class", "svg");
-        this.svg.selectAll("g").remove();
-        // add one g to scale and capture events
-        this.container = this.svg.append("g");
+        d3.select(this.el).select(".tree_container").remove();
+        // add one g to capture events
+        this.container = this.svg.insert("g",":first-child")
+            .attr("class", "tree_container");
+        // add one g to scale
+        this.zoomContainer = this.container.append("g")
+            .attr("class", "tree_zoom")
         // add another g to draw the visualisation
-        this.g = this.container.append("g");
+        this.g = this.zoomContainer.append("g");
 
-        if(this.options.interactive) this.svg.call(this.zoomListener);
+        if(type == "tree") this.renderTree();
 
-        if(type == "tree"){
-            this.renderTree();
+        if(type == "tags") this.renderTags();
+
+        if(this.options.interactive){
+            this.zoomContainer
+                .insert("rect",":first-child")
+                .attr('class', 'tree_zoom-capture')
+                .style('visibility', 'hidden')
+                .attr('x', this.g.node().getBBox().x - 25)
+                .attr('y', this.g.node().getBBox().y - 25)
+                .attr('width', this.g.node().getBBox().width + 50)
+                .attr('height', this.g.node().getBBox().height + 50);
+            console.log(this.g.node().getBBox());
+            this.container.call(this.zoomListener);
         }
-        if(type == "tags"){
-            this.renderTags();
-        }
 
-        this.timeline();
+        if(this.fit) this.fit();
     }
 
     /**
@@ -717,7 +723,7 @@ var Tree = (function(){
      */
     Tree.prototype.zoomed = function(){
         // this should be this.container g element
-        d3.select(this).select('g').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        d3.select(this).select('.tree_zoom').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
         d3.select(window).on("mouseup.zoom", function(){
             d3.select(window).on("mousemove.zoom", null).on("mouseup.zoom", null);
         });

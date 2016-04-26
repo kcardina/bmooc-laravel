@@ -41,164 +41,209 @@
 
     <script>
         /**
-         * TREE
+         *  Timeline
          */
 
-        Tree.prototype.timeline = function(){
+        var Timeline = (function(){
 
-            var pointer = this;
+            /**
+             * Create a Tree.
+             * @param {Tree} tree - The tree associated with the timeline
+             */
+            function Timeline(tree){
 
-            formatDate = d3.time.format("%d %b %Y");
+                var pointer = this;
 
-            var max = d3.max(this.tree.nodes(this.data), function(d){
-                      var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d.created_at);
-                      return date;
-                  });
-            var min = d3.min(this.tree.nodes(this.data), function(d){
-                      var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d.created_at);
-                      return date;
-                  })
+                this.tree = tree;
 
-            // scale function
-            var timeScale = d3.time.scale()
-              .domain([min, max])
-              .range([100, this.width() - 100])
-              .clamp(true);
+                /* public vars & functions */
+                this.formatDate = d3.time.format("%d %b %Y");
 
-            // initial value (max date)
-            var startingValue = d3.max(this.tree.nodes(this.data), function(d){
-                  var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d.created_at);
-                  return date;
-              })
+                this.max = d3.max(d3.layout.tree().nodes(this.tree.data), function(d){
+                          var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d.created_at);
+                          return date;
+                      });
 
-            // defines brush
-            var brush = d3.svg.brush()
-                .x(timeScale)
-                .extent([max, max])
-                .on("brush", brushed)
+                this.min = d3.min(d3.layout.tree().nodes(this.tree.data), function(d){
+                          var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d.created_at);
+                          return date;
+                      });
 
-            var axis = d3.svg.axis()
-                .scale(timeScale)
-                .orient("bottom")
-                .tickFormat(function(d) {
-                    return formatDate(d);
-                })
-                .tickSize(0)
-                .tickPadding(12)
-                .tickValues([timeScale.domain()[0], timeScale.domain()[1]])
+                this.startingValue = this.max;
 
-            // select on parent node, we don't want to scale the timeline
-            d3.select(this.svg.node()).append("g")
-                .attr("class", "x axis")
-                // put in middle of screen
-                .attr("transform", "translate(0," + (this.height() - 25) + ")")
-                // inroduce axis
-                .call(axis)
-                .select(".domain");
+                this.timeScale = d3.time.scale()
+                  .domain([this.min, this.max])
+                  .range([100, this.tree.width() - 100])
+                  .clamp(true);
 
-            // add slider handle on parentNode, we don't want to scale it
-            var slider = d3.select(this.svg.node()).append("g")
-              .attr("class", "slider")
-              .call(brush);
+                this.brush = d3.svg.brush()
+                    .x(this.timeScale)
+                    .extent([this.max, this.max])
+                    .on("brush", function(){
+                        pointer.brushed(this);
+                    });
 
-            slider.selectAll(".extent,.resize")
-              .remove();
+            }
 
-            // background for slider to make selection area bigger
-            slider.select(".background")
-              .attr("height", 25)
-                .attr("transform", "translate(0," + (this.height() - 25 - 12) + ")")
+            Timeline.prototype.brushed = function(e){
+                var pointer = this;
 
-            // HANDLE
-            var handle = slider.append("g")
-              .attr("class", "handle")
-
-            handle.append("circle")
-              .attr("transform", "translate(0," + (this.height() - 25) + ")")
-              .attr("r", 5)
-
-            handle.append('text')
-              .text(startingValue)
-              .attr("transform", "translate(" + 0 + " ," + (this.height() - 55) + ")");
-
-            slider
-              .call(brush.event)
-
-            function brushed() {
-                var value = brush.extent()[0];
+                var value = this.brush.extent()[0];
 
                 // put the brush to a new value
                 if (d3.event.sourceEvent) { // not a programmatic event
-                    value = timeScale.invert(d3.mouse(this)[0]);
-                    brush.extent([value, value]);
+                    value = this.timeScale.invert(d3.mouse(e)[0]);
+                    this.brush.extent([value, value]);
                 }
 
-                handle.attr("transform", "translate(" + timeScale(value) + ",0)");
-                handle.select('text').text(formatDate(value));
-
+                d3.select(this.tree.el).select(".handle").attr("transform", "translate(" + this.timeScale(value) + ",0)");
+                d3.select(this.tree.el).select(".handle").select('text').text(this.formatDate(value));
 
                 // show all the nodes
-                d3.select(this.parentNode).selectAll("g.node").attr("display", "block");
-                d3.select(this.parentNode).selectAll(".link").attr("display", "block");
+                this.tree.g.selectAll("g.node").attr("display", "block");
+                this.tree.g.selectAll(".link").attr("display", "block");
+
                 // hide the newest nodes
-                d3.select(this.parentNode).selectAll("g.node")
+                this.tree.g.selectAll("g.node")
                     .filter(function(d) {
                         var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d.created_at);
-                        return date > brush.extent()[0];
+                        return date > pointer.brush.extent()[0];
                     }).attr("display", "none");
-                d3.select(this.parentNode).selectAll(".link")
+                this.tree.g.selectAll(".link")
                     .filter(function(d) {
                         var date = d3.time.format("%Y-%m-%d %H:%M:%S").parse(d.target.created_at);
-                        return date > brush.extent()[0];
+                        return date > pointer.brush.extent()[0];
                     })//.attr("opacity", "0.2");
                     .attr("display", "none");
-                pointer.fit();
+
+                //pointer.fit();
             }
 
-            // play buttons
-            var controls = d3.select("#tree")
-                .append("div")
-                .attr("class", "timeline_controls");
+            /**
+             *  Show the timeline
+             */
+            Timeline.prototype.show = function(){
 
-            var controls_rewind = controls
-                .append("button")
-                .text("\u23EA\uFE0E")
-                .attr("class", "purple")
-                .on("click", rewind);
+                var pointer = this;
 
-            var controls_forward = controls
-                .append("button")
-                .text("\u23E9\uFE0E")
-                .attr("class", "purple")
-                .on("click", forward);
+                // AXIS
 
+                // define the axis
+                var axis = d3.svg.axis()
+                    .scale(this.timeScale)
+                    .orient("bottom")
+                    .tickFormat(function(d) {
+                        return pointer.formatDate(d);
+                    })
+                    .tickSize(0)
+                    .tickPadding(12)
+                    .tickValues([this.timeScale.domain()[0], this.timeScale.domain()[1]])
 
-            function rewind(){
-                controls_forward.classed("active", false);
-                controls_rewind.classed("active", true);
+                // select on parent node, we don't want to scale the timeline
+                this.tree.svg.append("g")
+                    .attr("class", "x axis")
+                    // put in middle of screen
+                    .attr("transform", "translate(0," + (this.tree.height() - 25) + ")")
+                    // inroduce axis
+                    .call(axis)
+                    .select(".domain");
+
+                // SLIDER
+
+                // add slider handle on parentNode, we don't want to scale it
+                var slider = this.tree.svg.append("g")
+                  .attr("class", "slider")
+                  .call(this.brush);
+
+                slider.selectAll(".extent,.resize")
+                  .remove();
+
+                // background for slider to make selection area bigger
+                slider.select(".background")
+                  .attr("height", 25)
+                    .attr("transform", "translate(0," + (this.tree.height() - 25 - 12) + ")")
+
+                // SLIDER > HANDLE
+                var handle = slider.append("g")
+                  .attr("class", "handle")
+
+                handle.append("circle")
+                  .attr("transform", "translate(0," + (this.tree.height() - 25) + ")")
+                  .attr("r", 5)
+
+                handle.append('text')
+                  .text(this.startingValue)
+                  .attr("transform", "translate(" + 0 + " ," + (this.tree.height() - 55) + ")");
+
+                slider
+                  .call(this.brush.event);
+            }
+
+            /**
+             *  Hide the timeline
+             */
+            Timeline.prototype.hide = function(){
+            }
+
+            /**
+             *  Play forward
+             */
+            Timeline.prototype.forward = function(){
+                var pointer = this;
+
                 d3.select(d3.select('.slider').node()).transition()
                     .ease(d3.ease("linear"))
                     .duration(function(){
-                        return (5000 + 200 * d3.select(this.parentNode).selectAll("g.node").size()) * Math.abs((brush.extent()[0] - min) / (max - min));
+                        return (5000 + 200 * d3.select(this.parentNode).selectAll("g.node").size()) * Math.abs((pointer.max - pointer.brush.extent()[0]) / (pointer.max - pointer.min));
                     })
-                    .call(brush.extent([min, min]))
-                    .call(brush.event);
+                    .call(this.brush.extent([this.max, this.max]))
+                    .call(this.brush.event);
             }
 
-            function forward(){
-                controls_rewind.classed("active", false);
-                controls_forward.classed("active", true);
+            /**
+             *  Play backwards
+             */
+            Timeline.prototype.rewind = function(){
+                var pointer = this;
+
                 d3.select(d3.select('.slider').node()).transition()
                     .ease(d3.ease("linear"))
                     .duration(function(){
-
-                        return (5000 + 200 * d3.select(this.parentNode).selectAll("g.node").size()) * Math.abs((max - brush.extent()[0]) / (max - min));
+                        return (5000 + 200 * d3.select(this.parentNode).selectAll("g.node").size()) * Math.abs((pointer.brush.extent()[0] - pointer.min) / (pointer.max - pointer.min));
                     })
-                    .call(brush.extent([max, max]))
-                    .call(brush.event);
+                    .call(this.brush.extent([this.min, this.min]))
+                    .call(this.brush.event);
             }
 
-        }
+            Timeline.prototype.stop = function(){
+                d3.select(d3.select('.slider').node()).transition();
+            }
+
+            Timeline.prototype.update = function(){
+                d3.select(d3.select('.slider').node()).call(this.brush.event);
+            }
+
+            /**
+             *  Set to start
+             */
+            Timeline.prototype.toStart = function(){
+            }
+
+            /**
+             *  Set to end
+             */
+            Timeline.prototype.toEnd = function(){
+            }
+
+            return Timeline;
+
+        })();
+
+    </script>
+    <script>
+        /**
+         * EXTEND TREE
+         */
 
         Tree.prototype.renderTags = function(){
 
@@ -319,10 +364,12 @@
 
         var data = JSON.parse('{!! addslashes(json_encode($tree)) !!}');
 
-        tree = new Tree($('#tree').get(0), data, {
+        var tree = new Tree($('#tree').get(0), data, {
             interactive: true
         });
+        var timeline = new Timeline(tree);
         tree.render("tree");
+        timeline.show();
 
         // main buttons
         var controls = d3.select("#tree")
@@ -365,7 +412,46 @@
         $(".main_controls button").on("click", function(){
             $(".main_controls button").removeClass("active");
             $(this).addClass("active");
+            timeline.update();
         });
+
+        // slider buttons
+        var timeline_controls = d3.select("#tree")
+            .append("div")
+            .attr("class", "timeline_controls");
+
+        var controls_rewind = timeline_controls
+            .append("button")
+            .text("\u23EA\uFE0E")
+            .attr("class", "purple")
+            .on("click", function(){
+                controls_forward.classed("active", false);
+                controls_stop.classed("active", false);
+                controls_rewind.classed("active", true);
+                timeline.rewind();
+            });
+
+        var controls_stop = timeline_controls
+            .append("button")
+            .text("\u25FC\uFE0E")
+            .attr("class", "purple active")
+            .on("click", function(){
+                controls_forward.classed("active", false);
+                controls_rewind.classed("active", false);
+                controls_stop.classed("active", true);
+                timeline.stop();
+            });
+
+        var controls_forward = timeline_controls
+            .append("button")
+            .text("\u23E9\uFE0E")
+            .attr("class", "purple")
+            .on("click", function(){
+                controls_forward.classed("active", true);
+                controls_stop.classed("active", false);
+                controls_rewind.classed("active", false);
+                timeline.forward();
+            });
 
     </script>
 

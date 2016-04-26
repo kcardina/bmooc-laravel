@@ -160,3 +160,8 @@ button:hover, button.active{
     background: #751e82;
     color: white;
 }
+
+.tree_zoom{
+    pointer-events: all;
+    cursor: move;
+}
