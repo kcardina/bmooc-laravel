@@ -717,6 +717,15 @@ var Tree = (function(){
     }
 
     /**
+     *  Zoom programatically
+     */
+    Tree.prototype.zoom = function(z){
+        this.zoomListener
+            .scale(this.zoomListener.scale() + z)
+            .event(d3.select(this.el));
+    }
+
+    /**
      * Zoom and pan
      * some interesting hints here: http://stackoverflow.com/questions/17405638/d3-js-zooming-and-panning-a-collapsible-tree-diagram
      * It's important that this.zoomListener has been updated in the resize function
