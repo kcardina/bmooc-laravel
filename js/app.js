@@ -645,11 +645,10 @@ var Tree = (function(){
                 .attr('y', this.g.node().getBBox().y - 25)
                 .attr('width', this.g.node().getBBox().width + 50)
                 .attr('height', this.g.node().getBBox().height + 50);
-            console.log(this.g.node().getBBox());
             this.container.call(this.zoomListener);
         }
 
-        if(this.fit) this.fit();
+        //if(this.options.fit) this.fit();
     }
 
     /**

@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" id="uitleg">
         <div class="columns small-4">
             <dl>
                 <dt>Tree</dt>
@@ -132,7 +132,7 @@
                     })//.attr("opacity", "0.2");
                     .attr("display", "none");
 
-                //pointer.fit();
+                if(this.tree.options.fit) this.tree.fit();
             }
 
             /**
@@ -267,7 +267,7 @@
             var tags = JSON.parse('{!! addslashes(json_encode($tags)) !!}');
 
             var force = d3.layout.force()
-                .linkDistance(Tree.IMAGE_SIZE*3); // IMAGE_SIZE
+                .linkDistance(Tree.IMAGE_SIZE*2.5); // IMAGE_SIZE
 
             var links = [];
             var edges = [];
@@ -376,7 +376,7 @@
 
     <script>
 
-        $('#tree').height($(document).height() - $('header').height() - $('nav').height() - $('form').height());
+        $('#tree').height($(document).height() - $('header').height() - $('nav').height() - $('form').height() - $("#uitleg").height());
 
         var data = JSON.parse('{!! addslashes(json_encode($tree)) !!}');
 
