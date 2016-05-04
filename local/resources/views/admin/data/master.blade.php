@@ -12,8 +12,8 @@
     <li class="{{ Menu::active('tree') }}">
         <a href="/admin/data/tree">tree</a>
     </li>
-    <li class="{{ Menu::active('analytics') }}">
-        <a href="/admin/data/analytics">analytics</a>
+    <li class="{{ Menu::active('topics') }}">
+        <a href="/admin/data/topics">topics</a>
     </li>
 @endsection
 
@@ -40,7 +40,7 @@
 @section('scripts')
     @parent
 
-    {!! HTML::script('//d3js.org/d3.v3.js') !!}
+    {!! HTML::script('js/d3.js') !!}
     {!! HTML::script('js/d3plus.min.js') !!}
 
     <script>

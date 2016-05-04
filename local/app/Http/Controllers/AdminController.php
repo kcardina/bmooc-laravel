@@ -261,6 +261,34 @@ class AdminController extends Controller {
 
     }
 
+    public function topics(Request $request) {
+        $topics = DB::table('artefacts')
+            ->orderBy('updated_at', 'desc')
+            ->whereNull('parent_id')
+            ->get();
+        $topic = Input::get('topic');
+        if(!is_numeric($topic)) $topic = null;
+
+        // GET PLAIN LIST of topics
+        $list = DB::table('artefacts')
+            ->where('parent_id', '=', null)
+            ->get();
+
+        // Get a list of tag, and connect them to a topic
+        $tags = DB::table('artefacts_tags')
+            ->select('artefacts.thread', 'tag_id')
+            ->join('artefacts', 'artefact_id', '=', 'artefacts.id')
+            ->get();
+
+        $user = Auth::user();
+
+        if ($user && $user->role == "editor") {
+            return view('admin.data.topics', ['topics' => $topics, 'topic'=> $topic, 'list' => $list, 'tags' => $tags]);
+        } else {
+            App::abort(401, 'Not authenticated');
+        }
+    }
+
     public function getThumbnails(Request $request) {
         $user = Auth::user();
         if (!$user || $user->role != "editor") {
