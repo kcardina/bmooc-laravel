@@ -1,28 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>bMOOC Admin Panel | Thumbnails</title>
-    <style>
-        tr:nth-child(even) {
-            background-color: #dddddd;
-        }
-    </style>
-</head>
-<body>
-    <h1>bMOOC Admin Panel</h1>
-    <h2>Thumbnails</h2>
-    <button id="generate">Generate</button>
-    <table class="artefacts">
-        <tbody>
+@extends('admin.actions.master')
+
+@section('content')
+    @parent
+
+<div class="row">
+   <div class="columns">
+    <table role="grid">
+        <thead>
             <tr>
-                <th>ID</th>
+                <th width="100">ID</th>
                 <th>URL</th>
-                <th>TYPE</th>
-                <th>ORIGINAL</th>
-                <th>SMALL</th>
-                <th>LARGE</th>
+                <th width="100">TYPE</th>
+                <th width="50">ORIGINAL</th>
+                <th width="50">SMALL</th>
+                <th width="50">LARGE</th>
             </tr>
+        </thead>
+        <tbody>
             @foreach ($artefacts as $artefact)
             <tr>
                 <td class="id">{{ $artefact->id }}</td>
@@ -53,13 +47,22 @@
             @endforeach
         </tbody>
     </table>
+    </div>
+</div>
+<div class="row">
+    <div class="columns">
+            <button id="generate" style="width: 100%">Generate</button>
+    </div>
+</div>
+@endsection
 
-    {!! HTML::script('js/vendor/jquery.js') !!}
+@section('scripts')
+    @parent
+
     {!! HTML::script('js/foundation.min.js') !!}
     {!! HTML::script('js/pdf.js') !!}
     {!! HTML::script('js/app.js') !!}
     <script>
-        var host = '{{ URL::to('/') }}';
         $(document).ready(function(){
             $('#generate').click(function(){
 
@@ -175,5 +178,4 @@
 
     </script>
 
-</body>
-</html>
+@endsection

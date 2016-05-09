@@ -13,6 +13,7 @@ use App\Artefact;
 use App\Tags;
 use stdClass;
 use DB;
+use Carbon;
 
 class AdminController extends Controller {
 
@@ -317,7 +318,7 @@ class AdminController extends Controller {
         }
 
 
-        return view('admin/thumbnails', ['artefacts' => $artefacts]);
+        return view('admin.actions.thumbnails', ['artefacts' => $artefacts]);
     }
 
     public function postThumbnails(Request $request){
@@ -352,5 +353,53 @@ class AdminController extends Controller {
         } catch(Exception $e){
             throw $e;
         }
+    }
+
+    public function getTags(Request $request){
+        $user = Auth::user();
+        if (!($user && $user->role == "editor")) App::abort(401, 'Not authenticated');
+
+        $duplicates = DB::table('tags')
+            ->select('tag', DB::raw('COUNT(*) as count, GROUP_CONCAT(id) as id, GROUP_CONCAT(times_used) as times_used'))
+            ->groupBy('tag')
+            ->having('count', '>', '1')
+            ->get();
+
+        foreach($duplicates as $duplicate){
+            $duplicate->id = explode(',', $duplicate->id);
+            $duplicate->times_used = explode(',', $duplicate->times_used);
+        }
+
+        return view('admin.actions.tags', ['duplicates' => $duplicates]);
+    }
+
+    public function postTags(Request $request){
+        $user = Auth::user();
+        if (!($user && $user->role == "editor")) App::abort(401, 'Not authenticated');
+
+        $duplicates = AdminController::getTags($request)->getData()['duplicates'];
+
+        foreach($duplicates as $duplicate){
+            $id = $duplicate->id[0];
+            $times_used = $duplicate->times_used[0];
+            for($i = 1; $i < sizeof($duplicate->id); $i++){
+                // add to times used
+                $times_used += $duplicate->times_used[$i];
+                // change all occurences of id[i] in artefacts_tags to id
+                DB::table('artefacts_tags')
+                    ->where('tag_id', $duplicate->id[$i])
+                    ->update(array('tag_id' => $id, 'updated_at' => Carbon\Carbon::now()));
+                // remove id[i] from table::tags
+                DB::table('tags')
+                    ->where('id', $duplicate->id[$i])
+                    ->delete();
+            }
+            // write times_used to table::tags
+            DB::table('tags')
+                    ->where('id', $id)
+                    ->update(array('times_used' => $times_used, 'updated_at' => Carbon\Carbon::now()));
+        }
+
+        return AdminController::getTags($request);
     }
 }

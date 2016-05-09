@@ -17,11 +17,11 @@
               <h1>bMOOC</h1>
                <nav>
                   <div class="icon-bar two-up">
-                      <a href="/admin/data" class="item {{ Menu::active('admin') }}">
+                      <a href="/admin/data" class="item {{ Menu::active('data') }}">
                         <i title="video" class="fa fa-area-chart"></i>
                         <label>Data</label>
                       </a>
-                      <a href="/admin/thumbnails" class="item {{ Menu::active('actions') }}">
+                      <a href="/admin/actions" class="item {{ Menu::active('actions') }}">
                         <i title="video" class="fa fa-cog"></i>
                         <label>Actions</label>
                       </a>

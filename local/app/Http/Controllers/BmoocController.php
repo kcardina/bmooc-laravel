@@ -71,8 +71,8 @@ class BmoocController extends Controller {
                 FROM artefacts_tags
                 LEFT JOIN artefacts ON artefacts_tags.artefact_id = artefacts.id
             ) threads_tags
-            WHERE
-            GROUP BY threads_tags.tag_id'));
+            GROUP BY threads_tags.tag_id
+        '));
 
         dd($list_query);
         $list = [];

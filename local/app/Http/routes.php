@@ -42,11 +42,17 @@ Route::post('feedback', 'BmoocController@feedback');
 Route::get('admin', function(){
     return Redirect::to('admin/data/basic');
 });
+Route::get('admin/data', function(){
+    return Redirect::to('admin/data/basic');
+});
 Route::get('admin/data/basic', 'AdminController@basic');
 Route::get('admin/data/progress', 'AdminController@progress');
 Route::get('admin/data/tree', 'AdminController@tree');
 Route::get('admin/data/topics', 'AdminController@topics');
-Route::get('admin/thumbnails', 'AdminController@getThumbnails');
-Route::post('admin/thumbnails', 'AdminController@postThumbnails');
-
-Route::get('datavis', 'BmoocController@datavis');
+Route::get('admin/actions', function(){
+    return Redirect::to('admin/actions/thumbnails');
+});
+Route::get('admin/actions/thumbnails', 'AdminController@getThumbnails');
+Route::post('admin/actions/thumbnails', 'AdminController@postThumbnails');
+Route::get('admin/actions/tags', 'AdminController@getTags');
+Route::post('admin/actions/tags', 'AdminController@postTags');
