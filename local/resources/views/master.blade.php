@@ -135,7 +135,7 @@
         </div>
 
         {{-- SCRIPTS --}}
-        {!! HTML::script('js/vendor/jquery.js') !!}
+        {!! HTML::script('js/vendor/jquery.min.js') !!}
         {!! HTML::script('js/foundation.min.js') !!}
         {!! HTML::script('js/app.js?v=' . Version::get()) !!}
         {!! HTML::script('js/help.js?v=' . Version::get()) !!}

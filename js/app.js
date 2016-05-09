@@ -634,7 +634,7 @@ var Vis = (function(){
 
         if(type == "tree") this.renderTree();
 
-        if(type == "tags") this.renderTags();
+        if(type == "force") this.renderForce();
 
         if(this.options.interactive){
             this.zoomContainer
@@ -744,11 +744,13 @@ var Vis = (function(){
      */
     Vis.prototype.renderTree = function(){
 
+        if(this.data.tree == null) throw("Vis error: no data provided to render.");
+
         treelayout = d3.layout.tree()
             .nodeSize([Vis.IMAGE_SIZE, Vis.IMAGE_SIZE]);
 
         // Compute the new Vis layout.
-        var nodes = treelayout.nodes(this.data);//.reverse()
+        var nodes = treelayout.nodes(this.data.tree);//.reverse()
         var links = treelayout.links(nodes);
 
         // horizontal spacing of the nodes (depth of the node * x)
@@ -778,6 +780,130 @@ var Vis = (function(){
      */
     Vis.prototype.draw = function(){
         this.render("tree");
+    }
+
+    /**
+     * Generate and show the force layout.
+     * data.list: een array met alle nodes
+     * data.links: een array met links, geassocieerd met het id van de nodes
+     */
+    Vis.prototype.renderForce = function(){
+
+        if(this.data.list == null) throw("Vis error: no data provided to render.");
+
+        var nodes = this.data.list;
+        var tags = this.data.links;
+
+        console.log(nodes);
+        console.log(tags);
+
+        var force = d3.layout.force()
+            .theta(0)
+            .gravity(0.015)
+            .linkDistance(Vis.IMAGE_SIZE*2.5); // IMAGE_SIZE
+
+        var links = [];
+        var edges = [];
+        var tagslist = [];
+
+        // maak een lijst met tags
+        tags.forEach(function(e){
+            if ($.inArray(e.tag_id, tagslist) < 0) tagslist.push(e.tag_id);
+        });
+
+        // lijst voor elke tag de artefacten op met die tag
+        tagslist.forEach(function(i) {
+            var l = tags.filter(function(n) {
+                return n.tag_id === i;
+            });
+
+            // maak een source-target array
+            for(i = 0; i < l.length; i++){
+                for(j = i+1; j < l.length; j++){
+                    var st = {source: l[i].thread, target: l[j].thread, value: 1};
+
+                    // voeg toe aan source target array. if exists: value++
+                    var exists = links.filter(function(n) {
+                        return n.source == st.source && n.target == st.target
+                    });
+
+                    if(exists.length > 0){
+                        var index = links.indexOf(exists[0]);
+                        var st_ = links[index];
+                        st_.value++;
+
+                        links[index] = st_;
+                    } else {
+                        links.push(st);
+                    }
+                }
+            }
+        });
+
+        console.log(links);
+
+        // gebruik de index (gekoppeld aan de thread) in de array ipv id voor Force layout
+        links.forEach(function(e) {
+            var sourceNode = nodes.indexOf(nodes.filter(function(n) { return n.thread === e.source; })[0]);
+
+            var targetNode = nodes.indexOf(nodes.filter(function(n) { return n.thread === e.target; })[0]);
+
+            edges.push({source: sourceNode, target: targetNode, value: e.value});
+        });
+
+        force.nodes(nodes)
+            .links(edges)
+            .on("start", start)
+            .start();
+
+        // declare the links
+        var link = this.g.selectAll(".link")
+            .data(edges);
+
+        // enter the links
+        link.enter().append("line")
+            .attr("class", "link")
+            .attr("stroke", "#878787")
+            .attr("stroke-width", 1)
+            .attr("opacity", function(d){
+                return 0.33 * d.value;
+            });
+
+        // declare the nodes
+        var node = this.g.selectAll(".node")
+          .data(nodes);
+
+        this.drawNodes(node);
+
+        node.call(force.drag);
+
+        node.append("title")
+            .text(function(d) { return d.title; });
+
+        function start(){
+
+            var ticksPerRender = 3;
+
+            requestAnimationFrame(function render() {
+
+                for (var i = 0; i < ticksPerRender; i++) {
+                    force.tick();
+                }
+
+                link.attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+                node.attr("transform", function(d){
+                    return "translate(" + d.x + "," + d.y + ")";
+                });
+
+                if (force.alpha() > 0) {
+                    requestAnimationFrame(render);
+                }
+            });
+        }
     }
 
     /**

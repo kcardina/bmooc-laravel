@@ -35,18 +35,52 @@ class BmoocController extends Controller {
 
     public function index(Request $request) {
         $user = Auth::user();
-        //$user = $request->user();
-        //dd(Auth::user());
+
         $topics = Artefact::with(['active_instruction', 'the_author', 'tags', 'last_modifier'])
             ->orderBy('updated_at', 'desc')
             ->whereNull('parent_id')
             ->get();
+
         $auteurs = DB::table('users')->select('id', 'name')->distinct()->get();
         $tags = Tags::orderBy('tag')->get();
 
         $aantalAntwoorden = DB::table('artefacts')->select(DB::raw('count(*) as aantal_antwoorden, thread'))
-                        ->groupBy('thread')->get();
-        return view('index', ['topic' => $topics, 'user' => $user, 'auteurs' => $auteurs, 'tags' => $tags, 'aantalAntwoorden' => $aantalAntwoorden]);
+            ->groupBy('thread')->get();
+        /*
+        $list_query = DB::table('artefacts_tags')
+            ->select('tag_id', 'artefacts.thread', DB::raw('GROUP_CONCAT(tag_id)'))
+            ->leftJoin('artefacts', 'artefact_id', '=', 'artefacts.id')
+            ->distinct()
+            ->get();
+            */
+        /*
+        // maakt lijst met alle tags per thread
+        $list_query = DB::select(DB::raw('SELECT thread, GROUP_CONCAT(DISTINCT tag_id ORDER BY tag_id ASC) as tags
+            FROM
+            (
+                SELECT tag_id, artefacts.thread
+                FROM artefacts_tags
+                LEFT JOIN artefacts ON artefacts_tags.artefact_id = artefacts.id
+            ) threads_tags
+            GROUP BY threads_tags.thread'));
+        */
+        $list_query = DB::select(DB::raw('SELECT tag_id, GROUP_CONCAT(DISTINCT thread) as threads
+            FROM
+            (
+                SELECT tag_id, artefacts.thread
+                FROM artefacts_tags
+                LEFT JOIN artefacts ON artefacts_tags.artefact_id = artefacts.id
+            ) threads_tags
+            WHERE
+            GROUP BY threads_tags.tag_id'));
+
+        dd($list_query);
+        $list = [];
+        foreach ($list_query as $item){
+            dd($item);
+        }
+
+        return view('index', ['topics' => $topics, 'user' => $user, 'auteurs' => $auteurs, 'tags' => $tags, 'aantalAntwoorden' => $aantalAntwoorden]);
     }
 
     public function feedback(){

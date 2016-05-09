@@ -14,7 +14,16 @@
 
 
 @section('scripts')
+   {!! HTML::script('js/d3.min.js') !!}
+   {!! HTML::script('js/d3plus.min.js') !!}
     <script>
+        var data = {};
+        data.list = JSON.parse('{!! addslashes(json_encode($topics)) !!}');
+        data.links = "hey";
 
+        console.log(data);
+
+        var vis = new Vis($('.container').get(0), data);
+        vis.render('force');
     </script>
 @stop
