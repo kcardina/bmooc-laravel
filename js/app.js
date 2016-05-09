@@ -551,29 +551,29 @@ var Thumbnail = (function(){
 * RENDER TREES (dependencies: d3js & 3dplus.js) *
 ************************************************/
 
-var Tree = (function(){
+var Vis = (function(){
 
     /** Static variables shared by all instances **/
-    Tree.IMAGE_SIZE = 100;
-    Tree.MARGIN = {
-        top: Tree.IMAGE_SIZE/2,
-        right: Tree.IMAGE_SIZE/2,
-        bottom: Tree.IMAGE_SIZE/2,
-        left: Tree.IMAGE_SIZE/2
+    Vis.IMAGE_SIZE = 100;
+    Vis.MARGIN = {
+        top: Vis.IMAGE_SIZE/2,
+        right: Vis.IMAGE_SIZE/2,
+        bottom: Vis.IMAGE_SIZE/2,
+        left: Vis.IMAGE_SIZE/2
     };
-    Tree.TEXTBOUNDS = {
-        width: Tree.IMAGE_SIZE,
-        height: Tree.IMAGE_SIZE,
+    Vis.TEXTBOUNDS = {
+        width: Vis.IMAGE_SIZE,
+        height: Vis.IMAGE_SIZE,
         resize: true
     };
 
     /**
-     * Create a Tree.
-     * @param {dom element} el - The container for the Tree svg element.
+     * Create a Vis.
+     * @param {dom element} el - The container for the Vis svg element.
      * @param {JSON} data - A JSON-tree containing the data to visualize.
      * @param {object} opt - An optional object defining the trees behavior
      */
-    function Tree(el, data, opt){
+    function Vis(el, data, opt){
 
         // Options array
         this.options = {
@@ -602,10 +602,10 @@ var Tree = (function(){
                 .attr("class", "svg");
         // add one g to capture events
         this.container = this.svg.append("g")
-            .attr("class", "tree_container");
+            .attr("class", "vis_container");
         // add one g to scale
         this.zoomContainer = this.container.append("g")
-            .attr("class", "tree_zoom")
+            .attr("class", "vis_zoom")
         // add another g to draw the visualisation
         this.g = this.zoomContainer.append("g");
 
@@ -620,15 +620,15 @@ var Tree = (function(){
     /**
      *  Render a visualisation
      */
-    Tree.prototype.render = function(type){
+    Vis.prototype.render = function(type){
         // clear the current vis
-        d3.select(this.el).select(".tree_container").remove();
+        d3.select(this.el).select(".vis_container").remove();
         // add one g to capture events
         this.container = this.svg.insert("g",":first-child")
-            .attr("class", "tree_container");
+            .attr("class", "vis_container");
         // add one g to scale
         this.zoomContainer = this.container.append("g")
-            .attr("class", "tree_zoom")
+            .attr("class", "vis_zoom")
         // add another g to draw the visualisation
         this.g = this.zoomContainer.append("g");
 
@@ -639,7 +639,7 @@ var Tree = (function(){
         if(this.options.interactive){
             this.zoomContainer
                 .insert("rect",":first-child")
-                .attr('class', 'tree_zoom-capture')
+                .attr('class', 'Vis_zoom-capture')
                 .style('visibility', 'hidden')
                 .attr('x', this.g.node().getBBox().x - 25)
                 .attr('y', this.g.node().getBBox().y - 25)
@@ -656,7 +656,7 @@ var Tree = (function(){
     /**
      *  Resize the tree to fit the container
      */
-    Tree.prototype.fit = function(){
+    Vis.prototype.fit = function(){
 
         width = this.width();
         height = this.height();
@@ -694,7 +694,7 @@ var Tree = (function(){
     /**
      * scale+move when window is resized
      */
-    Tree.prototype.resize = function(){
+    Vis.prototype.resize = function(){
 
         width = this.width();
         height = this.height();
@@ -720,7 +720,7 @@ var Tree = (function(){
     /**
      *  Zoom programatically
      */
-    Tree.prototype.zoom = function(z){
+    Vis.prototype.zoom = function(z){
         this.zoomListener
             .scale(this.zoomListener.scale() + z)
             .event(d3.select(this.el));
@@ -728,12 +728,12 @@ var Tree = (function(){
 
     /**
      * Zoom and pan
-     * some interesting hints here: http://stackoverflow.com/questions/17405638/d3-js-zooming-and-panning-a-collapsible-tree-diagram
+     * some interesting hints here: http://stackoverflow.com/questions/17405638/d3-js-zooming-and-panning-a-collapsible-Vis-diagram
      * It's important that this.zoomListener has been updated in the resize function
      */
-    Tree.prototype.zoomed = function(){
+    Vis.prototype.zoomed = function(){
         // this should be this.container g element
-        d3.select(this).select('.tree_zoom').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        d3.select(this).select('.Vis_zoom').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
         d3.select(window).on("mouseup.zoom", function(){
             d3.select(window).on("mousemove.zoom", null).on("mouseup.zoom", null);
         });
@@ -742,17 +742,17 @@ var Tree = (function(){
     /**
      * Generate and show the tree.
      */
-    Tree.prototype.renderTree = function(){
+    Vis.prototype.renderTree = function(){
 
         treelayout = d3.layout.tree()
-            .nodeSize([Tree.IMAGE_SIZE, Tree.IMAGE_SIZE]);
+            .nodeSize([Vis.IMAGE_SIZE, Vis.IMAGE_SIZE]);
 
-        // Compute the new tree layout.
+        // Compute the new Vis layout.
         var nodes = treelayout.nodes(this.data);//.reverse()
         var links = treelayout.links(nodes);
 
         // horizontal spacing of the nodes (depth of the node * x)
-        nodes.forEach(function(d) { d.y = d.depth * (Tree.IMAGE_SIZE + Tree.IMAGE_SIZE/10) });
+        nodes.forEach(function(d) { d.y = d.depth * (Vis.IMAGE_SIZE + Vis.IMAGE_SIZE/10) });
 
         // Declare the nodes.
         var node = this.g.selectAll("g.node")
@@ -776,14 +776,14 @@ var Tree = (function(){
     /**
      *  Backwards compatibility
      */
-    Tree.prototype.draw = function(){
+    Vis.prototype.draw = function(){
         this.render("tree");
     }
 
     /**
      * Draw the nodes. Reused by the render functions
      */
-    Tree.prototype.drawNodes = function(node){
+    Vis.prototype.drawNodes = function(node){
 
         // Enter the nodes.
         var nodeEnter = node.enter().append("g")
@@ -816,17 +816,17 @@ var Tree = (function(){
                 .attr("xlink:href", function(d) {
                     return "/artefact/" + d.id + "/thumbnail/"
                 })
-                .attr('y', -Tree.IMAGE_SIZE/2)
-                .attr('width', Tree.IMAGE_SIZE)
-                .attr('height', Tree.IMAGE_SIZE);
+                .attr('y', -Vis.IMAGE_SIZE/2)
+                .attr('width', Vis.IMAGE_SIZE)
+                .attr('height', Vis.IMAGE_SIZE);
 
             //text
             var bg = nodeEnter.filter(function(d) { return d.contents })
                 .filter(function(d) { return !d.hidden })
                 .append("rect")
-                .attr('width', Tree.IMAGE_SIZE)
-                .attr('height', Tree.IMAGE_SIZE)
-                .attr('y', -Tree.IMAGE_SIZE/2);
+                .attr('width', Vis.IMAGE_SIZE)
+                .attr('height', Vis.IMAGE_SIZE)
+                .attr('y', -Vis.IMAGE_SIZE/2);
             if(this.options.background) bg.attr("class", "filled");
 
             nodeEnter.filter(function(d) { return d.contents })
@@ -836,11 +836,11 @@ var Tree = (function(){
                     return "/topic/"+d.id;
                 })
                 .append("text")
-                .attr('y', -Tree.IMAGE_SIZE/2)
+                .attr('y', -Vis.IMAGE_SIZE/2)
                 .text(function(d) { return splitString(d.title); })
                 .each(function(d){
                     d3plus.textwrap()
-                        .config(Tree.TEXTBOUNDS)
+                        .config(Vis.TEXTBOUNDS)
                         .valign('middle')
                         .align('center')
                         .container(d3.select(this))
@@ -858,7 +858,7 @@ var Tree = (function(){
         }
     }
 
-    return Tree;
+    return Vis;
 
 })();
 
