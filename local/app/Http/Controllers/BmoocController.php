@@ -46,41 +46,47 @@ class BmoocController extends Controller {
 
         $aantalAntwoorden = DB::table('artefacts')->select(DB::raw('count(*) as aantal_antwoorden, thread'))
             ->groupBy('thread')->get();
-        /*
-        $list_query = DB::table('artefacts_tags')
-            ->select('tag_id', 'artefacts.thread', DB::raw('GROUP_CONCAT(tag_id)'))
-            ->leftJoin('artefacts', 'artefact_id', '=', 'artefacts.id')
-            ->distinct()
-            ->get();
-            */
-        /*
-        // maakt lijst met alle tags per thread
-        $list_query = DB::select(DB::raw('SELECT thread, GROUP_CONCAT(DISTINCT tag_id ORDER BY tag_id ASC) as tags
+
+        // lijst per tag alle threads op, selecteer degene met meerdere threads
+        $links_query = DB::select(DB::raw('
+            SELECT tag_id, GROUP_CONCAT(thread ORDER BY thread ASC) as threads, COUNT(*) as count
             FROM
             (
-                SELECT tag_id, artefacts.thread
-                FROM artefacts_tags
-                LEFT JOIN artefacts ON artefacts_tags.artefact_id = artefacts.id
-            ) threads_tags
-            GROUP BY threads_tags.thread'));
-        */
-        $list_query = DB::select(DB::raw('SELECT tag_id, GROUP_CONCAT(DISTINCT thread) as threads
-            FROM
-            (
-                SELECT tag_id, artefacts.thread
+                SELECT DISTINCT tag_id, artefacts.thread
                 FROM artefacts_tags
                 LEFT JOIN artefacts ON artefacts_tags.artefact_id = artefacts.id
             ) threads_tags
             GROUP BY threads_tags.tag_id
+            HAVING count > 1
         '));
 
-        dd($list_query);
-        $list = [];
-        foreach ($list_query as $item){
-            dd($item);
+        $links = [];
+
+        foreach ($links_query as $link){
+            $link->threads = array_map('intval', explode(',', $link->threads));
+
+            for($i = 0; $i < sizeof($link->threads); $i++){
+                for($j = $i+1; $j < sizeof($link->threads); $j++){
+                    $source = $link->threads[$i];
+                    $target = $link->threads[$j];
+                    // check if source target already exists
+                    $sources = array_keys(array_column($links, 'source'), $source);
+                    $targets = array_keys(array_column($links, 'target'), $target);
+                    $intersect = array_intersect($sources, $targets);
+                    // intersect keeps index, so re-index
+                    $intersect = array_values($intersect);
+                    if(sizeof($intersect) > 0){
+                        // add the tag
+                        array_push($links[$intersect[0]]['links'], $link->tag_id);
+                    } else {
+                        // else make a new one
+                        array_push($links, ["source" => $source, "target" => $target, "links" => [$link->tag_id]]);
+                    }
+                }
+            }
         }
 
-        return view('index', ['topics' => $topics, 'user' => $user, 'auteurs' => $auteurs, 'tags' => $tags, 'aantalAntwoorden' => $aantalAntwoorden]);
+        return view('index', ['topics' => $topics, 'user' => $user, 'auteurs' => $auteurs, 'tags' => $tags, 'aantalAntwoorden' => $aantalAntwoorden, 'links' => $links]);
     }
 
     public function feedback(){

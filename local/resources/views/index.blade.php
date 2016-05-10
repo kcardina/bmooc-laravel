@@ -9,7 +9,9 @@
 @stop
 
 @section('content')
-    Lijst met topics
+    <div class="row">
+        <div class="columns vis"></div>
+    </div>
 @stop
 
 
@@ -19,11 +21,11 @@
     <script>
         var data = {};
         data.list = JSON.parse('{!! addslashes(json_encode($topics)) !!}');
-        data.links = "hey";
+        data.links = JSON.parse('{!! addslashes(json_encode($links)) !!}');;
 
         console.log(data);
 
-        var vis = new Vis($('.container').get(0), data);
+        var vis = new Vis($('.vis').get(0), data);
         vis.render('force');
     </script>
 @stop

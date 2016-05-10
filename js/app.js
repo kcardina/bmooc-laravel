@@ -570,7 +570,28 @@ var Vis = (function(){
     /**
      * Create a Vis.
      * @param {dom element} el - The container for the Vis svg element.
-     * @param {JSON} data - A JSON-tree containing the data to visualize.
+     * @param {JSON} data - A JSON-object containing the data to visualize.
+        {
+            "list" : [
+                 {"id": id, "content": content, ...},
+                 {"id": id, "content": content, ...},
+                 ...
+            ],
+            "links" : [
+                {"source": source_id, "target": target_id, "links": ["tag1", "tag2", 0, "4", true, "false"]},
+                {"source": source_id, "target": target_id, "links": [...]},
+                ...
+            ],
+            "tree" : [
+                {"id": id, "content": content, children: [
+                    { "id": id, "content": content, children: []},
+                    { "id": id, "content": content, children: [
+                        { "id": id, "content": content, children: [...]},
+                        ...
+                    ]},
+                ]}
+            ]
+        }
      * @param {object} opt - An optional object defining the trees behavior
      */
     function Vis(el, data, opt){
@@ -785,62 +806,20 @@ var Vis = (function(){
     /**
      * Generate and show the force layout.
      * data.list: een array met alle nodes
-     * data.links: een array met links, geassocieerd met het id van de nodes
+     * data.links: een associatieve array met links (source, target, (text)), geassocieerd met het id van de nodes
      */
     Vis.prototype.renderForce = function(){
 
         if(this.data.list == null) throw("Vis error: no data provided to render.");
 
         var nodes = this.data.list;
-        var tags = this.data.links;
-
-        console.log(nodes);
-        console.log(tags);
+        var links = this.data.links;
+        var edges = [];
 
         var force = d3.layout.force()
             .theta(0)
             .gravity(0.015)
             .linkDistance(Vis.IMAGE_SIZE*2.5); // IMAGE_SIZE
-
-        var links = [];
-        var edges = [];
-        var tagslist = [];
-
-        // maak een lijst met tags
-        tags.forEach(function(e){
-            if ($.inArray(e.tag_id, tagslist) < 0) tagslist.push(e.tag_id);
-        });
-
-        // lijst voor elke tag de artefacten op met die tag
-        tagslist.forEach(function(i) {
-            var l = tags.filter(function(n) {
-                return n.tag_id === i;
-            });
-
-            // maak een source-target array
-            for(i = 0; i < l.length; i++){
-                for(j = i+1; j < l.length; j++){
-                    var st = {source: l[i].thread, target: l[j].thread, value: 1};
-
-                    // voeg toe aan source target array. if exists: value++
-                    var exists = links.filter(function(n) {
-                        return n.source == st.source && n.target == st.target
-                    });
-
-                    if(exists.length > 0){
-                        var index = links.indexOf(exists[0]);
-                        var st_ = links[index];
-                        st_.value++;
-
-                        links[index] = st_;
-                    } else {
-                        links.push(st);
-                    }
-                }
-            }
-        });
-
-        console.log(links);
 
         // gebruik de index (gekoppeld aan de thread) in de array ipv id voor Force layout
         links.forEach(function(e) {
@@ -848,8 +827,10 @@ var Vis = (function(){
 
             var targetNode = nodes.indexOf(nodes.filter(function(n) { return n.thread === e.target; })[0]);
 
-            edges.push({source: sourceNode, target: targetNode, value: e.value});
+            edges.push({source: sourceNode, target: targetNode, value: e.links});
         });
+
+        console.log(edges);
 
         force.nodes(nodes)
             .links(edges)
