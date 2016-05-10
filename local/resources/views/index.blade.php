@@ -4,7 +4,7 @@
 
 @section('header_actions')
     @if (isset($user) && $user->role=="editor")
-        <button class="big plus pullup" data-help="index" data-help-id="new_topic" data-reveal-id="new_topic">Start a new topic</button>
+        <button class="primary plus pullup" data-help="index" data-help-id="new_topic" data-reveal-id="new_topic">Start a new topic</button>
     @endif
 @stop
 
@@ -26,6 +26,6 @@
         console.log(data);
 
         var vis = new Vis($('.vis').get(0), data);
-        vis.render('force');
+        //vis.render('force');
     </script>
 @stop

@@ -122,7 +122,6 @@ select {
 
 .row {
   margin: 0 auto;
-  max-width: 62.5rem;
   width: 100%; }
   .row:before, .row:after {
     content: " ";
@@ -2286,14 +2285,14 @@ meta.foundation-mq-topbar {
   border-width: 1px;
   display: block;
   font-size: 0.8125rem;
-  font-weight: normal;
   margin-bottom: 1.25rem;
   padding: 0.875rem 1.5rem 0.875rem 0.875rem;
   position: relative;
   transition: opacity 300ms ease-out;
   background-color: #008CBA;
   border-color: #0078a0;
-  color: #FFFFFF; }
+  color: #FFFFFF;
+    text-align: center;}
   .alert-box .close {
     right: 0.25rem;
     background: inherit;
@@ -3745,8 +3744,6 @@ p {
 
 /* Default header styles */
 h1, h2, h3, h4, h5, h6 {
-  color: #222222;
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
   font-style: normal;
   font-weight: normal;
   line-height: 1.4;
@@ -3759,7 +3756,7 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 0; }
 
 h1 {
-  font-size: 2.125rem; }
+  font-size: 2.5rem; }
 
 h2 {
   font-size: 1.6875rem; }
@@ -3929,7 +3926,7 @@ blockquote p {
     line-height: 1.4; }
 
   h1 {
-    font-size: 2.75rem; }
+    font-size: 3rem; }
 
   h2 {
     font-size: 2.3125rem; }
@@ -4115,9 +4112,8 @@ blockquote p {
   width: 100%;
   z-index: 1005;
   left: 0;
-  background-color: #FFFFFF;
+  background: url('../img/bg.png');
   padding: 1.875rem;
-  border: solid 1px #666666;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); }
   @media only screen and (max-width: 40em) {
     .reveal-modal {

@@ -1,0 +1,167 @@
+$background: #080808;
+$text: #ffffff;
+$text-light: #d9d9d9;
+$text-medium: #878787;
+
+$font: 'Muli', sans-serif;
+$regular: 300;
+$bold: 400;
+$mobile: 8pt;
+$desktop: 10pt;
+
+/* SOME STARTERS */
+input, select, img, button, .reveal-modal {
+    outline: none;
+}
+
+/* HTML & BODY */
+html, body{
+    background: $background;
+    color: $text;
+    font-family: $font;
+    font-size: $mobile;
+    font-weight: $regular;
+    height: 100%;
+    width: 100%;
+}
+
+@media only screen and (min-width: 40.063em) {
+    html, body{
+        font-size: $desktop
+    }
+}
+
+/* JS WARNING */
+.modernizr-alert{
+    display: none;
+}
+.no-js .js-alert{
+    display: block;
+}
+.no-svg .browser-alert, .no-flexbox .browser-alert, .no-flexboxlegacy .browser-alert{
+    display: block;
+}
+
+/* TYPOGRAPHY */
+p{
+    font-weight: $regular;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-weight: $bold;
+}
+strong{
+    font-weight: $bold;
+}
+h1{
+    line-height: 1;
+}
+
+/* LINKS */
+a, a:hover, a:visited, a:active{
+    color: inherit;
+}
+a:hover {
+    border-bottom: 1px dotted;
+}
+p a, a.emphasis{
+    border-bottom: 1px dotted;
+}
+p a:hover, a.emphasis:hover{
+    border-bottom-style: solid;
+}
+a.close:hover{
+    border: none;
+    opacity: 0.8;
+}
+
+/* BUTTONS */
+.button, button, .button:hover, button:hover{
+    background-color: transparent;
+    font-weight: inherit;
+    font-family: inherit;
+}
+
+button.primary{
+    border: none;
+    margin: 0;
+    padding: 0;
+    color: #17cf1f;
+    font-weight: 400;
+    padding-left: 30px;
+    height: 24px;
+}
+button.plus{
+    background: url(../img/plus.png) no-repeat left center;
+    background-size: contain;
+}
+button.information{
+    background: url(../img/info.png) no-repeat left center;
+    background-size: contain;
+}
+button.eye{
+    background: url(../img/eye.png) no-repeat left center;
+    background-size: contain;
+}
+
+/* LISTS */
+ul.inline, ul.block{
+    list-style: none;
+    font-size: inherit;
+    margin: 0;
+    padding: 0;
+    color: $text-light;
+}
+ul.inline{
+    display: inline;
+}
+ul.block{
+    display: block;
+}
+ul.inline li{
+    display: inline-block;
+}
+ul.slash li:after{
+    content: "\00a0/";
+    color: $text-medium;
+}
+ul.arrow li:after{
+    font-family: 'Arial', sans-serif;
+    content: "\2192";
+    color: $text-medium;
+    font-size: 1.3rem;
+}
+ul.dash li:after{
+    content: " \2013 ";
+    color: $text-medium;
+}
+ul.inline li:last-child:after{
+    content: none;
+}
+dl dt {
+	font-size: 0.8rem;
+    font-weight: 300;
+    color: $text-medium;
+}
+dl dd{
+    color: $text-light;
+}
+
+/* MAIN */
+header{
+    margin: 1rem 0;
+}
+nav{
+    text-transform: lowercase;
+}
+
+.flexbox{
+    body{
+        display: flex;
+        min-height: 100%;
+        flex-direction: column;
+    }
+    .container{
+        display: flex;
+        flex: 1;
+    }
+}

@@ -10,7 +10,8 @@
     {!! HTML::style('https://fonts.googleapis.com/css?family=Muli:400,300') !!}
 
     {{-- STYLESHEETS --}}
-    {!! HTML::style('css/foundation.css') !!}
+    {!! HTML::style('css/normalize.min.css') !!}
+    {!! HTML::style('css/foundation.min.css') !!}
     {!! HTML::style('css/app.css?v=' . Version::get()) !!}
 
     {{-- SCRIPTS --}}
@@ -50,9 +51,21 @@
             })();
         </script>
 
+        <div data-alert class="alert-box alert modernizr-alert js-alert">
+            <strong>JavaScript appears to be disabled in your browser.</strong><br />
+            For full functionality of this site, it is necessary to enable JavaScript. Here are <a href="http://enable-javascript.com" class="emphasis">instructions how to enable Javascript</a>.
+          <a href="#" class="close">&times;</a>
+        </div>
+
+        <div data-alert class="alert-box warning modernizr-alert browser-alert">
+          <strong>You seem to be using an older browser.</strong><br />
+            Some of bMOOC's functionality will not work as intended. Please <a class="emphasis" href="https://browser-update.org/update.html">update your browser</a>.
+          <a href="#" class="close">&times;</a>
+        </div>
+
         <header>
-            <div class="row large">
-			    <div class="small-12 columns text-right">
+            <div class="row large text-right">
+			    <div class="small-12 columns">
                     <nav class="main">
                         <ul class="inline slash">
                            <li>
@@ -123,7 +136,7 @@
 
                 <p class="small"><strong>bMOOC is a constant test-run prototype: please {!! HTML::link('#', 'contact us', array('class'=>'emphasis', 'data-reveal-id' => 'feedback')) !!} with your suggestions.</strong></p>
             </div>
-              <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+              <a class="close-reveal-modal close" aria-label="Close">&#215;</a>
         </div>
 
         {{-- FEEDBACK --}}
@@ -131,7 +144,7 @@
             <h2 id="feedback_title">Feedback</h2>
             <p>Remarks, problems or suggestions? Please fill in the form below.</p>
             @include('forms.feedback')
-            <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+            <a class="close-reveal-modal close" aria-label="Close">&#215;</a>
         </div>
 
         {{-- SCRIPTS --}}
