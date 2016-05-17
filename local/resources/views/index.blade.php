@@ -4,13 +4,29 @@
 
 @section('header_actions')
     @if (isset($user) && $user->role=="editor")
-        <button class="primary plus pullup" data-help="index" data-help-id="new_topic" data-reveal-id="new_topic">Start a new topic</button>
+        <button class="primary plus" data-help="index" data-help-id="new_topic" data-reveal-id="new_topic">Start a new topic</button>
     @endif
 @stop
 
+@section('header_search')
+    @include('forms.search')
+@stop
+
 @section('content')
-    <div class="row">
-        <div class="columns vis"></div>
+    <div class="row full">
+        <div class="columns vis-container"></div>
+        <div class="columns vis-fallback">
+            <ul class="block text-center">
+                @foreach($topics as $topic)
+                    <li>
+                        <a href="topic/{{ $topic->id }}">
+                            <h2>{{ $topic->title }}</h2>
+                            <p>{{ $topic->author }}</p>
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
     </div>
 @stop
 
@@ -25,7 +41,16 @@
 
         console.log(data);
 
-        var vis = new Vis($('.vis').get(0), data);
-        //vis.render('force');
+        $(document).ready(function(){
+            if($('html').hasClass('svg')){
+                var vis = new Vis($('.vis-container').get(0), data, {
+                    interactive: false,
+                    mode: 'text',
+                    fit: true
+                });
+                vis.render('force');
+                //vis.fit();
+            }
+        });
     </script>
 @stop

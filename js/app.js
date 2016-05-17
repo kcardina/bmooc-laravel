@@ -599,15 +599,16 @@ var Vis = (function(){
         // Options array
         this.options = {
             interactive: true, // Allow dragging & zooming
-            showImages: true, // Show the images
+            mode: 'nodes', // Show nodes, text or all
             background: true, // give a background to text so the links appear behind
             fit: true // scales the visualisation to fit the container upon render
         };
 
         if(typeof opt !== 'undefined'){
             if(typeof opt.interactive !== 'undefined') this.options.interactive = opt.interactive;
-            if(typeof opt.showImages !== 'undefined') this.options.showImages = opt.showImages;
+            if(typeof opt.mode !== 'undefined') this.options.mode = opt.mode;
             if(typeof opt.background !== 'undefined') this.options.background = opt.background;
+            if(typeof opt.fit !== 'undefined') this.options.fit = opt.fit;
         }
 
         this.data = data;
@@ -620,7 +621,7 @@ var Vis = (function(){
         this.svg = d3.select(this.el).append("svg")
                 .attr("width", '100%')
                 .attr("height", '100%')
-                .attr("class", "svg");
+                .attr("class", "vis");
         // add one g to capture events
         this.container = this.svg.append("g")
             .attr("class", "vis_container");
@@ -660,7 +661,7 @@ var Vis = (function(){
         if(this.options.interactive){
             this.zoomContainer
                 .insert("rect",":first-child")
-                .attr('class', 'Vis_zoom-capture')
+                .attr('class', 'vis_zoom-capture')
                 .style('visibility', 'hidden')
                 .attr('x', this.g.node().getBBox().x - 25)
                 .attr('y', this.g.node().getBBox().y - 25)
@@ -669,8 +670,6 @@ var Vis = (function(){
             this.container.call(this.zoomListener);
         }
 
-        this.fit();
-
         //if(this.options.fit) this.fit();
     }
 
@@ -678,6 +677,8 @@ var Vis = (function(){
      *  Resize the tree to fit the container
      */
     Vis.prototype.fit = function(){
+
+        console.log('fit');
 
         width = this.width();
         height = this.height();
@@ -754,7 +755,7 @@ var Vis = (function(){
      */
     Vis.prototype.zoomed = function(){
         // this should be this.container g element
-        d3.select(this).select('.Vis_zoom').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        d3.select(this).select('.vis_zoom').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
         d3.select(window).on("mouseup.zoom", function(){
             d3.select(window).on("mousemove.zoom", null).on("mouseup.zoom", null);
         });
@@ -816,10 +817,15 @@ var Vis = (function(){
         var links = this.data.links;
         var edges = [];
 
+        var pointer = this;
+
         var force = d3.layout.force()
+            .linkDistance(function(d) { return 100 }) //* d.value.length })
+            .linkStrength(0)
+            .gravity(0.01)
+            .charge(-30)
             .theta(0)
-            .gravity(0.015)
-            .linkDistance(Vis.IMAGE_SIZE*2.5); // IMAGE_SIZE
+            .size([this.width(), this.height()]);
 
         // gebruik de index (gekoppeld aan de thread) in de array ipv id voor Force layout
         links.forEach(function(e) {
@@ -830,24 +836,25 @@ var Vis = (function(){
             edges.push({source: sourceNode, target: targetNode, value: e.links});
         });
 
-        console.log(edges);
+        // add a random start point in some corner
+        nodes.forEach(function(e){
+            e.x = Math.random() < 0.5 ? 0 : pointer.width();
+            e.y = Math.random() < 0.5 ? 0 : pointer.height();;
+        });
 
         force.nodes(nodes)
             .links(edges)
             .on("start", start)
+            .on("end", end)
             .start();
 
-        // declare the links
-        var link = this.g.selectAll(".link")
-            .data(edges);
-
-        // enter the links
-        link.enter().append("line")
+        var link = this.g.append("g").selectAll(".link")
+            .data(force.links())
+            .enter()
+            .append('path')
             .attr("class", "link")
-            .attr("stroke", "#878787")
-            .attr("stroke-width", 1)
-            .attr("opacity", function(d){
-                return 0.33 * d.value;
+            .attr("id",function(d,i) {
+                return "linkId_" + i;
             });
 
         // declare the nodes
@@ -856,34 +863,90 @@ var Vis = (function(){
 
         this.drawNodes(node);
 
-        node.call(force.drag);
+        if(this.options.interactive) node.call(force.drag);
 
         node.append("title")
             .text(function(d) { return d.title; });
 
         function start(){
-
             var ticksPerRender = 3;
-
             requestAnimationFrame(function render() {
 
-                for (var i = 0; i < ticksPerRender; i++) {
-                    force.tick();
-                }
+                for (var i = 0; i < ticksPerRender; i++) force.tick();
 
-                link.attr("x1", function(d) { return d.source.x; })
-                    .attr("y1", function(d) { return d.source.y; })
-                    .attr("x2", function(d) { return d.target.x; })
-                    .attr("y2", function(d) { return d.target.y; });
+                var diagonal = d3.svg.diagonal()
+                    .projection(function(d) { return [d.x, d.y]; });
+
+                link.attr("d", diagonal);
 
                 node.attr("transform", function(d){
                     return "translate(" + d.x + "," + d.y + ")";
                 });
 
-                if (force.alpha() > 0) {
-                    requestAnimationFrame(render);
-                }
+                if (force.alpha() > 0) requestAnimationFrame(render);
             });
+        }
+        /*
+        force.on("tick", function(e) {
+          var q = d3.geom.quadtree(nodes),
+              i = 0,
+              n = nodes.length;
+
+          while (++i < n) q.visit(collide(nodes[i]));
+
+          node.attr("transform", function(d){
+                return "translate(" + d.x + "," + d.y + ")";
+            });
+        });
+
+        function collide(node) {
+            console.log('colliding');
+          var r = node.radius + 16,
+              nx1 = node.x - r,
+              nx2 = node.x + r,
+              ny1 = node.y - 200,
+              ny2 = node.y + 200;
+          return function(quad, x1, y1, x2, y2) {
+            if (quad.point && (quad.point !== node)) {
+              var x = node.x - quad.point.x,
+                  y = node.y - quad.point.y,
+                  l = Math.sqrt(x * x + y * y),
+                  r = node.radius + quad.point.radius;
+              if (l < r) {
+                l = (l - r) / l * .5;
+                node.x -= x *= l;
+                node.y -= y *= l;
+                quad.point.x += x;
+                quad.point.y += y;
+              }
+            }
+            return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+          };
+        }
+        */
+        var ended = false;
+
+        function end(){
+            if(!ended){
+                ended = true;
+                var linktext = pointer.g.append("g").selectAll(".linktext")
+                    .data(force.links())
+                    .enter()
+                    .append('g')
+                    .attr("class", "linktext")
+                    .append('text')
+                    .attr("y", "-20")
+                    .attr("text-anchor", "middle")
+                    .append("textPath")
+                    .attr("startOffset", "50%")
+                    .attr("xlink:href",function(d,i) { return "#linkId_" + i;})
+                    .text(function(d) {
+                        var tags = [];
+                        for(var i = 0; i < d.value.length; i++) tags.push(d.value[i].tag);
+                        return tags.join(", ");
+                    });
+                if(pointer.options.fit) pointer.fit();
+            }
         }
     }
 
@@ -899,8 +962,7 @@ var Vis = (function(){
                 return "translate(" + d.y + "," + d.x + ")";
             });
 
-        if(this.options.showImages){
-
+        if(this.options.mode == 'all'){
             //hidden
             nodeEnter.filter(function(d) { return d.hidden; })
                 .append("a")
@@ -953,15 +1015,39 @@ var Vis = (function(){
                         .container(d3.select(this))
                         .draw();
                 });
-        } else {
+        } else if(this.options.mode == 'nodes') {
             nodeEnter.append("a")
                 .attr("xlink:href", function(d) {
                     return "/topic/"+d.id;
                 })
                 .append("circle")
-                .attr("cx", 2.5)
+                .attr("cx", 0)
                 .attr("cy", 0)
-                .attr("r", 5);
+                .attr("r", 5)
+        } else if(this.options.mode == 'text') {
+            var container = nodeEnter.append("g");
+            var bg = container.append("rect");
+
+            container.append("a")
+                .attr("xlink:href", function(d) {
+                    return "/topic/"+d.id;
+                })
+                .append("text")
+                .attr("class", "title")
+                .text(function(d){
+                    return d.title;
+                })
+
+            bg.attr("width", function(){ return this.parentNode.getBBox().width})
+                .attr("height", function(){ return this.parentNode.getBBox().height})
+                .attr("y", function(){ return -this.parentNode.getBBox().height / 2});
+
+            container.attr("transform", function(){
+                console.log(this.getBBox());
+                return "translate(" + (- this.getBBox().width/2) + "," + this.getBBox().height/4 + ")";
+            });
+
+            if(this.options.background) bg.attr("class", "filled");
         }
     }
 

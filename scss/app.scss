@@ -2,6 +2,7 @@ $background: #080808;
 $text: #ffffff;
 $text-light: #d9d9d9;
 $text-medium: #878787;
+$green: #17cf1f;
 
 $font: 'Muli', sans-serif;
 $regular: 300;
@@ -31,7 +32,7 @@ html, body{
     }
 }
 
-/* JS WARNING */
+/* JS WARNING & FALLBACKS */
 .modernizr-alert{
     display: none;
 }
@@ -40,6 +41,28 @@ html, body{
 }
 .no-svg .browser-alert, .no-flexbox .browser-alert, .no-flexboxlegacy .browser-alert{
     display: block;
+}
+
+.vis-container, .vis-fallback{
+    display: none;
+}
+
+.svg {
+    .vis-container{
+        display: block;
+    }
+    .vis-fallback{
+        display: none
+    }
+}
+
+.no-svg{
+    .vis-fallback{
+        display: block;
+    }
+    .vis-container{
+        display: none;
+    }
 }
 
 /* TYPOGRAPHY */
@@ -85,7 +108,7 @@ button.primary{
     border: none;
     margin: 0;
     padding: 0;
-    color: #17cf1f;
+    color: $green;
     font-weight: 400;
     padding-left: 30px;
     height: 24px;
@@ -147,13 +170,30 @@ dl dd{
 }
 
 /* MAIN */
-header{
-    margin: 1rem 0;
+body {
+    display:table;
+    width:100%;
 }
+
+header{
+    display:table-row;
+    width: 100%;
+}
+
 nav{
     text-transform: lowercase;
 }
 
+header .row{
+    margin: 1rem 0;
+}
+
+.container{
+    display: table-row;
+    height: 100%;
+}
+
+/*
 .flexbox{
     body{
         display: flex;
@@ -163,5 +203,48 @@ nav{
     .container{
         display: flex;
         flex: 1;
+    }
+}
+*/
+
+/* GRID */
+.row.full{
+    width: 100%;
+    height: 100%;
+
+    .columns {
+	    height: 100%;
+    }
+}
+
+/* SVG */
+svg{
+    .link{
+        fill: none;
+        stroke: $green;
+    }
+
+    .node{
+        fill: $background;
+        stroke: $green;
+    }
+
+    text{
+        fill: $text;
+        stroke: none;
+    }
+
+    rect.filled{
+        fill: $background;
+        stroke: none;
+    }
+
+    text.title{
+        font-size: 1.75rem;
+    }
+
+    .linktext text{
+        font-size: 0.8rem;
+        fill: $green;
     }
 }

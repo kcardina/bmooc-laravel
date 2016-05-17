@@ -64,7 +64,7 @@
         </div>
 
         <header>
-            <div class="row large text-right">
+            <div class="row text-right">
 			    <div class="small-12 columns">
                     <nav class="main">
                         <ul class="inline slash">
@@ -88,7 +88,7 @@
                     </nav>
                 </div>
             </div>
-            <div class="row large">
+            <div class="row">
 				<div class="small-4 medium-3 large-2 columns">
 					<h1>{!! HTML::link('/','bMOOC') !!}</h1>
 				</div>

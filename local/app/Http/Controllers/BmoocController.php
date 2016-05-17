@@ -49,12 +49,13 @@ class BmoocController extends Controller {
 
         // lijst per tag alle threads op, selecteer degene met meerdere threads
         $links_query = DB::select(DB::raw('
-            SELECT tag_id, GROUP_CONCAT(thread ORDER BY thread ASC) as threads, COUNT(*) as count
+            SELECT tag_id, tag, GROUP_CONCAT(thread ORDER BY thread ASC) as threads, COUNT(*) as count
             FROM
             (
-                SELECT DISTINCT tag_id, artefacts.thread
+                SELECT DISTINCT tag_id, artefacts.thread, tags.tag
                 FROM artefacts_tags
                 LEFT JOIN artefacts ON artefacts_tags.artefact_id = artefacts.id
+                LEFT JOIN tags ON artefacts_tags.tag_id = tags.id
             ) threads_tags
             GROUP BY threads_tags.tag_id
             HAVING count > 1
@@ -77,10 +78,10 @@ class BmoocController extends Controller {
                     $intersect = array_values($intersect);
                     if(sizeof($intersect) > 0){
                         // add the tag
-                        array_push($links[$intersect[0]]['links'], $link->tag_id);
+                        array_push($links[$intersect[0]]['links'], ["id" => $link->tag_id, "tag" => $link->tag]);
                     } else {
                         // else make a new one
-                        array_push($links, ["source" => $source, "target" => $target, "links" => [$link->tag_id]]);
+                        array_push($links, ["source" => $source, "target" => $target, "links" => [["id" => $link->tag_id, "tag" => $link->tag]]]);
                     }
                 }
             }
