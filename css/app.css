@@ -187,10 +187,14 @@ svg text {
   fill: #ffffff;
   stroke: none; }
 svg rect.filled {
-  fill: #080808;
+  fill: none;
   stroke: none; }
 svg text.title {
-  font-size: 1.75rem; }
+  font-size: 1.75rem;
+  text-anchor: middle; }
+svg text.title.stroke {
+  stroke: #080808;
+  stroke-width: 7px; }
 svg .linktext text {
   font-size: 0.8rem;
   fill: #17cf1f; }

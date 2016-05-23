@@ -46,10 +46,11 @@
                 var vis = new Vis($('.vis-container').get(0), data, {
                     interactive: false,
                     mode: 'text',
-                    fit: true
+                    fit: true,
+                    collide: false
                 });
                 vis.render('force');
-                //vis.fit();
+                // vis.fit();
             }
         });
     </script>

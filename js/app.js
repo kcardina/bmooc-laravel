@@ -601,7 +601,8 @@ var Vis = (function(){
             interactive: true, // Allow dragging & zooming
             mode: 'nodes', // Show nodes, text or all
             background: true, // give a background to text so the links appear behind
-            fit: true // scales the visualisation to fit the container upon render
+            fit: true, // scales the visualisation to fit the container upon render
+            collide: true // let the elements of a force layout overlap
         };
 
         if(typeof opt !== 'undefined'){
@@ -609,6 +610,7 @@ var Vis = (function(){
             if(typeof opt.mode !== 'undefined') this.options.mode = opt.mode;
             if(typeof opt.background !== 'undefined') this.options.background = opt.background;
             if(typeof opt.fit !== 'undefined') this.options.fit = opt.fit;
+            if(typeof opt.collide !== 'undefined') this.options.collide = opt.collide;
         }
 
         this.data = data;
@@ -670,7 +672,7 @@ var Vis = (function(){
             this.container.call(this.zoomListener);
         }
 
-        //if(this.options.fit) this.fit();
+        // if(this.options.fit) this.fit();
     }
 
     /**
@@ -698,11 +700,11 @@ var Vis = (function(){
             .scale(s)
             .translate([t_w, t_h])
             .scaleExtent([s, 1]);
-        // for some mysterious reason, updation the zoomListener only works when called twice
-        this.zoomListener
+        // for some mysterious reason, updating the zoomListener only works when called twice
+        /*this.zoomListener
             .scale(s)
             .translate([t_w, t_h])
-            .scaleExtent([s, 1]);
+            .scaleExtent([s, 1]);*/
 
         this.svg.transition()
             .duration(125)
@@ -839,7 +841,9 @@ var Vis = (function(){
         // add a random start point in some corner
         nodes.forEach(function(e){
             e.x = Math.random() < 0.5 ? 0 : pointer.width();
-            e.y = Math.random() < 0.5 ? 0 : pointer.height();;
+            e.y = Math.random() < 0.5 ? 0 : pointer.height();
+            e.width = 500; // for collision detection
+            e.height = 50;
         });
 
         force.nodes(nodes)
@@ -878,52 +882,65 @@ var Vis = (function(){
                     .projection(function(d) { return [d.x, d.y]; });
 
                 link.attr("d", diagonal);
+                
+                if(!pointer.options.collide){
+                    var q = d3.geom.quadtree(nodes),
+                    i = 0,
+                    n = nodes.length;
 
-                node.attr("transform", function(d){
-                    return "translate(" + d.x + "," + d.y + ")";
-                });
+                    while (++i < n) q.visit(collide(nodes[i]));
+                }
+                
+                pointer.g.selectAll('.node')
+                    .attr("transform", function(d){
+                        return "translate(" + d.x + "," + d.y + ")";
+                    });
 
                 if (force.alpha() > 0) requestAnimationFrame(render);
             });
         }
-        /*
-        force.on("tick", function(e) {
-          var q = d3.geom.quadtree(nodes),
-              i = 0,
-              n = nodes.length;
-
-          while (++i < n) q.visit(collide(nodes[i]));
-
-          node.attr("transform", function(d){
-                return "translate(" + d.x + "," + d.y + ")";
-            });
-        });
-
+        
         function collide(node) {
-            console.log('colliding');
-          var r = node.radius + 16,
-              nx1 = node.x - r,
-              nx2 = node.x + r,
-              ny1 = node.y - 200,
-              ny2 = node.y + 200;
-          return function(quad, x1, y1, x2, y2) {
-            if (quad.point && (quad.point !== node)) {
-              var x = node.x - quad.point.x,
-                  y = node.y - quad.point.y,
-                  l = Math.sqrt(x * x + y * y),
-                  r = node.radius + quad.point.radius;
-              if (l < r) {
-                l = (l - r) / l * .5;
-                node.x -= x *= l;
-                node.y -= y *= l;
-                quad.point.x += x;
-                quad.point.y += y;
-              }
-            }
-            return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-          };
+            var spacing = 10
+            return function(quad, x1, y1, x2, y2) {
+                var updated = false;
+                if (quad.point && (quad.point !== node)) {
+
+                    var x = node.x - quad.point.x,
+                        y = node.y - quad.point.y,
+                        xSpacing = (quad.point.width + node.width) / 2 + spacing,
+                        ySpacing = (quad.point.height + node.height) / 2 + spacing,
+                        absX = Math.abs(x),
+                        absY = Math.abs(y),
+                        l,
+                        lx,
+                        ly;
+
+                    if (absX < xSpacing && absY < ySpacing) {
+                        l = Math.sqrt(x * x + y * y);
+
+                        lx = (absX - xSpacing) / l;
+                        ly = (absY - ySpacing) / l;
+
+                        // the one that's barely within the bounds probably triggered the collision
+                        if (Math.abs(lx) > Math.abs(ly)) {
+                            lx = 0;
+                        } else {
+                            ly = 0;
+                        }
+
+                        node.x -= x *= lx;
+                        node.y -= y *= ly;
+                        quad.point.x += x;
+                        quad.point.y += y;
+
+                        updated = true;
+                    }
+                }
+                return updated;
+            };
         }
-        */
+        
         var ended = false;
 
         function end(){
@@ -945,8 +962,9 @@ var Vis = (function(){
                         for(var i = 0; i < d.value.length; i++) tags.push(d.value[i].tag);
                         return tags.join(", ");
                     });
-                if(pointer.options.fit) pointer.fit();
             }
+            if(!pointer.options.interactive && pointer.options.fit) pointer.fit();
+
         }
     }
 
@@ -958,6 +976,7 @@ var Vis = (function(){
         // Enter the nodes.
         var nodeEnter = node.enter().append("g")
             .attr("class", "node")
+            .attr("id",function(d,i){ return d.id = "node"+i; })
             .attr("transform", function(d) {
                 return "translate(" + d.y + "," + d.x + ")";
             });
@@ -1025,29 +1044,24 @@ var Vis = (function(){
                 .attr("cy", 0)
                 .attr("r", 5)
         } else if(this.options.mode == 'text') {
-            var container = nodeEnter.append("g");
-            var bg = container.append("rect");
-
-            container.append("a")
+            var a = nodeEnter.append("g")
+                .append("a")
                 .attr("xlink:href", function(d) {
                     return "/topic/"+d.id;
-                })
-                .append("text")
+                });
+            
+            if(this.options.background){
+                a.append("text")
+                    .attr("class", "title stroke")
+                    .text(function(d){
+                        return d.title;
+                    })
+            }
+            a.append("text")
                 .attr("class", "title")
                 .text(function(d){
                     return d.title;
                 })
-
-            bg.attr("width", function(){ return this.parentNode.getBBox().width})
-                .attr("height", function(){ return this.parentNode.getBBox().height})
-                .attr("y", function(){ return -this.parentNode.getBBox().height / 2});
-
-            container.attr("transform", function(){
-                console.log(this.getBBox());
-                return "translate(" + (- this.getBBox().width/2) + "," + this.getBBox().height/4 + ")";
-            });
-
-            if(this.options.background) bg.attr("class", "filled");
         }
     }
 

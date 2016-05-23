@@ -235,12 +235,18 @@ svg{
     }
 
     rect.filled{
-        fill: $background;
+        fill: none;
         stroke: none;
     }
 
     text.title{
         font-size: 1.75rem;
+        text-anchor: middle;
+    }
+    
+    text.title.stroke{
+        stroke: $background;
+        stroke-width: 7px;
     }
 
     .linktext text{
