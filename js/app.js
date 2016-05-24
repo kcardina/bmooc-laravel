@@ -662,13 +662,13 @@ var Vis = (function(){
         if(type == "force") this.renderForce();
 
         if(this.options.interactive >= 1){
-            /*this.zoomContainer.insert("rect",":first-child")
+            this.zoomContainer.insert("rect",":first-child")
                 .attr('class', 'vis_zoom-capture')
                 .style('visibility', 'hidden')
                 .attr('x', this.g.node().getBBox().x - 25)
                 .attr('y', this.g.node().getBBox().y - 25)
                 .attr('width', this.g.node().getBBox().width + 50)
-                .attr('height', this.g.node().getBBox().height + 50);*/
+                .attr('height', this.g.node().getBBox().height + 50);
             this.container.call(this.zoomListener);
             // GUI
             var gui = d3.select(this.el).append('div')
@@ -694,8 +694,8 @@ var Vis = (function(){
 
         console.log('fit');
 
-        width = this.width()-Vis.MARGIN.left;
-        height = this.height()-Vis.MARGIN.top;
+        width = this.width()-Vis.MARGIN.left/2;
+        height = this.height()-Vis.MARGIN.top/2;
 
         var t = [0,0],
             s = 1,
@@ -706,8 +706,8 @@ var Vis = (function(){
         if(h > height && height/h < s) s = height/h;
 
         //t_w = width/2 - (w/2)*s;
-        t_w = -this.g.node().getBBox().x*s + (width-w*s)/2 + (Vis.MARGIN.left/2)*s
-        t_h = -this.g.node().getBBox().y*s + (height-h*s)/2 + (Vis.MARGIN.top/2)*s
+        t_w = -this.g.node().getBBox().x*s + (width-w*s)/2 + (Vis.MARGIN.left/4)*s
+        t_h = -this.g.node().getBBox().y*s + (height-h*s)/2 + (Vis.MARGIN.top/4)*s
 
         this.zoomListener
             .scale(s)
