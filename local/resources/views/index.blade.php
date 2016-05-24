@@ -44,7 +44,7 @@
         $(document).ready(function(){
             if($('html').hasClass('svg')){
                 var vis = new Vis($('.vis-container').get(0), data, {
-                    interactive: false,
+                    interactive: true,
                     mode: 'text',
                     fit: true,
                     collide: false

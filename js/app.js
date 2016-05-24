@@ -598,7 +598,7 @@ var Vis = (function(){
 
         // Options array
         this.options = {
-            interactive: true, // Allow dragging & zooming
+            interactive: true, // 0: none, 1:Allow dragging & zooming, 3:allow dragging nodes
             mode: 'nodes', // Show nodes, text or all
             background: true, // give a background to text so the links appear behind
             fit: true, // scales the visualisation to fit the container upon render
@@ -660,16 +660,27 @@ var Vis = (function(){
 
         if(type == "force") this.renderForce();
 
-        if(this.options.interactive){
-            this.zoomContainer
-                .insert("rect",":first-child")
+        if(this.options.interactive >= 1){
+            /*this.zoomContainer.insert("rect",":first-child")
                 .attr('class', 'vis_zoom-capture')
                 .style('visibility', 'hidden')
                 .attr('x', this.g.node().getBBox().x - 25)
                 .attr('y', this.g.node().getBBox().y - 25)
                 .attr('width', this.g.node().getBBox().width + 50)
-                .attr('height', this.g.node().getBBox().height + 50);
+                .attr('height', this.g.node().getBBox().height + 50);*/
             this.container.call(this.zoomListener);
+            // GUI
+            var gui = d3.select(this.el).append('div')
+                .attr('class', 'vis-gui zoom')
+            var pointer = this;
+            gui.append('button')
+                .attr('class', 'button secondary square icon zoom-in')
+                .html('&#x2795;&#xfe0e;')
+                .on('click', function(){ pointer.zoom(0.1) });
+            gui.append('button')
+                .attr('class', 'button secondary square icon zoom-out')
+                .html('&#10134;&#xfe0e;')
+                .on('click', function(){ pointer.zoom(-0.1) });
         }
 
         // if(this.options.fit) this.fit();
@@ -840,8 +851,9 @@ var Vis = (function(){
 
         // add a random start point in some corner
         nodes.forEach(function(e){
-            e.x = Math.random() < 0.5 ? 0 : pointer.width();
-            e.y = Math.random() < 0.5 ? 0 : pointer.height();
+            // x & y are switched?
+            e.x = pointer.height();
+            e.y = Math.random() < 0.5 ? 0 : pointer.width();
             e.width = 500; // for collision detection
             e.height = 50;
         });
@@ -867,12 +879,13 @@ var Vis = (function(){
 
         this.drawNodes(node);
 
-        if(this.options.interactive) node.call(force.drag);
+        if(this.options.interactive == 2) node.call(force.drag);
 
         node.append("title")
             .text(function(d) { return d.title; });
 
         function start(){
+            pointer.g.append("g").selectAll(".linktext").remove();
             var ticksPerRender = 3;
             requestAnimationFrame(function render() {
 
@@ -942,6 +955,7 @@ var Vis = (function(){
         }
         
         var ended = false;
+        var first = true;
 
         function end(){
             if(!ended){
@@ -963,7 +977,10 @@ var Vis = (function(){
                         return tags.join(", ");
                     });
             }
-            if(!pointer.options.interactive && pointer.options.fit) pointer.fit();
+            if(first && pointer.options.fit) {
+                first = false;
+                pointer.fit();
+            }
 
         }
     }
