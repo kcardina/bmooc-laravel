@@ -13,9 +13,9 @@
 @stop
 
 @section('content')
-    <div class="row full">
-        <div class="columns vis-container"></div>
-        <div class="columns vis-fallback">
+    <div class="row full vis-container"></div>
+    <div class="row full vis-fallback">
+        <div class="columns">
             <ul class="block text-center">
                 @foreach($topics as $topic)
                     <li>
@@ -41,16 +41,17 @@
 
         console.log(data);
 
+        var vis;
+
         $(document).ready(function(){
             if($('html').hasClass('svg')){
-                var vis = new Vis($('.vis-container').get(0), data, {
+                vis = new Vis($('.vis-container').get(0), data, {
                     interactive: true,
                     mode: 'text',
                     fit: true,
                     collide: false
                 });
                 vis.render('force');
-                // vis.fit();
             }
         });
     </script>

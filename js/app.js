@@ -654,7 +654,8 @@ var Vis = (function(){
         this.zoomContainer = this.container.append("g")
             .attr("class", "vis_zoom")
         // add another g to draw the visualisation
-        this.g = this.zoomContainer.append("g");
+        this.g = this.zoomContainer.append("g")
+            .attr("class", "vis_data");
 
         if(type == "tree") this.renderTree();
 
@@ -693,8 +694,8 @@ var Vis = (function(){
 
         console.log('fit');
 
-        width = this.width();
-        height = this.height();
+        width = this.width()-Vis.MARGIN.left;
+        height = this.height()-Vis.MARGIN.top;
 
         var t = [0,0],
             s = 1,
@@ -704,8 +705,9 @@ var Vis = (function(){
         if(w > width) s = width/w;
         if(h > height && height/h < s) s = height/h;
 
-        t_w = width/2 - (w/2)*s;
-        t_h = -this.g.node().getBBox().y*s + (height-h*s)/2
+        //t_w = width/2 - (w/2)*s;
+        t_w = -this.g.node().getBBox().x*s + (width-w*s)/2 + (Vis.MARGIN.left/2)*s
+        t_h = -this.g.node().getBBox().y*s + (height-h*s)/2 + (Vis.MARGIN.top/2)*s
 
         this.zoomListener
             .scale(s)
@@ -833,12 +835,10 @@ var Vis = (function(){
         var pointer = this;
 
         var force = d3.layout.force()
-            .linkDistance(function(d) { return 100 }) //* d.value.length })
-            .linkStrength(0)
-            .gravity(0.01)
-            .charge(-30)
-            .theta(0)
-            .size([this.width(), this.height()]);
+            .size([this.width(), this.height()])
+            .gravity(0)
+            .charge(0)
+            .linkStrength(0);
 
         // gebruik de index (gekoppeld aan de thread) in de array ipv id voor Force layout
         links.forEach(function(e) {
@@ -850,18 +850,18 @@ var Vis = (function(){
         });
 
         // add a random start point in some corner
-        nodes.forEach(function(e){
-            // x & y are switched?
-            e.x = pointer.height();
-            e.y = Math.random() < 0.5 ? 0 : pointer.width();
-            e.width = 500; // for collision detection
-            e.height = 50;
+        nodes.forEach(function(d,i){
+            d.x = i * (pointer.width() / nodes.length);
+            d.y = Math.random() * pointer.height();
+            d.width = 500; // for collision detection
+            d.height = 50;
         });
 
         force.nodes(nodes)
             .links(edges)
             .on("start", start)
             .on("end", end)
+            //.on("tick", tick)
             .start();
 
         var link = this.g.append("g").selectAll(".link")
@@ -884,9 +884,16 @@ var Vis = (function(){
         node.append("title")
             .text(function(d) { return d.title; });
 
+        function tick(){
+            pointer.g.selectAll('.node')
+                .attr("transform", function(d){
+                    return "translate(" + d.x + "," + d.y + ")";
+                });
+        }
+
         function start(){
             pointer.g.append("g").selectAll(".linktext").remove();
-            var ticksPerRender = 3;
+            var ticksPerRender = 10;
             requestAnimationFrame(function render() {
 
                 for (var i = 0; i < ticksPerRender; i++) force.tick();
@@ -900,7 +907,6 @@ var Vis = (function(){
                     var q = d3.geom.quadtree(nodes),
                     i = 0,
                     n = nodes.length;
-
                     while (++i < n) q.visit(collide(nodes[i]));
                 }
                 
@@ -995,7 +1001,7 @@ var Vis = (function(){
             .attr("class", "node")
             .attr("id",function(d,i){ return d.id = "node"+i; })
             .attr("transform", function(d) {
-                return "translate(" + d.y + "," + d.x + ")";
+                return "translate(" + d.x + "," + d.y + ")";
             });
 
         if(this.options.mode == 'all'){
