@@ -289,6 +289,82 @@ class AdminController extends Controller {
         }
     }
 
+    public function users(Request $request) {
+        $user = Auth::user();
+        if (!$user || $user->role != "editor") {
+            App::abort(401, 'Not authenticated');
+        }
+
+        $users = DB::table('users')
+            ->orderBy('name', 'asc')
+            ->get();
+        $uid = Input::get('user');
+        if(!is_numeric($uid)) $user = $users[0];
+        else $user = DB::table('users')
+            ->where('id', $uid)
+            ->get()[0];
+
+        $user->last_contribution = DB::table('artefacts')
+            ->where('author', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(1)
+            ->get();
+        if($user->last_contribution) $user->last_contribution = $user->last_contribution[0];
+
+        $user->contributions = DB::table('artefacts')
+            ->where('author', $user->id)
+            ->count();
+
+        $user->topics = DB::table('artefacts')
+            ->select('thread')
+            ->where('author', $user->id)
+            ->groupBy('thread')
+            ->get();
+
+        for($i = 0; $i < sizeof($user->topics); $i++){
+            $t = $user->topics[$i];
+
+            $thread = DB::table('artefacts')
+            ->where('thread', $t->thread)
+            ->where('parent_id', null)
+            ->get()[0];
+
+            $artefacts = DB::table('artefacts')
+            ->where('author', $user->id)
+            ->where('thread', $t->thread)
+            ->get();
+
+            $user->topics[$i]->title = $thread->title;
+            $user->topics[$i]->artefacts = $artefacts;
+        }
+
+        $user->types = DB::table('artefacts')
+            ->select('artefact_types.description', DB::raw('COUNT(*) AS count'))
+            ->leftJoin('artefact_types', 'artefacts.artefact_type', '=', 'artefact_types.id')
+            ->where('author', $user->id)
+            ->groupBy('artefact_type')
+            ->orderBy('count', 'desc')
+            ->get();
+
+        $user->artefacts = DB::table('artefacts')
+            ->select('thread', DB::raw('COUNT(*) as count, DATE(created_at) as thedate'))
+            ->where('author', $user->id)
+            ->groupBy('thedate', 'thread')
+            ->orderBy('thedate')
+            ->get();
+
+        return view('admin.data.users', ['users' => $users, 'user'=> $user, 'topics' => [], 'topic' => null]);
+    }
+
+    public function groups(Request $request) {
+        $user = Auth::user();
+        if (!$user || $user->role != "editor") {
+            App::abort(401, 'Not authenticated');
+        }
+
+        return view('admin.data.groups', ['user'=> $user, 'topics' => [], 'topic' => null]);
+    }
+
     public function getThumbnails(Request $request) {
         $user = Auth::user();
         if (!$user || $user->role != "editor") {

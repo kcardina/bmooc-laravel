@@ -15,6 +15,12 @@
     <li class="{{ Menu::active('topics') }}">
         <a href="/admin/data/topics">topics</a>
     </li>
+    <li class="{{ Menu::active('users') }}">
+        <a href="/admin/data/users">users</a>
+    </li>
+    <li class="{{ Menu::active('groups') }}">
+        <a href="/admin/data/groups">groups</a>
+    </li>
 @endsection
 
 @section('content')

@@ -106,17 +106,27 @@ small{
 
 svg{
     font-size: 0.7rem;
-    text-anchor: middle;
 }
 
 path {
-    stroke: #333;
     stroke-width: 2;
     fill: none;
 }
 
+path.line{
+    stroke: #000;
+}
+
 circle{
     cursor: pointer;
+}
+
+.node text{
+    text-anchor: middle;
+}
+
+text.legend{
+    text-anchor: left;
 }
 
 #tree path{
