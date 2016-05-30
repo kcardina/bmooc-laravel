@@ -357,12 +357,34 @@ class AdminController extends Controller {
     }
 
     public function groups(Request $request) {
+
+        $groups = DB::table('groups')
+            ->get();
+
+        foreach($groups as $group){
+            $group->users = DB::table('users')
+                ->select('id', 'name')
+                ->where('group', $group->id)
+                ->get();
+            $group->topics = DB::table('artefacts')
+                ->select('id', 'thread', 'title')
+                ->where('parent_id', null)
+                ->where('group', $group->id)
+                ->get();
+            foreach($group->users as $user){
+                $user->artefacts = DB::table('artefacts')
+                    ->select('id', 'title', 'thread', 'artefact_type')
+                    ->where('author', $user->id)
+                    ->get();
+            }
+        }
+
         $user = Auth::user();
         if (!$user || $user->role != "editor") {
             App::abort(401, 'Not authenticated');
         }
 
-        return view('admin.data.groups', ['user'=> $user, 'topics' => [], 'topic' => null]);
+        return view('admin.data.groups', ['user'=> $user, 'groups' => $groups, 'topics' => [], 'topic' => null]);
     }
 
     public function getThumbnails(Request $request) {
