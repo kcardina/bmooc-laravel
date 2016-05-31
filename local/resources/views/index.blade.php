@@ -49,7 +49,8 @@
                     interactive: true,
                     mode: 'text',
                     fit: true,
-                    collide: false
+                    collide: false,
+                    resize: true
                 });
                 vis.render('force');
             }

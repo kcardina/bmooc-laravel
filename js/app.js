@@ -713,6 +713,7 @@ var Vis = (function(){
             .scale(s)
             .translate([t_w, t_h])
             .scaleExtent([s, 1]);
+
         // for some mysterious reason, updating the zoomListener only works when called twice
         /*this.zoomListener
             .scale(s)
@@ -966,11 +967,16 @@ var Vis = (function(){
         function end(){
             if(!ended){
                 ended = true;
-                var linktext = pointer.g.append("g").selectAll(".linktext")
+                var linktext = pointer.g.insert("g", ":first-child").selectAll(".linktext")
                     .data(force.links())
                     .enter()
                     .append('g')
                     .attr("class", "linktext")
+                    /*.append("a")
+                    .attr("xlink:href", function(d) {
+                        console.log(d);
+                        return "/search/all/"+d.value.id;
+                    })*/
                     .append('text')
                     .attr("y", "-20")
                     .attr("text-anchor", "middle")
@@ -982,12 +988,20 @@ var Vis = (function(){
                         for(var i = 0; i < d.value.length; i++) tags.push(d.value[i].tag);
                         return tags.join(", ");
                     });
+
             }
             if(first && pointer.options.fit) {
-                first = false;
                 pointer.fit();
             }
-
+            if(first && pointer.options.interactive >= 1){
+                console.log(pointer.zoomContainer.select('.vis_zoom-capture'))
+                pointer.zoomContainer.select('.vis_zoom-capture')
+                    .attr('x', pointer.g.node().getBBox().x - 25)
+                    .attr('y', pointer.g.node().getBBox().y - 25)
+                    .attr('width', pointer.g.node().getBBox().width + 50)
+                    .attr('height', pointer.g.node().getBBox().height + 50);
+            }
+            if(first) first = false;
         }
     }
 

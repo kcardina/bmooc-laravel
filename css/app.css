@@ -197,7 +197,8 @@ header .row {
     height: 100%; }
 
 /* SVG */
-svg .vis_zoom-capture {
+svg .vis_zoom {
+  pointer-events: all;
   cursor: move; }
 svg .link {
   fill: none;
@@ -218,7 +219,7 @@ svg text.title.stroke {
   stroke: #080808;
   stroke-width: 7px; }
 svg .linktext text {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   fill: #17cf1f; }
 
 .vis-gui {

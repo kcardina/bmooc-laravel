@@ -244,7 +244,8 @@ header .row{
 
 /* SVG */
 svg{
-    .vis_zoom-capture{
+    .vis_zoom{
+        pointer-events: all;
         cursor: move
     }
     .link{
@@ -272,7 +273,7 @@ svg{
         stroke-width: 7px;
     }
     .linktext text{
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         fill: $green;
     }
 }
