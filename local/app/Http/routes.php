@@ -45,6 +45,9 @@ Route::get('admin', function(){
 Route::get('admin/data/basic', 'AdminController@basic');
 Route::get('admin/data/progress', 'AdminController@progress');
 Route::get('admin/data/tree', 'AdminController@tree');
+Route::get('admin/data/topics', 'AdminController@topics');
+Route::get('admin/data/users', 'AdminController@users');
+Route::get('admin/data/groups', 'AdminController@groups');
 Route::get('admin/thumbnails', 'AdminController@getThumbnails');
 Route::post('admin/thumbnails', 'AdminController@postThumbnails');
 

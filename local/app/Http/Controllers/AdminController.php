@@ -261,6 +261,199 @@ class AdminController extends Controller {
 
     }
 
+    public function topics(Request $request) {
+        $topics = DB::table('artefacts')
+            ->orderBy('updated_at', 'desc')
+            ->whereNull('parent_id')
+            ->get();
+        $topic = Input::get('topic');
+        if(!is_numeric($topic)) $topic = null;
+
+        // GET PLAIN LIST of topics
+        $list = DB::table('artefacts')
+            ->where('parent_id', '=', null)
+            ->get();
+
+        // Get a list of tag, and connect them to a topic
+        $tags = DB::table('artefacts_tags')
+            ->select('artefacts.thread', 'tag_id')
+            ->join('artefacts', 'artefact_id', '=', 'artefacts.id')
+            ->get();
+
+        $user = Auth::user();
+
+        if ($user && $user->role == "editor") {
+            return view('admin.data.topics', ['topics' => $topics, 'topic'=> $topic, 'list' => $list, 'tags' => $tags]);
+        } else {
+            App::abort(401, 'Not authenticated');
+        }
+    }
+
+    public function users(Request $request) {
+        $user = Auth::user();
+        /*if (!$user || $user->role != "editor") {
+            App::abort(401, 'Not authenticated');
+        }*/
+
+        $users = DB::table('users')
+            ->orderBy('name', 'asc')
+            ->get();
+        $uid = Input::get('user');
+        if(!is_numeric($uid)) $user = $users[0];
+        else $user = DB::table('users')
+            ->where('id', $uid)
+            ->get()[0];
+
+        $user->last_contribution = DB::table('artefacts')
+            ->where('author', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(1)
+            ->get();
+        if($user->last_contribution) $user->last_contribution = $user->last_contribution[0];
+
+        $user->contributions = DB::table('artefacts')
+            ->where('author', $user->id)
+            ->count();
+
+        $user->topics = DB::table('artefacts')
+            ->select('thread')
+            ->where('author', $user->id)
+            ->groupBy('thread')
+            ->get();
+
+        for($i = 0; $i < sizeof($user->topics); $i++){
+            $t = $user->topics[$i];
+
+            $thread = DB::table('artefacts')
+            ->where('thread', $t->thread)
+            ->where('parent_id', null)
+            ->get()[0];
+
+            $artefacts = DB::table('artefacts')
+            ->where('author', $user->id)
+            ->where('thread', $t->thread)
+            ->get();
+
+            $user->topics[$i]->title = $thread->title;
+            $user->topics[$i]->artefacts = $artefacts;
+        }
+
+        $user->types = DB::table('artefacts')
+            ->select('artefact_types.description', DB::raw('COUNT(*) AS count'))
+            ->leftJoin('artefact_types', 'artefacts.artefact_type', '=', 'artefact_types.id')
+            ->where('author', $user->id)
+            ->groupBy('artefact_type')
+            ->orderBy('count', 'desc')
+            ->get();
+
+        $user->artefacts = DB::table('artefacts')
+            ->select('thread', DB::raw('COUNT(*) as count, DATE(created_at) as thedate'))
+            ->where('author', $user->id)
+            ->groupBy('thedate', 'thread')
+            ->orderBy('thedate')
+            ->get();
+
+        return view('admin.data.users', ['users' => $users, 'user'=> $user, 'topics' => [], 'topic' => null]);
+    }
+
+    public function groups(Request $request) {
+
+        $groups = (object) [
+            (object) [
+                "id" => 1,
+                "name" => "teachers",
+                "user_ids" => [18,26,27,28,29,30],
+                "topic_ids" => []
+            ],
+            (object) [
+                "id" => 2,
+                "name" => "foto",
+                "user_ids" => [143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158],
+                "topic_ids" => [45]
+            ],
+            (object) [
+                "id" => 3,
+                "name" => "mixedmedia",
+                "user_ids" => [31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,140,141,142],
+                "topic_ids" => [30, 35, 38, 39, 146]
+            ],
+            (object) [
+                "id" => 4,
+                "name" => "slo",
+                "user_ids" => [250,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,280,281,283,284,285,286,287,290,291,292,293,294],
+                "topic_ids" => [43,247,248,249,250,254,256,352,353,386]
+            ]
+        ];
+
+        $users = DB::table('users')
+            ->select('id', 'name')
+            ->get();
+
+        $artefacts = DB::table('artefacts')
+            ->select('id', 'thread', 'title', 'author')
+            ->get();
+
+        function search_id($a, $id){
+            foreach($a as $i){
+                if($i->id == $id) return $i;
+            }
+        }
+
+        function list_author($a, $id){
+            $r = [];
+            foreach($a as $i){
+                if($i->author == $id) array_push($r,$i);
+            }
+            return $r;
+        }
+
+        foreach($groups as $group){
+            $group->users = [];
+            foreach($group->user_ids as $user_id){
+                $user = search_id($users, $user_id);
+                array_push($group->users, $user);
+            }
+            $group->topics = [];
+            foreach($group->topic_ids as $topic_id){
+                $topic = search_id($artefacts, $topic_id);
+                array_push($group->topics, $topic);
+            }
+            foreach($group->users as $user){
+                $user->artefacts = list_author($artefacts, $user->id);
+            }
+        }
+
+        /*
+        $groups = DB::table('groups')
+            ->get();
+
+        foreach($groups as $group){
+            $group->users = DB::table('users')
+                ->select('id', 'name')
+                ->where('group', $group->id)
+                ->get();
+            $group->topics = DB::table('artefacts')
+                ->select('id', 'thread', 'title')
+                ->where('parent_id', null)
+                ->where('group', $group->id)
+                ->get();
+            foreach($group->users as $user){
+                $user->artefacts = DB::table('artefacts')
+                    ->select('id', 'title', 'thread', 'artefact_type')
+                    ->where('author', $user->id)
+                    ->get();
+            }
+        }
+        */
+
+        $user = Auth::user();
+        /*if (!$user || $user->role != "editor") {
+            App::abort(401, 'Not authenticated');
+        }*/
+
+        return view('admin.data.groups', ['topics' => [], 'topic' => null, 'user'=> $user, 'groups' => $groups]);
+    }
+
     public function getThumbnails(Request $request) {
         $user = Auth::user();
         if (!$user || $user->role != "editor") {

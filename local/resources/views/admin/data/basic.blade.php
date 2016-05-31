@@ -160,7 +160,7 @@
                 height = 500 - margin.top - margin.bottom;
 
             var x = d3.scale.linear()
-                .domain([0, {{ $artefacts->count }}])
+                .domain([0, d3.max(values, function(d){ return d.post_count })])
                 .range([0, width]);
 
             // Generate a histogram using twenty uniformly-spaced bins.

@@ -12,8 +12,14 @@
     <li class="{{ Menu::active('tree') }}">
         <a href="/admin/data/tree">tree</a>
     </li>
-    <li class="{{ Menu::active('analytics') }}">
-        <a href="/admin/data/analytics">analytics</a>
+    <li class="{{ Menu::active('topics') }}">
+        <a href="/admin/data/topics">topics</a>
+    </li>
+    <li class="{{ Menu::active('users') }}">
+        <a href="/admin/data/users">users</a>
+    </li>
+    <li class="{{ Menu::active('groups') }}">
+        <a href="/admin/data/groups">groups</a>
     </li>
 @endsection
 
@@ -24,13 +30,13 @@
                 <select name="topic">
                     <option value="all">ALL TOPICS</option>
                     <option disabled>──────────</option>
-                   @foreach($topics as $t)
-                       @if ($t->thread == $topic)
-                            <option selected value="{{ $t->thread }}">{{ $t->title }}</option>
-                       @else
-                           <option value="{{ $t->thread }}">{{ $t->title }}</option>
-                       @endif
-                    @endforeach
+                       @foreach($topics as $t)
+                           @if ($t->thread == $topic)
+                                <option selected value="{{ $t->thread }}">{{ $t->title }}</option>
+                           @else
+                               <option value="{{ $t->thread }}">{{ $t->title }}</option>
+                           @endif
+                        @endforeach
                 </select>
             </form>
         </div>
@@ -40,7 +46,7 @@
 @section('scripts')
     @parent
 
-    {!! HTML::script('//d3js.org/d3.v3.js') !!}
+    {!! HTML::script('js/d3.js') !!}
     {!! HTML::script('js/d3plus.min.js') !!}
 
     <script>
