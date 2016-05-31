@@ -659,7 +659,7 @@ var Vis = (function(){
 
         if(type == "tree") this.renderTree();
 
-        if(type == "force") this.renderForce();
+        if(type == "network") this.renderForce();
 
         if(this.options.interactive >= 1){
             this.zoomContainer.insert("rect",":first-child")
@@ -675,11 +675,11 @@ var Vis = (function(){
                 .attr('class', 'vis-gui zoom')
             var pointer = this;
             gui.append('button')
-                .attr('class', 'button secondary square icon zoom-in')
+                .attr('class', 'secondary square full icon zoom-in')
                 .html('&#x2795;&#xfe0e;')
                 .on('click', function(){ pointer.zoom(0.1) });
             gui.append('button')
-                .attr('class', 'button secondary square icon zoom-out')
+                .attr('class', 'secondary square full icon zoom-out')
                 .html('&#10134;&#xfe0e;')
                 .on('click', function(){ pointer.zoom(-0.1) });
         }

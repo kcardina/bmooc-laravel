@@ -78,6 +78,9 @@ strong{
 }
 h1{
     line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 4%;
 }
 
 /* LINKS */
@@ -130,24 +133,82 @@ button.eye{
 button.secondary, .button.secondary{
     display: block;
     color: $text;
-    font-size: 0.875rem;
-    height: 2.3125rem;
+    font-size: 1rem;
+    font-weight: $bold;
     margin: 0 0 0.5rem 0;
     padding: 0.5rem;
+    background: none;
     background: $purple;
+
+    img{
+        height: 2rem;
+        width: auto;
+        margin-right: 0.5rem;
+        vertical-align: middle;
+    }
 }
 
 button.secondary:hover, .button.secondary:hover{
     background: lighten($purple, 10%);
-    color: $text;
 }
 
 button.secondary:last-child, .button.secondary:last-child{
     margin-bottom: 0;
 }
 
+button.tertiary, .button.tertiary{
+    @extend .secondary;
+    background: none;
+}
+
+button.tertiary:hover, .button.tertiary:hover{
+    border-bottom: 1px dotted $text;
+    background: none;
+}
+
+button.tertiary.active, .button.tertiary.active{
+    border-bottom: 1px solid $text;
+}
+
+button.inline{
+    display: inline;
+    margin: 0 0.5rem 0 0;
+}
+
+button.inline:last-child{
+    margin-right: 0;
+}
+
 button.square{
     width: 2.3125rem;
+}
+
+/* FORMS */
+form{
+    input, select{
+        border: 1px solid $text;
+        background: none;
+        color: $text;
+    }
+    input:focus, select:focus{
+        background: inherit;
+        border-width: 2px;
+        border-color: inherit;
+    }
+}
+
+.form-inline{
+
+    label{
+        float: left;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    span{
+        overflow: hidden;
+        display: inline-block;
+    }
 }
 
 /* LISTS */

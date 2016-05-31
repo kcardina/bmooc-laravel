@@ -1443,7 +1443,7 @@ span.postfix, label.postfix {
   border-color: #cccccc; }
 
 /* We use this to get basic styling on all basic form elements */
-input:not([type]), input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], input[type="color"], textarea {
+input, textarea {
   -webkit-appearance: none;
   -moz-appearance: none;
   border-radius: 0;
@@ -1468,7 +1468,7 @@ input:not([type]), input[type="text"], input[type="password"], input[type="date"
   -ms-transition: border-color 0.15s linear, background 0.15s linear;
   -o-transition: border-color 0.15s linear, background 0.15s linear;
   transition: border-color 0.15s linear, background 0.15s linear; }
-  input:not([type]):focus, input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="month"]:focus, input[type="week"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="time"]:focus, input[type="url"]:focus, input[type="color"]:focus, textarea:focus {
+  input, textarea:focus {
     background: #fafafa;
     border-color: #999999;
     outline: none; }

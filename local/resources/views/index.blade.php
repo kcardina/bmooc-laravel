@@ -6,6 +6,9 @@
     @if (isset($user) && $user->role=="editor")
         <button class="primary plus" data-help="index" data-help-id="new_topic" data-reveal-id="new_topic">Start a new topic</button>
     @endif
+        <button class="tertiary inline"><img src="/img/vis_list_white.png" />list</button>
+        <button class="tertiary inline"><img src="/img/vis_tree_white.png" />tree</button>
+        <button class="tertiary inline active"><img src="/img/vis_network_white.png"/>network</button>
 @stop
 
 @section('header_search')
@@ -13,7 +16,11 @@
 @stop
 
 @section('content')
-    <div class="row full vis-container"></div>
+    <div class="row full vis-container">
+        <div class="vis-gui render">
+
+        </div>
+    </div>
     <div class="row full vis-fallback">
         <div class="columns">
             <ul class="block text-center">
@@ -52,7 +59,7 @@
                     collide: false,
                     resize: true
                 });
-                vis.render('force');
+                vis.render('network');
             }
         });
     </script>

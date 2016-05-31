@@ -13,6 +13,8 @@
     {!! HTML::style('css/normalize.min.css') !!}
     {!! HTML::style('css/foundation.min.css') !!}
     {!! HTML::style('css/app.css?v=' . Version::get()) !!}
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" media="none" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" href="//cdn.quilljs.com/0.20.1/quill.snow.css" media="none" onload="if(media!='all')media='all'">
 
     {{-- SCRIPTS --}}
     {!! HTML::script('js/vendor/modernizr.js') !!}
@@ -27,28 +29,6 @@
 
           ga('create', 'UA-71362622-1', 'auto');
           ga('send', 'pageview');
-        </script>
-
-        {{-- CSS: Font Awesome --}}
-        <script type="text/javascript">
-            (function() {
-                var css = document.createElement('link');
-                css.href = '//maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css';
-                css.rel = 'stylesheet';
-                css.type = 'text/css';
-                document.getElementsByTagName('head')[0].appendChild(css);
-            })();
-        </script>
-
-        {{-- CSS: QuilJS --}}
-        <script type="text/javascript">
-            (function() {
-                var css = document.createElement('link');
-                css.href = '//cdn.quilljs.com/0.20.1/quill.snow.css';
-                css.rel = 'stylesheet';
-                css.type = 'text/css';
-                document.getElementsByTagName('head')[0].appendChild(css);
-            })();
         </script>
 
         <div data-alert class="alert-box alert modernizr-alert js-alert">
@@ -89,12 +69,10 @@
                 </div>
             </div>
             <div class="row">
-				<div class="small-4 medium-3 large-2 columns">
-					<h1>{!! HTML::link('/','bMOOC') !!}</h1>
-				</div>
-                <div class="small-8 medium-9 large-3 columns">
+				<div class="large-5 columns">
+					<h1 class="inline">{!! HTML::link('/','bMOOC') !!}</h1>
                     @yield('header_actions')
-                </div>
+				</div>
                 <div class="large-7 columns" data-help="index" data-help-id="search">
                     @yield('header_search')
                 </div>

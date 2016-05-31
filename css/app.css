@@ -49,7 +49,10 @@ strong {
   font-weight: 400; }
 
 h1 {
-  line-height: 1; }
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 4%; }
 
 /* LINKS */
 a, a:hover, a:visited, a:active {
@@ -95,24 +98,64 @@ button.eye {
   background: url(../img/eye.png) no-repeat left center;
   background-size: contain; }
 
-button.secondary, .button.secondary {
+button.secondary, button.tertiary, button.button.tertiary, .button.secondary, .button.tertiary {
   display: block;
   color: #ffffff;
-  font-size: 0.875rem;
-  height: 2.3125rem;
+  font-size: 1rem;
+  font-weight: 400;
   margin: 0 0 0.5rem 0;
   padding: 0.5rem;
+  background: none;
   background: #751e82; }
+  button.secondary img, button.tertiary img, button.button.tertiary img, .button.secondary img, .button.tertiary img {
+    height: 2rem;
+    width: auto;
+    margin-right: 0.5rem;
+    vertical-align: middle; }
 
-button.secondary:hover, .button.secondary:hover {
-  background: #9a28ab;
-  color: #ffffff; }
+button.secondary:hover, button.tertiary:hover, .button.secondary:hover, .button.tertiary:hover {
+  background: #9a28ab; }
 
-button.secondary:last-child, .button.secondary:last-child {
+button.secondary:last-child, button.tertiary:last-child, .button.secondary:last-child, .button.tertiary:last-child {
   margin-bottom: 0; }
+
+button.tertiary, .button.tertiary {
+  background: none; }
+
+button.tertiary:hover, .button.tertiary:hover {
+  border-bottom: 1px dotted #ffffff;
+  background: none; }
+
+button.tertiary.active, .button.tertiary.active {
+  border-bottom: 1px solid #ffffff; }
+
+button.inline {
+  display: inline;
+  margin: 0 0.5rem 0 0; }
+
+button.inline:last-child {
+  margin-right: 0; }
 
 button.square {
   width: 2.3125rem; }
+
+/* FORMS */
+form input, form select {
+  border: 1px solid #ffffff;
+  background: none;
+  color: #ffffff; }
+form input:focus, form select:focus {
+  background: inherit;
+  border-width: 2px;
+  border-color: inherit; }
+
+.form-inline label {
+  float: left;
+  display: inline-block;
+  vertical-align: middle; }
+.form-inline span {
+  overflow: hidden;
+  display: inline-block; }
 
 /* LISTS */
 ul.inline, ul.block {
