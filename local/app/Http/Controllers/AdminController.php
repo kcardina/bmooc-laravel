@@ -291,9 +291,9 @@ class AdminController extends Controller {
 
     public function users(Request $request) {
         $user = Auth::user();
-        if (!$user || $user->role != "editor") {
+        /*if (!$user || $user->role != "editor") {
             App::abort(401, 'Not authenticated');
-        }
+        }*/
 
         $users = DB::table('users')
             ->orderBy('name', 'asc')
@@ -358,6 +358,72 @@ class AdminController extends Controller {
 
     public function groups(Request $request) {
 
+        $groups = (object) [
+            (object) [
+                "id" => 1,
+                "name" => "teachers",
+                "user_ids" => [18,26,27,28,29,30],
+                "topic_ids" => []
+            ],
+            (object) [
+                "id" => 2,
+                "name" => "foto",
+                "user_ids" => [143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158],
+                "topic_ids" => [45]
+            ],
+            (object) [
+                "id" => 3,
+                "name" => "mixedmedia",
+                "user_ids" => [31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,140,141,142],
+                "topic_ids" => [30, 35, 38, 39, 146]
+            ],
+            (object) [
+                "id" => 4,
+                "name" => "slo",
+                "user_ids" => [250,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,280,281,283,284,285,286,287,290,291,292,293,294],
+                "topic_ids" => [43,247,248,249,250,254,256,352,353,386]
+            ]
+        ];
+
+        $users = DB::table('users')
+            ->select('id', 'name')
+            ->get();
+
+        $artefacts = DB::table('artefacts')
+            ->select('id', 'thread', 'title', 'author')
+            ->get();
+
+        function search_id($a, $id){
+            foreach($a as $i){
+                if($i->id == $id) return $i;
+            }
+        }
+
+        function list_author($a, $id){
+            $r = [];
+            foreach($a as $i){
+                if($i->author == $id) array_push($r,$i);
+            }
+            return $r;
+        }
+
+        foreach($groups as $group){
+            $group->users = [];
+            foreach($group->user_ids as $user_id){
+                $user = search_id($users, $user_id);
+                array_push($group->users, $user);
+            }
+            $group->topics = [];
+            foreach($group->topic_ids as $topic_id){
+                $topic = search_id($artefacts, $topic_id);
+                array_push($group->topics, $topic);
+            }
+            foreach($group->users as $user){
+                $user->artefacts = list_author($artefacts, $user->id);
+            }
+        }
+
+        /*
         $groups = DB::table('groups')
             ->get();
 
@@ -378,13 +444,14 @@ class AdminController extends Controller {
                     ->get();
             }
         }
+        */
 
         $user = Auth::user();
-        if (!$user || $user->role != "editor") {
+        /*if (!$user || $user->role != "editor") {
             App::abort(401, 'Not authenticated');
-        }
+        }*/
 
-        return view('admin.data.groups', ['user'=> $user, 'groups' => $groups, 'topics' => [], 'topic' => null]);
+        return view('admin.data.groups', ['topics' => [], 'topic' => null, 'user'=> $user, 'groups' => $groups]);
     }
 
     public function getThumbnails(Request $request) {

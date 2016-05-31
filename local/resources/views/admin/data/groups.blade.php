@@ -31,7 +31,7 @@
                         $posts = 0;
                         $fromgroup = 0;
                         $fromother = 0;
-                        $topics = [];
+                        $topics_ = [];
                         foreach($group->users as $user){
                             if(sizeof($user->artefacts) > 0) $active++;
                             else $passive++;
@@ -39,7 +39,7 @@
                             $posts += sizeof($user->artefacts);
 
                             foreach($user->artefacts as $artefact){
-                                if(!in_array($artefact->thread, $topics)) array_push($topics, $artefact->thread);
+                                if(!in_array($artefact->thread, $topics_)) array_push($topics_, $artefact->thread);
 
                                 $in = false;
                                 foreach($group->topics as $topic){
@@ -63,7 +63,7 @@
                         @endif
                     </td>
                     <td>
-                        {{sizeof($topics)}}
+                        {{sizeof($topics_)}}
                     </td>
                     <td>
                         {{$posts}}
