@@ -19,17 +19,13 @@
         </div>
     </div>
     <div class="row full vis-fallback">
-        <div class="columns">
-            <ul class="block text-center">
-                @foreach($topics as $topic)
-                    <li>
-                        <a href="topic/{{ $topic->id }}">
-                            <h2>{{ $topic->title }}</h2>
-                            <p>{{ $topic->author }}</p>
-                        </a>
-                    </li>
-                @endforeach
-            </ul>
+      <div class="columns">
+           @foreach($topics as $topic)
+            <div class="row">
+                <div class="columns large-4"><h2>{{ $topic->title }}</h2></div>
+                <div class="columns large-4">{{ date('d/m/Y', strtotime($topic->last_modified)) }}</div>
+            </div>
+            @endforeach
         </div>
     </div>
 @stop

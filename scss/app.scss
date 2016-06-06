@@ -77,7 +77,7 @@ p{
 }
 h1, h2, h3, h4, h5, h6 {
     font-family: $font2;
-    font-weight: $ultrabold;
+    font-weight: $bold;
 }
 strong{
     font-weight: $bold;
@@ -87,6 +87,7 @@ h1{
     display: inline-block;
     vertical-align: middle;
     margin-right: 4%;
+    font-weight: $ultrabold;
 }
 
 /* LINKS */

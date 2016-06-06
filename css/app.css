@@ -45,7 +45,7 @@ p {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: "Roboto", sans-serif;
-  font-weight: 900; }
+  font-weight: 500; }
 
 strong {
   font-weight: 500; }
@@ -54,7 +54,8 @@ h1 {
   line-height: 1;
   display: inline-block;
   vertical-align: middle;
-  margin-right: 4%; }
+  margin-right: 4%;
+  font-weight: 900; }
 
 /* LINKS */
 a, a:hover, a:visited, a:active {
