@@ -1,3 +1,4 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,700,900);
 /* SOME STARTERS */
 input, select, img, button, .reveal-modal {
   outline: none; }
@@ -6,9 +7,9 @@ input, select, img, button, .reveal-modal {
 html, body {
   background: #080808;
   color: #ffffff;
-  font-family: "Muli", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 8pt;
-  font-weight: 300;
+  font-weight: 400;
   height: 100%;
   width: 100%; }
 
@@ -40,13 +41,14 @@ html, body {
 
 /* TYPOGRAPHY */
 p {
-  font-weight: 300; }
+  font-weight: 400; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 400; }
+  font-family: "Roboto", sans-serif;
+  font-weight: 900; }
 
 strong {
-  font-weight: 400; }
+  font-weight: 500; }
 
 h1 {
   line-height: 1;
@@ -98,25 +100,26 @@ button.eye {
   background: url(../img/eye.png) no-repeat left center;
   background-size: contain; }
 
-button.secondary, button.tertiary, button.button.tertiary, .button.secondary, .button.tertiary {
+button.secondary, button.tertiary, button.button.tertiary, button.form-input, .button.secondary, .button.tertiary, button.button.form-input {
   display: block;
   color: #ffffff;
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: 500;
   margin: 0 0 0.5rem 0;
   padding: 0.5rem;
   background: none;
   background: #751e82; }
-  button.secondary img, button.tertiary img, button.button.tertiary img, .button.secondary img, .button.tertiary img {
+  button.secondary img, button.tertiary img, button.button.tertiary img, button.form-input img, .button.secondary img, .button.tertiary img, button.button.form-input img {
     height: 2rem;
     width: auto;
     margin-right: 0.5rem;
     vertical-align: middle; }
 
-button.secondary:hover, button.tertiary:hover, .button.secondary:hover, .button.tertiary:hover {
-  background: #9a28ab; }
+button.secondary:hover, button.tertiary:hover, button.form-input:hover, .button.secondary:hover, .button.tertiary:hover, button.button.form-input:hover {
+  background: #9a28ab;
+  color: inherit; }
 
-button.secondary:last-child, button.tertiary:last-child, .button.secondary:last-child, .button.tertiary:last-child {
+button.secondary:last-child, button.tertiary:last-child, button.form-input:last-child, .button.secondary:last-child, .button.tertiary:last-child, button.button.form-input:last-child {
   margin-bottom: 0; }
 
 button.tertiary, .button.tertiary {
@@ -129,6 +132,13 @@ button.tertiary:hover, .button.tertiary:hover {
 button.tertiary.active, .button.tertiary.active {
   border-bottom: 1px solid #ffffff; }
 
+button.tertiary.inactive, .button.tertiary.inactive {
+  opacity: 0.3;
+  cursor: not-allowed; }
+
+button.tertiary.inactive:hover, .button.tertiary.inactive:hover {
+  border-bottom: none; }
+
 button.inline {
   display: inline;
   margin: 0 0.5rem 0 0; }
@@ -139,23 +149,76 @@ button.inline:last-child {
 button.square {
   width: 2.3125rem; }
 
+button.form-input {
+  background-color: #ffffff;
+  color: #080808;
+  font-size: 0.8rem;
+  height: 2.3125rem; }
+
+button.form-input:hover {
+  background-color: #ffffff;
+  color: #080808;
+  text-decoration: underline; }
+
 /* FORMS */
-form input, form select {
+form input, form textarea, form select {
   border: 1px solid #ffffff;
   background: none;
   color: #ffffff; }
-form input:focus, form select:focus {
+form input:focus, form textarea:focus, form select:focus {
   background: inherit;
   border-width: 2px;
   border-color: inherit; }
+form label {
+  color: #ffffff;
+  font-size: 0.85rem;
+  padding-right: 0.5rem;
+  font-weight: 400;
+  text-transform: lowercase; }
 
-.form-inline label {
-  float: left;
-  display: inline-block;
-  vertical-align: middle; }
-.form-inline span {
-  overflow: hidden;
-  display: inline-block; }
+.form-inline {
+  margin-top: 0.5rem;
+  width: 100%;
+  display: table; }
+  .form-inline label {
+    display: table-cell;
+    vertical-align: middle; }
+  .form-inline .field {
+    display: table-cell;
+    overflow: hidden;
+    width: 100%; }
+  .form-inline .awesomplete {
+    display: inline-block;
+    width: 100%;
+    z-index: 999;
+    /* creates triangle */ }
+    .form-inline .awesomplete ul {
+      background: #031F20;
+      list-style: none;
+      padding: 1rem;
+      margin: 0;
+      margin-top: 15px;
+      position: absolute;
+      border-radius: 10px;
+      min-width: 50%; }
+    .form-inline .awesomplete ul:after {
+      content: "";
+      display: block;
+      /* reduce the damage in FF3.0 */
+      position: absolute;
+      top: -15px;
+      left: 10px;
+      width: 0;
+      border-width: 0 15px 15px;
+      border-style: solid;
+      border-color: #031F20 transparent; }
+    .form-inline .awesomplete li {
+      cursor: pointer; }
+    .form-inline .awesomplete mark {
+      background-color: #751e82;
+      color: inherit; }
+  .form-inline input {
+    margin: 0; }
 
 /* LISTS */
 ul.inline, ul.block {
@@ -207,12 +270,11 @@ body {
 header {
   display: table-row;
   width: 100%; }
+  header .row {
+    margin: 1rem 0; }
 
 nav {
   text-transform: lowercase; }
-
-header .row {
-  margin: 1rem 0; }
 
 .container {
   display: table-row;
@@ -257,10 +319,11 @@ svg rect.filled {
   stroke: none; }
 svg text.title {
   font-size: 1.75rem;
+  font-weight: 500;
   text-anchor: middle; }
 svg text.title.stroke {
   stroke: #080808;
-  stroke-width: 7px; }
+  stroke-width: 5pt; }
 svg .linktext text {
   font-size: 0.85rem;
   fill: #17cf1f; }

@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@yield('title') - bMOOC - LUCA School of Arts</title>
     <link rel="icon" type="img/ico" href="img/favicon.ico">
-
-    {{-- FONTS --}}
-    {!! HTML::style('https://fonts.googleapis.com/css?family=Muli:400,300') !!}
+    {{-- NON BLOCKING STYLESHEETS --}}
+    <link rel="preload" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" as="style" onload="this.rel='stylesheet'">
+    <link rel="preload" href="//cdn.quilljs.com/0.20.1/quill.snow.css" as="style" onload="this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="//cdn.quilljs.com/0.20.1/quill.snow.css"></noscript>
+    {!! HTML::script('js/loadCSS.js') !!}
+    {!! HTML::script('js/cssrelpreload.js') !!}
 
     {{-- STYLESHEETS --}}
     {!! HTML::style('css/normalize.min.css') !!}
     {!! HTML::style('css/foundation.min.css') !!}
     {!! HTML::style('css/app.css?v=' . Version::get()) !!}
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" media="none" onload="if(media!='all')media='all'">
-    <link rel="stylesheet" href="//cdn.quilljs.com/0.20.1/quill.snow.css" media="none" onload="if(media!='all')media='all'">
 
     {{-- SCRIPTS --}}
     {!! HTML::script('js/vendor/modernizr.js') !!}
@@ -71,6 +72,9 @@
             <div class="row">
 				<div class="large-5 columns">
 					<h1 class="inline">{!! HTML::link('/','bMOOC') !!}</h1>
+                    <button class="tertiary inline vis_list"><img src="/img/vis_list_white.png" />list</button>
+                    <button class="tertiary inline vis_tree"><img src="/img/vis_tree_white.png" />tree</button>
+                    <button class="tertiary inline vis_network"><img src="/img/vis_network_white.png"/>network</button>
                     @yield('header_actions')
 				</div>
                 <div class="large-7 columns" data-help="index" data-help-id="search">

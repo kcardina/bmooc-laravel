@@ -675,11 +675,11 @@ var Vis = (function(){
                 .attr('class', 'vis-gui zoom')
             var pointer = this;
             gui.append('button')
-                .attr('class', 'secondary square full icon zoom-in')
+                .attr('class', 'secondary square zoom-in')
                 .html('&#x2795;&#xfe0e;')
                 .on('click', function(){ pointer.zoom(0.1) });
             gui.append('button')
-                .attr('class', 'secondary square full icon zoom-out')
+                .attr('class', 'secondary square zoom-out')
                 .html('&#10134;&#xfe0e;')
                 .on('click', function(){ pointer.zoom(-0.1) });
         }

@@ -6,9 +6,6 @@
     @if (isset($user) && $user->role=="editor")
         <button class="primary plus" data-help="index" data-help-id="new_topic" data-reveal-id="new_topic">Start a new topic</button>
     @endif
-        <button class="tertiary inline"><img src="/img/vis_list_white.png" />list</button>
-        <button class="tertiary inline"><img src="/img/vis_tree_white.png" />tree</button>
-        <button class="tertiary inline active"><img src="/img/vis_network_white.png"/>network</button>
 @stop
 
 @section('header_search')
@@ -51,7 +48,23 @@
         var vis;
 
         $(document).ready(function(){
+            $('.vis_list').on('click',function(){
+                $('.vis-container').hide();
+                $('.vis-fallback').show();
+                $('button.tertiary').removeClass('active');
+                $(this).addClass('active')
+            });
+            $('.vis_tree').addClass('inactive');
+            $('.vis_network').on('click',function(){
+                $('.vis-fallback').hide();
+                $('.vis-container').show();
+                $('button.tertiary').removeClass('active');
+                $(this).addClass('active')
+            });
+
+
             if($('html').hasClass('svg')){
+                $('.vis_network').addClass('active');
                 vis = new Vis($('.vis-container').get(0), data, {
                     interactive: true,
                     mode: 'text',

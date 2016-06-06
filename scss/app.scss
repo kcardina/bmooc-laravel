@@ -1,13 +1,18 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,700,900);
+
 $background: #080808;
 $text: #ffffff;
 $text-light: #d9d9d9;
 $text-medium: #878787;
 $green: #17cf1f;
 $purple: #751e82;
+$blur: #031F20;
 
-$font: 'Muli', sans-serif;
-$regular: 300;
-$bold: 400;
+$font: 'Roboto', sans-serif;
+$font2: 'Roboto', sans-serif;
+$regular: 400;
+$bold: 500;
+$ultrabold: 900;
 $mobile: 8pt;
 $desktop: 10pt;
 
@@ -71,7 +76,8 @@ p{
     font-weight: $regular;
 }
 h1, h2, h3, h4, h5, h6 {
-    font-weight: $bold;
+    font-family: $font2;
+    font-weight: $ultrabold;
 }
 strong{
     font-weight: $bold;
@@ -113,7 +119,7 @@ button.primary, .button.primary{
     margin: 0;
     padding: 0;
     color: $green;
-    font-weight: 400;
+    font-weight: $regular;
     padding-left: 30px;
     height: 24px;
 }
@@ -150,6 +156,7 @@ button.secondary, .button.secondary{
 
 button.secondary:hover, .button.secondary:hover{
     background: lighten($purple, 10%);
+    color: inherit;
 }
 
 button.secondary:last-child, .button.secondary:last-child{
@@ -170,6 +177,15 @@ button.tertiary.active, .button.tertiary.active{
     border-bottom: 1px solid $text;
 }
 
+button.tertiary.inactive, .button.tertiary.inactive{
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+button.tertiary.inactive:hover, .button.tertiary.inactive:hover{
+    border-bottom: none;
+}
+
 button.inline{
     display: inline;
     margin: 0 0.5rem 0 0;
@@ -183,33 +199,100 @@ button.square{
     width: 2.3125rem;
 }
 
+button.form-input{
+    @extend .secondary;
+    background-color: $text;
+    color: $background;
+    font-size: 0.8rem;
+    height: 2.3125rem;
+}
+
+button.form-input:hover{
+    background-color: $text;
+    color: $background;
+    text-decoration: underline;
+}
+
 /* FORMS */
 form{
-    input, select{
+    input, textarea, select{
         border: 1px solid $text;
         background: none;
         color: $text;
     }
-    input:focus, select:focus{
+    input:focus, textarea:focus, select:focus{
         background: inherit;
         border-width: 2px;
         border-color: inherit;
+    }
+    label{
+        color: $text;
+        font-size: 0.85rem;
+        padding-right: 0.5rem;
+        font-weight: $regular;
+        text-transform: lowercase;
     }
 }
 
 .form-inline{
 
+    margin-top: 0.5rem;
+
+    width: 100%;
+    display: table;
+
     label{
-        float: left;
-        display: inline-block;
+        display: table-cell;
         vertical-align: middle;
     }
 
-    span{
+    .field{
+        display: table-cell;
         overflow: hidden;
+        width: 100%;
+    }
+
+    .awesomplete{
         display: inline-block;
+        width: 100%;
+        z-index: 999;
+        ul{
+            background: $blur;
+            list-style: none;
+            padding: 1rem;
+            margin: 0;
+            margin-top: 15px;
+            position: absolute;
+            border-radius: 10px;
+            min-width: 50%;
+        }
+        /* creates triangle */
+        ul:after {
+          content: "";
+          display: block; /* reduce the damage in FF3.0 */
+          position: absolute;
+          top: -15px;
+          left: 10px;
+          width: 0;
+          border-width: 0 15px 15px;
+          border-style: solid;
+          border-color: #031F20 transparent;
+        }
+        li{
+            cursor: pointer;
+        }
+        mark{
+            background-color: $purple;
+            color: inherit;
+        }
+    }
+
+    input{
+        margin: 0;
     }
 }
+
+
 
 /* LISTS */
 ul.inline, ul.block{
@@ -263,14 +346,13 @@ body {
 header{
     display:table-row;
     width: 100%;
+    .row{
+        margin: 1rem 0;
+    }
 }
 
 nav{
     text-transform: lowercase;
-}
-
-header .row{
-    margin: 1rem 0;
 }
 
 .container{
@@ -327,11 +409,12 @@ svg{
     }
     text.title{
         font-size: 1.75rem;
+        font-weight: $bold;
         text-anchor: middle;
     }
     text.title.stroke{
         stroke: $background;
-        stroke-width: 7px;
+        stroke-width: 5pt;
     }
     .linktext text{
         font-size: 0.85rem;
