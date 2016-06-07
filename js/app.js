@@ -994,7 +994,6 @@ var Vis = (function(){
                 pointer.fit();
             }
             if(first && pointer.options.interactive >= 1){
-                console.log(pointer.zoomContainer.select('.vis_zoom-capture'))
                 pointer.zoomContainer.select('.vis_zoom-capture')
                     .attr('x', pointer.g.node().getBBox().x - 25)
                     .attr('y', pointer.g.node().getBBox().y - 25)
@@ -1103,6 +1102,65 @@ var Vis = (function(){
     }
 
     return Vis;
+
+})();
+
+
+/****************
+* GENERATE MENU *
+****************/
+
+/** Generate menu to select visualisation type. Requires JQuery */
+var Menu = (function(){
+
+    /**
+     * Create a Menu.
+     * @param {id} btn - The container of the menu buttons.
+     * @param {id} svg - The container of the svg element for interactive visulisation
+     * @param {id} html - The container of the html elementen for list visualisation
+     * @param {obj} opt - An optional object defining the menu's behavior
+     */
+    function Menu(menu, svg, html, opt){
+        this.menu = $("#"+menu);
+        this.svg = $("#"+svg);
+        this.html = $("#"+html);
+
+        // Options array
+        this.options = {
+            disabled: [] // an array of modes to be disabled
+        };
+        if(typeof opt !== 'undefined'){
+            if(typeof opt.disabled !== 'undefined') this.options.disabled = opt.disabled;
+        }
+
+        this.init();
+    }
+
+    /**
+     * Binds events to the menu and hides unused buttons
+     */
+    Menu.prototype.init = function(){
+        var pointer = this;
+        $('button', this.menu).each(function(){
+            if($.inArray($(this).data('vis'), pointer.options.disabled) < 0){
+                $(this).on('click', function(){
+                    $('button', pointer.menu).removeClass('active');
+                    $(this).addClass('active');
+                    if(typeof($(this).attr('data-svg')) !== 'undefined'){
+                        pointer.html.hide();
+                        pointer.svg.show();
+                    } else {
+                        pointer.svg.hide();
+                        pointer.html.show();
+                    }
+                });
+            } else{
+                $(this).addClass('disabled');
+            }
+        });
+    }
+
+    return Menu
 
 })();
 

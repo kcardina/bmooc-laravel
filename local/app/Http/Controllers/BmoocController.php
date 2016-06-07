@@ -36,12 +36,12 @@ class BmoocController extends Controller {
     public function index(Request $request) {
         $user = Auth::user();
 
-        $topics = Artefact::with(['active_instruction', 'the_author', 'tags', 'last_modifier'])
+        $topics = Artefact::with(['active_instruction', 'the_author', 'last_modifier'])
             ->orderBy('updated_at', 'desc')
             ->whereNull('parent_id')
             ->get();
 
-        $auteurs = DB::table('users')->select('id', 'name')->distinct()->get();
+        $authors = DB::table('users')->select('id', 'name')->distinct()->get();
         $tags = Tags::orderBy('tag')->get();
 
         $aantalAntwoorden = DB::table('artefacts')->select(DB::raw('count(*) as aantal_antwoorden, thread'))
@@ -87,7 +87,7 @@ class BmoocController extends Controller {
             }
         }
 
-        return view('index', ['topics' => $topics, 'user' => $user, 'auteurs' => $auteurs, 'tags' => $tags, 'aantalAntwoorden' => $aantalAntwoorden, 'links' => $links]);
+        return view('index', ['topics' => $topics, 'user' => $user, 'authors' => $authors, 'tags' => $tags, 'aantalAntwoorden' => $aantalAntwoorden, 'links' => $links]);
     }
 
     public function feedback(){

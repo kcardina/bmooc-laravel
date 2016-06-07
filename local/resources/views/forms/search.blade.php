@@ -25,27 +25,27 @@
 
        <div class="medium-4 columns">
           <div class="form-inline">
-               <label for="tags">Authors</label>
+               <label for="author">Authors</label>
                <div class="field">
                    <div class="awesomplete">
-                    <input class="dropdown-input" autocomplete="off" aria-autocomplete="list" id="tags" list="tags-list" />
+                    <input class="dropdown-input" autocomplete="off" aria-autocomplete="list" id="author" list="authors-list" />
                    </div>
                </div>
-               <datalist id="tags-list">
-                    @foreach ($auteurs as $auteur)
-                        <option>{{ $auteur->name }}</option>
+               <datalist id="authors-list">
+                    @foreach ($authors as $author)
+                        <option>{{ $author->name }}</option>
                     @endforeach
                 </datalist>
-                <button class="dropdown-btn form-input" type="button">&#9660;</button>
+                <button class="dropdown-btn form-input" type="button">&darr;</button>
            </div>
        </div>
 
        <div class="medium-4 columns">
           <div class="form-inline">
-               <label for="tags">Tags</label>
+               <label for="tag">Tags</label>
                <div class="field">
                    <div class="awesomplete">
-                    <input class="dropdown-input" autocomplete="off" aria-autocomplete="list" id="tags" list="tags-list" />
+                    <input class="dropdown-input" autocomplete="off" aria-autocomplete="list" id="tag" list="tags-list" />
                    </div>
                </div>
                <datalist id="tags-list">
@@ -53,7 +53,7 @@
                         <option>{{ $tag->tag }}</option>
                     @endforeach
                 </datalist>
-                <button class="dropdown-btn form-input" type="button">&#9660;</button>
+                <button class="dropdown-btn form-input" type="button">&darr;</button>
            </div>
        </div>
 
@@ -62,31 +62,65 @@
                <label for="zoek">Search</label>
                <div class="field">
                 @if(isset($search))
-                    <input type="text" id="zoek" value="{{ $search['keyword'] }}"/>
+                    <input type="text" id="keyword" value="{{ $search['keyword'] }}"/>
                 @else
-                    <input type="text" id="zoek" />
+                    <input type="text" id="keyword" />
                 @endif
                </div>
            </div>
        </div>
     </div>
 </form>
-<script src="js/awesomplete.min.js" async onload="awesomeplete_init();"></script>
+
+<script src="js/awesomplete.min.js" async onload="awesomplete_init();"></script>
 <script>
-    function awesomeplete_init(){
-        var comboplete = new Awesomplete('input.dropdown-input', {
-           minChars: 0,
+    function awesomplete_init(){
+        $('input.dropdown-input').each(function(){
+            var comboplete = new Awesomplete('#' + $(this).attr('id'), {
+               minChars: 0
+            });
+            var el = $(this).parents('.form-inline').children('button')[0];
+            el.addEventListener("click", function(e) {
+                if (comboplete.ul.childNodes.length === 0) {
+                    comboplete.evaluate();
+                }
+                else if (comboplete.ul.hasAttribute('hidden')) {
+                    comboplete.open();
+                }
+                else {
+                    comboplete.close();
+                }
+            });
+            $(this).on('awesomplete-open', function(){
+                $(el).html('&uarr;');
+            });
+            $(this).on('awesomplete-close',function(){
+                $(el).html("&darr;");
+            });
+            $(this).on('awesomplete-selectcomplete', function(){
+                $(".sort").submit();
+            });
         });
-        Awesomplete.$('.dropdown-btn').addEventListener("click", function(e) {
-            if (comboplete.ul.childNodes.length === 0) {
-                comboplete.evaluate();
-            }
-            else if (comboplete.ul.hasAttribute('hidden')) {
-                comboplete.open();
-            }
-            else {
-                comboplete.close();
-            }
+    }
+
+    $(".sort input").keypress(function(event) {
+        if (event.which == 13) {
+            event.preventDefault();
+            $(".sort").submit();
+        }
     });
+
+    $(".sort").submit(function(e){
+        e.preventDefault();
+        search();
+    });
+
+    function search(){
+        var author = $(".sort input#author").val();
+        if (author.trim() == "") author = "all";
+        var tag = $(".sort input#tag").val();
+        if (tag.trim() == "") tag = "all";
+        var keyword = $(".sort input#keyword").val();
+        window.location = "{{ URL::to('/') }}" + '/search/' + author + '/' + tag + (keyword?'/' + keyword:'');
     }
 </script>

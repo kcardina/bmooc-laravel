@@ -19,6 +19,7 @@
 
     {{-- SCRIPTS --}}
     {!! HTML::script('js/vendor/modernizr.js') !!}
+        {!! HTML::script('js/vendor/jquery.min.js') !!}
   </head>
 	<body>
         {{-- JS: Google Analytics --}}
@@ -72,9 +73,11 @@
             <div class="row">
 				<div class="large-5 columns">
 					<h1 class="inline">{!! HTML::link('/','bMOOC') !!}</h1>
-                    <button class="tertiary inline vis_list"><img src="/img/vis_list_white.png" />list</button>
-                    <button class="tertiary inline vis_tree"><img src="/img/vis_tree_white.png" />tree</button>
-                    <button class="tertiary inline vis_network"><img src="/img/vis_network_white.png"/>network</button>
+                    <span id="vis-menu">
+                        <button class="tertiary inline" data-vis="list"><img src="/img/vis_list_white.png" />list</button>
+                        <button class="tertiary inline" data-vis="tree" data-svg><img src="/img/vis_tree_white.png" />tree</button>
+                        <button class="tertiary inline" data-vis="network" data-svg><img src="/img/vis_network_white.png"/>network</button>
+                    </span>
                     @yield('header_actions')
 				</div>
                 <div class="large-7 columns" data-help="index" data-help-id="search">
@@ -130,7 +133,6 @@
         </div>
 
         {{-- SCRIPTS --}}
-        {!! HTML::script('js/vendor/jquery.min.js') !!}
         {!! HTML::script('js/foundation.min.js') !!}
         {!! HTML::script('js/app.js?v=' . Version::get()) !!}
         {!! HTML::script('js/help.js?v=' . Version::get()) !!}

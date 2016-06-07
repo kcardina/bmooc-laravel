@@ -1,4 +1,5 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,700,900);
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,700,900);
+@import url(https://fonts.googleapis.com/css?family=Inconsolata:400,700);
 
 $background: #080808;
 $text: #ffffff;
@@ -7,11 +8,12 @@ $text-medium: #878787;
 $green: #17cf1f;
 $purple: #751e82;
 $blur: #031F20;
+$blur-img: url('/img/bg.png');
 
-$font: 'Roboto', sans-serif;
+$font: 'Inconsolata', sans-serif;
 $font2: 'Roboto', sans-serif;
 $regular: 400;
-$bold: 500;
+$bold: 700;
 $ultrabold: 900;
 $mobile: 8pt;
 $desktop: 10pt;
@@ -49,24 +51,24 @@ html, body{
     display: block;
 }
 
-.vis-container, .vis-fallback{
+#vis-container, #vis-fallback{
     display: none;
 }
 
 .svg {
-    .vis-container{
+    #vis-container{
         display: block;
     }
-    .vis-fallback{
+    #vis-fallback{
         display: none
     }
 }
 
 .no-svg{
-    .vis-fallback{
+    #vis-fallback{
         display: block;
     }
-    .vis-container{
+    #vis-container{
         display: none;
     }
 }
@@ -85,7 +87,7 @@ strong{
 h1{
     line-height: 1;
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: top;
     margin-right: 4%;
     font-weight: $ultrabold;
 }
@@ -106,6 +108,12 @@ p a:hover, a.emphasis:hover{
 a.close:hover{
     border: none;
     opacity: 0.8;
+}
+a.active{
+    border-bottom: 1px solid;
+}
+.light{
+    color: $text-light;
 }
 
 /* BUTTONS */
@@ -178,13 +186,9 @@ button.tertiary.active, .button.tertiary.active{
     border-bottom: 1px solid $text;
 }
 
-button.tertiary.inactive, .button.tertiary.inactive{
+button.disabled, .button.disabled{
     opacity: 0.3;
     cursor: not-allowed;
-}
-
-button.tertiary.inactive:hover, .button.tertiary.inactive:hover{
-    border-bottom: none;
 }
 
 button.inline{
@@ -205,7 +209,9 @@ button.form-input{
     background-color: $text;
     color: $background;
     font-size: 0.8rem;
-    height: 2.3125rem;
+    height: 2.3rem;
+    overflow: hidden;
+    top: -1px;
 }
 
 button.form-input:hover{
@@ -228,7 +234,7 @@ form{
     }
     label{
         color: $text;
-        font-size: 0.85rem;
+        font-size: 0.875rem;
         padding-right: 0.5rem;
         font-weight: $regular;
         text-transform: lowercase;
@@ -236,9 +242,6 @@ form{
 }
 
 .form-inline{
-
-    margin-top: 0.5rem;
-
     width: 100%;
     display: table;
 
@@ -258,12 +261,13 @@ form{
         width: 100%;
         z-index: 999;
         ul{
-            background: $blur;
+            background: $blur-img;
             list-style: none;
             padding: 1rem;
             margin: 0;
             margin-top: 15px;
             position: absolute;
+            z-index: 9999;
             border-radius: 10px;
             min-width: 50%;
         }
@@ -281,6 +285,12 @@ form{
         }
         li{
             cursor: pointer;
+        }
+        li:hover, li[aria-selected="true"]{
+            background: $purple;
+        }
+        .visually-hidden{
+            display: none;
         }
         mark{
             background-color: $purple;
@@ -301,10 +311,11 @@ ul.inline, ul.block{
     font-size: inherit;
     margin: 0;
     padding: 0;
-    color: $text-light;
 }
 ul.inline{
     display: inline;
+    color: $text-light;
+    text-transform: lowercase;
 }
 ul.block{
     display: block;
@@ -313,7 +324,7 @@ ul.inline li{
     display: inline-block;
 }
 ul.slash li:after{
-    content: "\00a0/";
+    content: "\00a0/\00a0";
     color: $text-medium;
 }
 ul.arrow li:after{
@@ -336,6 +347,19 @@ dl dt {
 }
 dl dd{
     color: $text-light;
+}
+.sort.desc, .sort.asc{
+    @extend a.active;
+}
+.sort.desc:after{
+    content: " \2193";
+}
+.sort.asc:after{
+    content: " \2191";
+}
+.list .row{
+    margin-bottom: 1rem;
+    line-height: 2.8rem;
 }
 
 /* MAIN */
@@ -410,6 +434,7 @@ svg{
     }
     text.title{
         font-size: 1.75rem;
+        font-family: $font2;
         font-weight: $bold;
         text-anchor: middle;
     }
@@ -431,4 +456,11 @@ svg{
 .vis-gui.zoom{
     bottom: 0;
     right: 0;
+}
+
+.row.vis-sort{
+    margin-bottom: 1rem;
+    ul{
+        color: $green;
+    }
 }
