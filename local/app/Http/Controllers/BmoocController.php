@@ -40,6 +40,7 @@ class BmoocController extends Controller {
         $topics = Artefact::with(['active_instruction', 'the_author', 'tags', 'last_modifier'])
             ->orderBy('updated_at', 'desc')
             ->whereNull('parent_id')
+            ->whereNull('hidden')
             ->get();
         $auteurs = DB::table('users')->select('id', 'name')->distinct()->get();
         $tags = Tags::orderBy('tag')->get();
@@ -636,8 +637,8 @@ class BmoocController extends Controller {
     }
 
     public function datavis(Request $request) {
-		//$user = Auth::user();
-		$user = $request->user();
+		$user = Auth::user();
+		//$user = $request->user();
 		//dd($request);
 		$topics = Artefact::with(['the_author', 'tags', 'last_modifier'])->whereNull('parent_id')->orderBy('created_at', 'desc')->orderBy('last_modified', 'desc')->get();
 		$auteurs = DB::table('users')->select('id', 'name')->distinct()->get();
